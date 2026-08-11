@@ -1,0 +1,17 @@
+{
+    "name": "LastGod.Enemies",
+    "rootNamespace": "LastGod.Enemies",
+    "references": [
+        "LastGod.Core",
+        "LastGod.Combat"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

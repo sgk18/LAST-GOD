@@ -1,0 +1,17 @@
+{
+    "name": "LastGod.Player",
+    "rootNamespace": "LastGod.Player",
+    "references": [
+        "GUID:com.unity.inputsystem",
+        "LastGod.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

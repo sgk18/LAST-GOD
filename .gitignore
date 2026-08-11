@@ -1,0 +1,44 @@
+# ─── Unity generated (never commit these) ────────────────────────────────────
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+MemoryCaptures/
+Recordings/
+
+# ─── Unity asset meta files ───────────────────────────────────────────────────
+# Track all .meta files (Unity needs them for asset GUIDs)
+# DO NOT add *.meta to gitignore
+
+# ─── OS ───────────────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ─── IDEs ─────────────────────────────────────────────────────────────────────
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+
+# ─── Solution / project files (Unity regenerates these) ──────────────────────
+*.sln
+*.csproj
+*.unityproj
+
+# ─── Crash / analytics ────────────────────────────────────────────────────────
+sysinfo.txt
+*.stackdump
+crashlytics-build.properties
+
+# ─── Stray Unity projects at repo root (keep only LAST-GOD/) ─────────────────
+/My project/

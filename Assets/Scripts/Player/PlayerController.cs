@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using LastGod.Core;
+using LastGod.Input;
 
 namespace LastGod.Player
 {

@@ -38,6 +38,7 @@ desktop.ini
 # ─── Crash / analytics ────────────────────────────────────────────────────────
 sysinfo.txt
 *.stackdump
+*.log
 crashlytics-build.properties
 
 # ─── Stray Unity projects at repo root (keep only LAST-GOD/) ─────────────────

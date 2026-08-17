@@ -2,7 +2,7 @@
     "name": "LastGod.Player",
     "rootNamespace": "LastGod.Player",
     "references": [
-        "GUID:com.unity.inputsystem",
+        "Unity.InputSystem",
         "LastGod.Core"
     ],
     "includePlatforms": [],

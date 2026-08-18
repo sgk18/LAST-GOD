@@ -500,6 +500,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 638e35d809109ef48a0ac12f1ab31837, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  moveSpeed: 7
+  jumpForce: 10
+  gravity: 30
 --- !u!143 &1397008803
 CharacterController:
   m_ObjectHideFlags: 0
@@ -633,6 +636,7 @@ GameObject:
   - component: {fileID: 1785200384}
   - component: {fileID: 1785200383}
   - component: {fileID: 1785200382}
+  - component: {fileID: 1785200385}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -714,6 +718,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1785200385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1785200381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 745511eb58d3ace41b3dd5b7b1abea3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FollowPlayer
+  player: {fileID: 1397008800}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

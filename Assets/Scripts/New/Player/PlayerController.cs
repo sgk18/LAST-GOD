@@ -3,9 +3,9 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed = 5f;
-    public float jumpForce = 2f;
-    public float gravity = 9.8f;
+    public float moveSpeed = 7;
+    public float jumpForce = 10;
+    public float gravity = 30;
 
     private CharacterController characterController;
     private float moveX;

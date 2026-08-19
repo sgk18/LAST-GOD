@@ -57,7 +57,6 @@ public class PlayerController : MonoBehaviour
 
         if (isDashing)
         {
-            Debug.Log("Dashing...");
             characterController.Move(dashSpeed * transform.right * Time.deltaTime);
         }
         else
@@ -92,6 +91,13 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Cant dash");
         }
     }
+
+    void OnAttack()
+    {
+        Debug.Log("Attacked");
+    }
+
+    //dashing
     IEnumerator Dash()
     {
         isDashing = true;

@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     private float dashSide = 1;
     private bool isDashing;
     private bool canDash = true;
+    private TrailRenderer dashTrail;
 
     [Header("Phy")]
     public float gravity = 30;
@@ -26,6 +27,10 @@ public class PlayerController : MonoBehaviour
     [Header("input")]
     private float moveX;
 
+    void Awake()
+    {
+        dashTrail = GetComponent<TrailRenderer>();
+    }
     void Start()
     {
         g = gravity;
@@ -33,10 +38,16 @@ public class PlayerController : MonoBehaviour
     }
     void OnEnable()
     {
-        
+        GetComponent<PlayerInput>().actions.Enable();
     }
     void Update()
     {
+        DashNMoveUpdate();
+    }
+
+    private void DashNMoveUpdate()
+    {
+        //gravity and y controls
         if(characterController.isGrounded && yVel < 0)
         {
             yVel = -1;
@@ -44,6 +55,7 @@ public class PlayerController : MonoBehaviour
 
         yVel -= g * Time.deltaTime;
 
+        //turning
         if(moveX < 0)
         {
             transform.rotation = Quaternion.Euler(0, 180, 0);
@@ -53,6 +65,7 @@ public class PlayerController : MonoBehaviour
             transform.rotation = Quaternion.Euler(0, 0, 0);
         }
 
+        //move n dash
         Vector3 movement = new Vector3(moveX * moveSpeed, yVel, 0);
 
         if (isDashing)
@@ -61,9 +74,12 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            if(dashTrail.enabled) dashTrail.enabled = false;
             characterController.Move(movement * Time.deltaTime);
         }
     }
+
+
 
     //input
     void OnMove(InputValue val)
@@ -100,6 +116,11 @@ public class PlayerController : MonoBehaviour
     //dashing
     IEnumerator Dash()
     {
+        //trailing
+        dashTrail.Clear();
+        dashTrail.enabled = true;
+
+        //dashing
         isDashing = true;
         g = 0;
         StartCoroutine(DashCoolDown());

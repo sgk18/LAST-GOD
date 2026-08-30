@@ -113,6 +113,11 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Attacked");
     }
 
+    void OnEsc()
+    {
+        //pauseplay
+    }
+
     //dashing
     IEnumerator Dash()
     {

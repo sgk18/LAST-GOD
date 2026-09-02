@@ -20,10 +20,10 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.02, g: 0.02, b: 0.05, a: 1}
-  m_AmbientEquatorColor: {r: 0.02, g: 0.02, b: 0.05, a: 1}
-  m_AmbientGroundColor: {r: 0.01, g: 0.01, b: 0.03, a: 1}
-  m_AmbientIntensity: 0.2
+  m_AmbientSkyColor: {r: 0.5, g: 0.5, b: 0.6, a: 1}
+  m_AmbientEquatorColor: {r: 0.5, g: 0.5, b: 0.6, a: 1}
+  m_AmbientGroundColor: {r: 0.4, g: 0.4, b: 0.5, a: 1}
+  m_AmbientIntensity: 1.0
   m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 0}
@@ -176,7 +176,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
   m_Color: {r: 0.6, g: 0.7, b: 0.9, a: 1}
-  m_Intensity: 1.0
+  m_Intensity: 3.0
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
   m_ApplyToSortingLayers: ffffffff
@@ -318,7 +318,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2000001}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 563f781b12c34c4180bd677bcd243dd1, type: 3}
+  m_Script: {fileID: 11500000, guid: 6eddb6523950d104492ba93573f8f405, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 3000002}
@@ -402,7 +402,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -10
   m_Sprite: {fileID: 21300000, guid: 83116cff96d1ead468a8cf66e3b7cd44, type: 3}
-  m_Color: {r: 0.18, g: 0.20, b: 0.35, a: 1}
+  m_Color: {r: 0.35, g: 0.45, b: 0.65, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -491,7 +491,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 0d6d9f7d93f832e44a46af83150dd529, type: 3}
-  m_Color: {r: 0.38, g: 0.42, b: 0.52, a: 1}
+  m_Color: {r: 0.7, g: 0.75, b: 0.85, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -596,7 +596,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 0d6d9f7d93f832e44a46af83150dd529, type: 3}
-  m_Color: {r: 0.28, g: 0.32, b: 0.42, a: 1}
+  m_Color: {r: 0.55, g: 0.6, b: 0.7, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -701,7 +701,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 0d6d9f7d93f832e44a46af83150dd529, type: 3}
-  m_Color: {r: 0.28, g: 0.32, b: 0.42, a: 1}
+  m_Color: {r: 0.55, g: 0.6, b: 0.7, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -806,7 +806,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 0d6d9f7d93f832e44a46af83150dd529, type: 3}
-  m_Color: {r: 0.35, g: 0.42, b: 0.58, a: 1}
+  m_Color: {r: 0.65, g: 0.75, b: 0.9, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -911,7 +911,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 0d6d9f7d93f832e44a46af83150dd529, type: 3}
-  m_Color: {r: 0.35, g: 0.42, b: 0.58, a: 1}
+  m_Color: {r: 0.65, g: 0.75, b: 0.9, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1015,7 +1015,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 5
   m_Sprite: {fileID: 21300000, guid: 05ee2e03247d3ec40930f93c5d0b642b, type: 3}
-  m_Color: {r: 0.4, g: 0.85, b: 1.0, a: 0.7}
+  m_Color: {r: 0.3, g: 0.85, b: 1.0, a: 0.85}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1165,7 +1165,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3000001}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9504f8af620b469da8e732013ec2d081, type: 3}
+  m_Script: {fileID: 11500000, guid: 2b966ba5223494842b8bef66df566975, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   maxHP: 6
@@ -1185,7 +1185,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3000001}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b3670b79cb340119f86ae70ddc636c2, type: 3}
+  m_Script: {fileID: 11500000, guid: 06eed5e9c7a77c64e9637efc06e0b51c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 6
@@ -1714,7 +1714,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7100002
 RectTransform:
   m_ObjectHideFlags: 0

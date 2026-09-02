@@ -402,7 +402,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -10
   m_Sprite: {fileID: 21300000, guid: 83116cff96d1ead468a8cf66e3b7cd44, type: 3}
-  m_Color: {r: 0.07, g: 0.08, b: 0.12, a: 1}
+  m_Color: {r: 0.18, g: 0.20, b: 0.35, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -491,7 +491,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 0d6d9f7d93f832e44a46af83150dd529, type: 3}
-  m_Color: {r: 0.15, g: 0.18, b: 0.22, a: 1}
+  m_Color: {r: 0.38, g: 0.42, b: 0.52, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -596,7 +596,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 0d6d9f7d93f832e44a46af83150dd529, type: 3}
-  m_Color: {r: 0.1, g: 0.12, b: 0.16, a: 1}
+  m_Color: {r: 0.28, g: 0.32, b: 0.42, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -701,7 +701,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 0d6d9f7d93f832e44a46af83150dd529, type: 3}
-  m_Color: {r: 0.1, g: 0.12, b: 0.16, a: 1}
+  m_Color: {r: 0.28, g: 0.32, b: 0.42, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -806,7 +806,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 0d6d9f7d93f832e44a46af83150dd529, type: 3}
-  m_Color: {r: 0.18, g: 0.22, b: 0.28, a: 1}
+  m_Color: {r: 0.35, g: 0.42, b: 0.58, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -911,7 +911,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 0d6d9f7d93f832e44a46af83150dd529, type: 3}
-  m_Color: {r: 0.18, g: 0.22, b: 0.28, a: 1}
+  m_Color: {r: 0.35, g: 0.42, b: 0.58, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1015,7 +1015,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 5
   m_Sprite: {fileID: 21300000, guid: 05ee2e03247d3ec40930f93c5d0b642b, type: 3}
-  m_Color: {r: 0.4, g: 0.85, b: 1.0, a: 0.35}
+  m_Color: {r: 0.4, g: 0.85, b: 1.0, a: 0.7}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1378,6 +1378,7 @@ MonoBehaviour:
   - {fileID: 5200002}
   cameraFollow: {fileID: 2000006}
   uiController: {fileID: 7000006}
+  skipIntroSequence: 1
 --- !u!82 &6000004
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1603,7 +1604,7 @@ RectTransform:
   m_GameObject: {fileID: 7000001}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7100002}

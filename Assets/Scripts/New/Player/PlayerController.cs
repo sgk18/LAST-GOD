@@ -15,7 +15,6 @@ public class PlayerController : MonoBehaviour
     public float dashSpeed = 25;
     public float dashTime = 0.2f;
     public float dashCoolDown = 1;
-    private float dashSide = 1;
     private bool isDashing;
     private bool canDash = true;
     private TrailRenderer dashTrail;

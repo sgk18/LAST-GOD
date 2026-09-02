@@ -34,13 +34,56 @@ namespace LastGod.Core
         [SerializeField] private MonoBehaviour cameraFollow;
         [SerializeField] private CutsceneUIController uiController;
 
+        [Header("Debug")]
+        [Tooltip("Skip the intro cutscene and jump straight into gameplay for testing.")]
+        [SerializeField] private bool skipIntroSequence = false;
+
         private GameObject _spawnedAeron;
         private List<IDamageable> _activeGuards = new List<IDamageable>();
         private bool _combatActive = false;
 
         private void Start()
         {
-            StartCoroutine(PlaySequence());
+            if (skipIntroSequence)
+                StartCoroutine(SkipToGameplay());
+            else
+                StartCoroutine(PlaySequence());
+        }
+
+        /// <summary>Instantly clears the black overlay and spawns actors for quick testing.</summary>
+        private IEnumerator SkipToGameplay()
+        {
+            // Instantly clear the black overlay
+            if (uiController != null)
+                yield return uiController.FadeBlackOverlay(0f, 0f);
+
+            // Spawn Aeron
+            if (aeronPrefab != null && aeronSpawnPoint != null)
+            {
+                _spawnedAeron = Instantiate(aeronPrefab, aeronSpawnPoint.position, Quaternion.identity);
+                if (cameraFollow != null)
+                {
+                    var field = cameraFollow.GetType().GetField("target");
+                    if (field != null) field.SetValue(cameraFollow, _spawnedAeron.transform);
+                }
+            }
+
+            // Spawn guards
+            if (guardPrefab != null && guardSpawnPoints != null)
+            {
+                foreach (var sp in guardSpawnPoints)
+                {
+                    if (sp == null) continue;
+                    GameObject gObj = Instantiate(guardPrefab, sp.position, Quaternion.identity);
+                    if (_spawnedAeron != null)
+                        gObj.SendMessage("SetTarget", _spawnedAeron.transform, SendMessageOptions.DontRequireReceiver);
+                    if (gObj.TryGetComponent<IDamageable>(out var guardDmg))
+                        _activeGuards.Add(guardDmg);
+                }
+            }
+
+            _combatActive = true;
+            Debug.Log("[Act1Scene1] DEBUG: Skipped intro sequence.");
         }
 
         private IEnumerator PlaySequence()

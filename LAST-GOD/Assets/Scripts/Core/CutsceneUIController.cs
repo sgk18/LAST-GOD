@@ -30,12 +30,9 @@ namespace LastGod.Core
             if (Instance == null) Instance = this;
             else Destroy(this);
 
-            if (blackOverlay != null)
-            {
-                Color c = blackOverlay.color;
-                c.a = 1f; // Start pitch black
-                blackOverlay.color = c;
-            }
+            // NOTE: blackOverlay alpha is intentionally NOT forced here.
+            // The SequenceManager controls it via FadeBlackOverlay().
+            // Scene-serialized alpha (0 = transparent, 1 = black) is used as the starting value.
 
             if (redAlarmOverlay != null)
             {
@@ -89,10 +86,18 @@ namespace LastGod.Core
         {
             if (blackOverlay == null) yield break;
 
-            float elapsed = 0f;
             Color c = blackOverlay.color;
             float startAlpha = c.a;
 
+            if (duration <= 0f)
+            {
+                // Instant switch
+                c.a = targetAlpha;
+                blackOverlay.color = c;
+                yield break;
+            }
+
+            float elapsed = 0f;
             while (elapsed < duration)
             {
                 elapsed += Time.deltaTime;

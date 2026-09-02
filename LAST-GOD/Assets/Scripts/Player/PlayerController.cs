@@ -212,10 +212,7 @@ namespace LastGod.Player
             if (_attackPressed && _state != PlayerState.Attack)
             {
                 SetState(PlayerState.Attack);
-                // Placeholder — real hitbox spawning comes in Prompt 2
-                Debug.Log("[Player] Attack triggered — hitbox goes here (Prompt 2)");
-                // After a future animation event, call EndAttack()
-                // For now return to movement state next frame:
+                PerformMeleeHit();
                 Invoke(nameof(EndAttack), 0.3f);
                 return;
             }
@@ -302,7 +299,21 @@ namespace LastGod.Player
             _rb.gravityScale = 3f;
         }
 
-        // ─── Attack cleanup ───────────────────────────────────────────────────
+        // ─── Attack logic ──────────────────────────────────────────────────────
+        private void PerformMeleeHit()
+        {
+            float dir = _facingRight ? 1f : -1f;
+            Vector2 attackCenter = (Vector2)transform.position + new Vector2(dir * 0.8f, 0f);
+            Collider2D[] hits = Physics2D.OverlapCircleAll(attackCenter, 0.8f);
+            foreach (var h in hits)
+            {
+                if (h.gameObject != gameObject && h.TryGetComponent<IDamageable>(out var dmg))
+                {
+                    dmg.TakeDamage(2, new Vector2(dir, 0.2f));
+                }
+            }
+        }
+
         private void EndAttack()
         {
             if (_state == PlayerState.Attack)

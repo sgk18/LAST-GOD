@@ -120,10 +120,27 @@ PlayerController  ──state machine──►  PlayerState { Idle, Run, Jump, A
 
 ---
 
+## Asset Attribution & Swappable Assets Log (Act 1, Scene 1)
+
+All prototype art and audio assets are swappable and adhere to standard GBA PPU=16 layout:
+
+| Asset Type | Asset Pack / Source | Location in Project | Swappable Replacement Notes |
+|---|---|---|---|
+| **Sci-Fi Lab Tileset** | GBA Sci-Fi Lab Tileset (16x16 Pixel Art) | `Assets/Art/Sprites/LabTileset.png` | Search itch.io for `"pixel sci-fi lab tileset"` or `"top-down/side lab pixel tiles"` |
+| **Glass Chamber** | Pixel Stasis Tube (Intact, Cracked, Shattered) | `Assets/Art/Sprites/Chamber_*.png` | Replace with animated glass tube prefab / sprite sheet |
+| **Hero (Aeron)** | 32x32 Action Platformer Hero (Idle, Run, Attack, Hurt) | `Assets/Art/Sprites/Aeron_Spritesheet.png` | Search Unity Asset Store / itch for `"pixel hero spritesheet 32x32 free"` |
+| **Soldier/Guard** | Cyber Soldier / Guard Sprite Sheet (Idle, Patrol, Shoot, Dead) | `Assets/Art/Sprites/Guard_Spritesheet.png` | Search itch.io for `"pixel soldier enemy 32x32"` |
+| **Bullet** | Laser Energy Projectile (16x16) | `Assets/Art/Sprites/Bullet.png` | Replace with custom particle bullet or sprite |
+| **Dark Overlay** | 240x160 Vignette Cutout Mask | `Assets/Art/Sprites/DarkVignette.png` | Can swap with URP 2D Light 2D Spot / Sprite Light |
+| **Audio SFX & Ambient** | Bitcrushed 8-Bit Chiptune SFX (freesound.org / itch) | `Assets/Audio/AudioClips/*.wav` | Includes `heartbeat.wav`, `machine_hum.wav`, `glass_shatter.wav`, `alarm.wav`, `gunshot.wav`, `slash.wav` |
+
+---
+
 ## Roadmap
 | Prompt | Feature |
 |---|---|
 | ✅ **1** | Foundation — pixel pipeline, player controller, health system |
+| ✅ **Act 1 Scene 1** | Playable Opening Cutscene-into-Combat Beat (INT. LAB – NIGHT) |
 | **2** | Combat hitboxes, attack animation, hit-stop |
 | **3** | EnemyBase class, first patrol/charge enemy |
 | **4** | Tilemap level geometry, camera bounds |

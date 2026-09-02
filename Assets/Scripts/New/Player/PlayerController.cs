@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Jump N Dash")]
     public float jumpForce = 10;
+    public int maxJumps = 2;
+    private int jumpsRemaining;
     public float dashSpeed = 25;
     public float dashTime = 0.2f;
     public float dashCoolDown = 1;
@@ -35,6 +37,7 @@ public class PlayerController : MonoBehaviour
     {
         g = gravity;
         characterController = GetComponent<CharacterController>();
+        jumpsRemaining = maxJumps;
     }
     void OnEnable()
     {
@@ -51,6 +54,7 @@ public class PlayerController : MonoBehaviour
         if(characterController.isGrounded && yVel < 0)
         {
             yVel = -1;
+            jumpsRemaining = maxJumps;
         }
 
         yVel -= g * Time.deltaTime;
@@ -88,9 +92,10 @@ public class PlayerController : MonoBehaviour
     }
     void OnJump()
     {
-        if (characterController.isGrounded)
+        if (characterController.isGrounded || jumpsRemaining > 0)
         {
             yVel = jumpForce;
+            jumpsRemaining--;
         }
     }
 

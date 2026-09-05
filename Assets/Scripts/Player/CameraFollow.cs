@@ -14,13 +14,29 @@ namespace LastGod.Player
         [Tooltip("Z offset for 2D cameras (keep negative, e.g. -10).")]
         [SerializeField] private float cameraZ = -10f;
 
+        private void Awake()
+        {
+            FindPlayerTarget();
+        }
+
         private void LateUpdate()
         {
-            if (target == null) return;
+            if (target == null)
+            {
+                FindPlayerTarget();
+                if (target == null) return;
+            }
 
             // Hard snap — every frame, no lerp.
             // Pixel Perfect Camera will handle sub-pixel snapping.
             transform.position = new Vector3(target.position.x, target.position.y, cameraZ);
+        }
+
+        private void FindPlayerTarget()
+        {
+            if (target != null) return;
+            var pc = FindAnyObjectByType<PlayerController>();
+            if (pc != null) target = pc.transform;
         }
 
 #if UNITY_EDITOR

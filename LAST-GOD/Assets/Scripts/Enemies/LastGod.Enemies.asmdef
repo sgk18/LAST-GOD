@@ -3,7 +3,8 @@
     "rootNamespace": "LastGod.Enemies",
     "references": [
         "LastGod.Core",
-        "LastGod.Combat"
+        "LastGod.Combat",
+        "LastGod.Player"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

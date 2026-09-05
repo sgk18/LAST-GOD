@@ -1,5 +1,6 @@
 ﻿<Solution>
   <Project Path="LastGod.Combat.csproj" />
+  <Project Path="LastGod.Enemies.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Unity.2D.PixelPerfect.Samples.csproj" />
@@ -10,5 +11,4 @@
   <Project Path="Unity.2D.Animation.Samples.Dependency.csproj" />
   <Project Path="FromAssetBundle.csproj" />
   <Project Path="Unity.2D.Animation.Samples.Editor.csproj" />
-  <Project Path="LastGod.Enemies.csproj" />
 </Solution>

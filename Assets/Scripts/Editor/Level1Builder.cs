@@ -89,25 +89,25 @@ namespace LastGod.Editor
             // -------------------------------------------------------------
             // SECTION B: TERRAIN COLLIDERS (Layer 8: Ground)
             // -------------------------------------------------------------
-            // Sector 1: Grove Floor (-22 to -2, surface at y = -2.5)
-            CreateGroundBox(terrainRoot.transform, "Ground_Sector1_Grove", new Vector2(-12f, -4f), new Vector2(20f, 3f), groundLayerIndex);
+            // Sector 1: Grove Floor (-22 to -2, surface at y = -2.0)
+            CreateGroundBox(terrainRoot.transform, "Ground_Sector1_Grove", new Vector2(-12f, -3.5f), new Vector2(20f, 3f), groundLayerIndex);
 
-            // Sector 2: Village Terrace Floor (0 to 18, surface at y = -1.0)
-            CreateGroundBox(terrainRoot.transform, "Ground_Sector2_VillageTerrace", new Vector2(9f, -2.5f), new Vector2(18f, 3f), groundLayerIndex);
+            // Sector 2: Village Terrace Floor (0 to 17.5, surface at y = -0.5)
+            CreateGroundBox(terrainRoot.transform, "Ground_Sector2_VillageTerrace", new Vector2(8.75f, -2.0f), new Vector2(17.5f, 3f), groundLayerIndex);
 
-            // Sector 3: Chasm Pit Floor (18 to 28, surface at y = -7.0)
-            CreateGroundBox(terrainRoot.transform, "Ground_Sector3_ChasmPit", new Vector2(23f, -8.5f), new Vector2(10f, 3f), groundLayerIndex);
+            // Sector 3: Chasm Pit Floor (17.5 to 28.5, surface at y = -6.5)
+            CreateGroundBox(terrainRoot.transform, "Ground_Sector3_ChasmPit", new Vector2(23f, -8.0f), new Vector2(11f, 3f), groundLayerIndex);
 
-            // Sector 4: Shrine Plateau Floor (28 to 48, surface at y = 1.0)
-            CreateGroundBox(terrainRoot.transform, "Ground_Sector4_ShrinePlateau", new Vector2(38f, -0.5f), new Vector2(20f, 3f), groundLayerIndex);
+            // Sector 4: Shrine Plateau Floor (29.5 to 48.5, surface at y = 1.5)
+            CreateGroundBox(terrainRoot.transform, "Ground_Sector4_ShrinePlateau", new Vector2(39f, 0.0f), new Vector2(19f, 3f), groundLayerIndex);
 
             // Boundary Walls
             CreateWallBox(terrainRoot.transform, "Wall_Left_Boundary", new Vector2(-22.5f, 5f), new Vector2(1f, 24f), groundLayerIndex);
             CreateWallBox(terrainRoot.transform, "Wall_Right_Boundary", new Vector2(48.5f, 5f), new Vector2(1f, 24f), groundLayerIndex);
 
-            // Chasm Walls
-            CreateWallBox(terrainRoot.transform, "Wall_Chasm_Left", new Vector2(17.8f, -4.0f), new Vector2(0.5f, 6f), groundLayerIndex);
-            CreateWallBox(terrainRoot.transform, "Wall_Chasm_Right", new Vector2(28.2f, -3.0f), new Vector2(0.5f, 8f), groundLayerIndex);
+            // Lower Chasm Walls (below bridge deck)
+            CreateWallBox(terrainRoot.transform, "Wall_Chasm_Left", new Vector2(17.5f, -4.5f), new Vector2(0.5f, 4f), groundLayerIndex);
+            CreateWallBox(terrainRoot.transform, "Wall_Chasm_Right", new Vector2(28.5f, -4.5f), new Vector2(0.5f, 4f), groundLayerIndex);
 
             // Fall Catcher / Bottom Pit Trap
             GameObject bottomPit = new GameObject("Pit_Fall_Catcher");
@@ -121,20 +121,18 @@ namespace LastGod.Editor
             // -------------------------------------------------------------
             // SECTION C: CAINOS PLATFORMS, BRIDGES, STAIRS & LADDERS
             // -------------------------------------------------------------
-            // 1. Wooden Bridge across Chasm (x: 23, y: 0.8)
-            var bridgeObj = SpawnCainosPrefab("PF Village Props - Wooden Bridge X6", new Vector3(23f, 0.4f, 0f), platformsRoot.transform);
-            if (bridgeObj != null)
-            {
-                CreateOneWayPlatformCollider(bridgeObj, new Vector2(0f, 0.45f), new Vector2(10f, 0.3f), groundLayerIndex);
-            }
+            // 1. Two Static Wooden Bridges across Chasm (x: 17.4 to 28.8, surface at y = -0.5)
+            SpawnCainosPrefab("PF_WoodenBridge_Static", new Vector3(17.4f, -0.45f, 0f), platformsRoot.transform);
+            SpawnCainosPrefab("PF_WoodenBridge_Static", new Vector3(23.0f, -0.45f, 0f), platformsRoot.transform);
+            CreateGroundBox(platformsRoot.transform, "Collider_Bridge", new Vector2(23.1f, -0.65f), new Vector2(11.5f, 0.3f), groundLayerIndex);
 
-            // 2. Stairs connecting Grove to Village Terrace (x: -1, y: -2.5)
-            SpawnCainosPrefab("PF Village Props - Stairs X32", new Vector3(-1f, -2.5f, 0f), platformsRoot.transform);
-            CreateGroundSlopeCollider(terrainRoot.transform, "Slope_Grove_To_Terrace", new Vector2(-1f, -1.75f), new Vector2(2.5f, 1.5f), groundLayerIndex);
+            // 2. Stairs connecting Grove to Village Terrace (x: -1, y: -2.0)
+            SpawnCainosPrefab("PF Village Props - Stairs X32", new Vector3(-1f, -2.0f, 0f), platformsRoot.transform);
+            CreateGroundSlopeCollider(terrainRoot.transform, "Slope_Grove_To_Terrace", new Vector2(-1f, -1.25f), new Vector2(2.0f, 1.5f), groundLayerIndex);
 
-            // 3. Stairs connecting Bridge to Shrine Plateau (x: 28f, y: 0.1f)
-            SpawnCainosPrefab("PF Village Props - Stairs X48", new Vector3(28f, 0.1f, 0f), platformsRoot.transform);
-            CreateGroundSlopeCollider(terrainRoot.transform, "Slope_Bridge_To_Shrine", new Vector2(28f, 0.55f), new Vector2(2.5f, 1.0f), groundLayerIndex);
+            // 3. Stairs connecting Bridge to Shrine Plateau (x: 28.5f, y: 0.5f)
+            SpawnCainosPrefab("PF Village Props - Stairs X48", new Vector3(28.5f, 0.5f, 0f), platformsRoot.transform);
+            CreateGroundSlopeCollider(terrainRoot.transform, "Slope_Bridge_To_Shrine", new Vector2(28.5f, 0.5f), new Vector2(2.0f, 2.0f), groundLayerIndex);
 
             // 4. Village Rooftop Platform 1 (x: 5, y: 1.5)
             var rooftop1 = SpawnCainosPrefab("PF Village Props - Platform 02 X4", new Vector3(5f, 1.5f, 0f), platformsRoot.transform);
@@ -347,11 +345,11 @@ namespace LastGod.Editor
             SpawnCainosPrefab("PF Village Props - Gravestone 02", new Vector3(46f, 1.2f, 0f), propsRoot.transform);
 
             // -------------------------------------------------------------
-            // SECTION I: PLAYER & CAMERA SETUP
+            // SECTION I: PLAYER (AERON - HERO KNIGHT) & BRINGER OF DEATH
             // -------------------------------------------------------------
-            GameObject playerObj = new GameObject("Player");
+            GameObject playerObj = new GameObject("Aeron");
             playerObj.transform.SetParent(actorsRoot.transform);
-            playerObj.transform.position = new Vector3(-18f, -1.5f, 0f);
+            playerObj.transform.position = new Vector3(-18f, -1.94f, 0f);
             playerObj.tag = "Player";
             playerObj.layer = playerLayerIndex;
 
@@ -363,34 +361,58 @@ namespace LastGod.Editor
             playerRb.constraints = RigidbodyConstraints2D.FreezeRotation;
             playerRb.interpolation = RigidbodyInterpolation2D.Interpolate;
 
-            var playerCol = playerObj.AddComponent<CapsuleCollider2D>();
-            playerCol.size = new Vector2(0.5f, 1.0f);
-            playerCol.direction = CapsuleDirection2D.Vertical;
+            var playerCol = playerObj.AddComponent<BoxCollider2D>();
+            playerCol.offset = new Vector2(0f, 0.662f);
+            playerCol.size = new Vector2(0.73f, 1.2f);
 
             var playerHealth = playerObj.AddComponent<Health>();
 
-            var playerController = playerObj.AddComponent<LastGod.Player.PlayerController>();
-            // Set ground layer mask to Layer 8 (Ground) + Layer 0 (Default)
-            var groundLayerField = typeof(LastGod.Player.PlayerController).GetField("groundLayer", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            if (groundLayerField != null)
-            {
-                LayerMask mask = (1 << groundLayerIndex) | (1 << 0);
-                groundLayerField.SetValue(playerController, mask);
-            }
-
             var playerRenderer = playerObj.AddComponent<SpriteRenderer>();
-            var aeronSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Aeron_Spritesheet.png");
-            if (aeronSprite != null)
+            var heroKnightSprites = AssetDatabase.LoadAllAssetsAtPath("Assets/Hero Knight - Pixel Art/Sprites/HeroKnight.png");
+            if (heroKnightSprites != null && heroKnightSprites.Length > 0)
             {
-                playerRenderer.sprite = aeronSprite;
-                Debug.Log("[Level1Builder] Assigned Aeron_Spritesheet to Player placeholder.");
+                foreach (var obj in heroKnightSprites)
+                {
+                    if (obj is Sprite sp) { playerRenderer.sprite = sp; break; }
+                }
             }
-            playerRenderer.sortingOrder = 10;
+            playerRenderer.sortingOrder = 15;
+
+            var playerAnim = playerObj.AddComponent<Animator>();
+            var heroController = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>("Assets/Hero Knight - Pixel Art/Animations/HeroKnight_AnimController.controller");
+            if (heroController != null) playerAnim.runtimeAnimatorController = heroController;
+
+            var playerAudio = playerObj.AddComponent<AudioSource>();
+
+            var playerController = playerObj.AddComponent<LastGod.Player.PlayerController>();
+            playerObj.AddComponent<LastGod.Player.PlayerControlsHUD>();
+
+            var pcType = typeof(LastGod.Player.PlayerController);
+            void SetPCField(string fieldName, object val) {
+                var f = pcType.GetField(fieldName, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (f != null) f.SetValue(playerController, val);
+            }
+            SetPCField("groundLayer", (LayerMask)((1 << groundLayerIndex) | (1 << 0)));
+            SetPCField("animator", playerAnim);
+            SetPCField("audioSource", playerAudio);
+            SetPCField("slideDustPrefab", AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Hero Knight - Pixel Art/Demo/SlideDust.prefab"));
+            SetPCField("slash1SFX", AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/player_slash1.wav"));
+            SetPCField("slash2SFX", AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/player_slash2.wav"));
+            SetPCField("slash3SFX", AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/player_slash3.wav"));
+            SetPCField("jumpSFX", AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/player_jump.wav"));
+            SetPCField("dashSFX", AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/player_dash.wav"));
+            SetPCField("hurtSFX", AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/player_hurt.wav"));
+            SetPCField("deathSFX", AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/player_death.wav"));
+
+            // Bringer of Death Enemies
+            SpawnBringerOfDeath("BringerOfDeath_TerraceSentry", new Vector3(7f, -0.5f, 0f), 1f, 15, actorsRoot.transform);
+            SpawnBringerOfDeath("BringerOfDeath_BridgeGuardian", new Vector3(23f, -0.5f, 0f), 1f, 20, actorsRoot.transform);
+            SpawnBringerOfDeath("BringerOfDeath_ShrineWarden_Boss", new Vector3(38f, 1.5f, 0f), 1.5f, 45, actorsRoot.transform);
 
             // Main Camera
             GameObject camObj = new GameObject("Main Camera");
             camObj.tag = "MainCamera";
-            camObj.transform.position = new Vector3(-18f, -1.5f, -10f);
+            camObj.transform.position = new Vector3(-18f, -1.2f, -10f);
 
             var cam = camObj.AddComponent<Camera>();
             cam.orthographic = true;
@@ -525,6 +547,63 @@ namespace LastGod.Editor
             newScenes[currentScenes.Length] = new EditorBuildSettingsScene(scenePath, true);
             EditorBuildSettings.scenes = newScenes;
             Debug.Log($"[Level1Builder] Registered {scenePath} in EditorBuildSettings.");
+        }
+
+        private static void SpawnBringerOfDeath(string name, Vector3 pos, float scale, int maxHp, Transform parent)
+        {
+            GameObject reaperObj = new GameObject(name);
+            reaperObj.transform.SetParent(parent);
+            reaperObj.transform.position = pos;
+            reaperObj.transform.localScale = new Vector3(scale, scale, 1f);
+            reaperObj.tag = "Enemy";
+            reaperObj.layer = 10;
+
+            var rb = reaperObj.AddComponent<Rigidbody2D>();
+            rb.bodyType = RigidbodyType2D.Dynamic;
+            rb.mass = 2f;
+            rb.gravityScale = 2f;
+            rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+
+            var col = reaperObj.AddComponent<CapsuleCollider2D>();
+            col.offset = new Vector2(0f, 0.7f);
+            col.size = new Vector2(0.8f, 1.4f);
+
+            var hp = reaperObj.AddComponent<Health>();
+            var maxHpField = typeof(Health).GetField("maxHP", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            if (maxHpField != null) maxHpField.SetValue(hp, maxHp);
+
+            var sr = reaperObj.AddComponent<SpriteRenderer>();
+            var reaperSprites = AssetDatabase.LoadAllAssetsAtPath("Assets/Bringer Of Death/Sprite Sheet/Bringer-of-Death-SpritSheet.png");
+            if (reaperSprites != null)
+            {
+                foreach (var obj in reaperSprites)
+                {
+                    if (obj is Sprite sp) { sr.sprite = sp; break; }
+                }
+            }
+            sr.sortingOrder = 14;
+
+            var anim = reaperObj.AddComponent<Animator>();
+            var reaperController = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>("Assets/Bringer Of Death/Animation/Bringer Of Death.controller");
+            if (reaperController != null) anim.runtimeAnimatorController = reaperController;
+
+            var audio = reaperObj.AddComponent<AudioSource>();
+
+            var ai = reaperObj.AddComponent<LastGod.Enemies.BringerOfDeathAI>();
+            var aiType = typeof(LastGod.Enemies.BringerOfDeathAI);
+            void SetAIField(string fieldName, object val) {
+                var f = aiType.GetField(fieldName, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (f != null) f.SetValue(ai, val);
+            }
+            SetAIField("spriteRenderer", sr);
+            SetAIField("animator", anim);
+            SetAIField("audioSource", audio);
+            SetAIField("darkMagicPrefab", AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/DarkMagicOrb.prefab"));
+            SetAIField("scytheAttackSFX", AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/reaper_attack.wav"));
+            SetAIField("spellCastSFX", AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/reaper_spell.wav"));
+            SetAIField("hurtSFX", AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/reaper_hurt.wav"));
+            SetAIField("deathSFX", AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/reaper_death.wav"));
         }
     }
 }

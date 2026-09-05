@@ -90,3 +90,59 @@ Changelog of progress made in each development session. Append new entries at th
     - Added vertical cliff tile faces lining the left and right drops of the Chasm.
     - Added stacked fortress brick walls (`PF Village Props - Brick Wall 01`) at the left boundary (`x = -22.2`), terrace retaining wall (`x = -0.5`), bridge buttresses (`x = 17.7`, `28.3`), and right boundary (`x = 48.2`).
     - Synchronized across root and inner project repositories.
+
+---
+
+## 📅 [2026-09-05] — Session 5: Aeron (Hero Knight) & Bringer of Death Enemy Integration
+- **Aeron (Player)**:
+  - Integrated Sven Thole's **Hero Knight - Pixel Art** package replacing the placeholder player.
+  - Configured `PlayerController.cs` to drive `HeroKnight_AnimController.controller`:
+    - Dynamic run/idle transitions via `AnimState`.
+    - Airborne and fall dynamics via `Grounded` & `AirSpeedY`.
+    - Fluid 3-hit melee attack combo (`Attack1`, `Attack2`, `Attack3`) with progressive damage scaling (2 -> 3 -> 5).
+    - Combat roll / dash (`Roll`) with invincibility frames and dynamic `SlideDust` dust cloud VFX.
+    - Hurt recoil and death collapse states.
+- **Bringer of Death (Enemy)**:
+  - Integrated Clembod's **Bringer Of Death (free)** package.
+  - Implemented `BringerOfDeathAI.cs` state machine:
+    - Ground/hover patrol toward Aeron within 12 units (`Walk`).
+    - Melee scythe sweep attack (`Attack`) dealing 3 damage with knockback.
+    - Ranged necrotic spell casting (`Spell`), launching homing `DarkMagicOrb` projectiles.
+    - Hurt flash / recoil (`Hurt`) and shadow dissolve death sequence (`Death`).
+  - Placed 3 Bringers across Level 1:
+    1. **Terrace Sentry** (`x = 7.0`, 15 HP).
+    2. **Bridge Guardian** (`x = 26.0`, 20 HP).
+    3. **Ancient Shrine Warden (Mini-Boss)** (`x = 42.0`, 45 HP, 1.5x scale).
+- **Audio & Project Settings**:
+  - Synthesized 13 retro 16-bit 44.1kHz sound effects for slashes, jumps, rolls, hurts, deaths, scythe reap, and dark magic.
+  - Registered Layer 10 `Enemy` and tag `Enemy` in `TagManager.asset`.
+  - Upgraded scene generation tools (`Level1Builder.cs` and `build_village_scene.py`).
+  - Verified compilation via `dotnet build LAST-GOD.slnx` with **0 errors**.
+
+---
+
+## 📅 [2026-09-05] — Session 6: Ground Alignment, Stable Bridge Crossing & Movement/Controls Upgrade
+- **Ground Alignment & Sinking Bug Fix**:
+  - Identified 0.5 unit vertical disparity between visual grass tile tops and BoxCollider2D surfaces across all sectors.
+  - Adjusted BoxCollider2D centers to align exactly with grass surfaces:
+    - Sector 1 (Grove): Collider at `y = -3.5`, top surface at `y = -2.0` (matching visual grass at `-2.0`).
+    - Sector 2 (Terrace): Collider at `y = -2.0`, top surface at `y = -0.5` (matching visual grass at `-0.5`).
+    - Sector 3 (Chasm Floor): Collider at `y = -8.0`, top surface at `y = -6.5` (matching visual grass at `-6.5`).
+    - Sector 4 (Shrine): Collider at `y = 0.0`, top surface at `y = 1.5` (matching visual grass at `1.5`).
+  - Adjusted slope ramps and Aeron/Enemy spawn positions (`Aeron` at `-1.94`, enemies at `-0.5` and `1.5`), ensuring character boots rest squarely on the grass with zero sinking.
+- **Bridge Repair & Crossing Stabilization**:
+  - Replaced erratic dynamic physics rope bridge with `PF_WoodenBridge_Static.prefab` (`m_Simulated: 0`, `m_IsTrigger: 1`).
+  - Seamlessly linked two bridge segments across the 11-unit chasm (`x = 17.4` to `28.8`).
+  - Added rock-solid walkable BoxCollider2D (`Collider_Bridge` at `y = -0.65`, top at `-0.50`), completely flush with the Village Terrace.
+  - Lowered chasm side-wall colliders below deck level to eliminate invisible collision blocking bridge exit onto Shrine stairs.
+- **Movement Polish & Dual-Input Support**:
+  - Upgraded `PlayerController.cs` to simultaneously support both the New Input System and legacy `UnityEngine.Input` (WASD, arrow keys, mouse clicks, and standard keyboard keys).
+  - Implemented **Coyote Time** (0.12s) and **Jump Buffering** (0.12s) for responsive platforming.
+  - Added **Variable Jump Cutoff** (releasing jump early cuts ascent velocity).
+  - Added **Shield Blocking** via Right Click / `K` / `X` with damage mitigation and shield block sound.
+  - Assigned frictionless `PhysicsMaterial2D` to prevent characters sticking to vertical collider edges or slope transitions.
+- **On-Screen Controls & Health HUD**:
+  - Built `PlayerControlsHUD.cs` rendering an on-screen health bar and keybindings guide (`A/D`: Move, `SPACE`: Jump, `J/LMB`: Attack Combo, `L/Shift`: Roll, `K/RMB`: Block).
+- **Verification**:
+  - Regenerated `Act1_Level1_Village.unity` (327,314 bytes).
+  - Verified `dotnet build LAST-GOD.slnx` compiles with **0 errors**.

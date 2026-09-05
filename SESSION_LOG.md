@@ -67,3 +67,26 @@ Changelog of progress made in each development session. Append new entries at th
   - Solution built with `dotnet build LAST-GOD.slnx`: **0 errors, 0 warnings**.
   - Verified YAML scene syntax and FileID references across all 116 scene objects.
 
+---
+
+## 📅 [2026-09-05] — Session 4: Act 1 Level 1 (Village Outskirts & Environment)
+- **Built**:
+  - Imported and integrated Cainos **Pixel Art Platformer - Village Props** asset pack.
+  - Generated panoramic atmospheric GBA pixel-art background `Assets/Art/Sprites/Village_Background.png` with twilight sky gradient, distant mountain ridges, forest silhouettes, and village rooftops.
+  - Built playable First Level scene: `Assets/Scenes/Act1_Level1_Village.unity` spanning x = -22 to +48 with 4 distinct zones:
+    1. **Zone 1: Village Entrance & Practice Grove** (Grass terrain, large trees, bushes, flowers, sunflowers, signpost, fences, wood logs, practice dummy, weapon rack, anvil).
+    2. **Zone 2: Multi-Tier Village Rooftops & Camp** (Village terrace, stairs, ladders, rooftops, high lookout, campfire with 2D point light, well, market stall, crates, barrels, animated road lamps & torches with warm 2D lights, secret wooden chest).
+    3. **Zone 3: The Deep Chasm & Bridge Crossing** (Chasm drop to y = -7.0, spike trap hazard row, secret iron chest alcove, spanning high wooden bridge with one-way platform colliders, aerial jumping route).
+    4. **Zone 4: Ancient Village Shrine & Exit Plateau** (Stone of Recall with ethereal cyan 2D light, village guardian statue, ceremonial red banners, golden reward chest, memorial gravestones, wheat clusters).
+  - Physics & Gameplay Components:
+    - `HazardSpike.cs`: Environmental hazard dealing damage and upward knockback impulse to `IDamageable` targets.
+    - `InteractiveDummy.cs`: Training dummy that wobbles and absorbs melee hits with screen shake feedback.
+    - `InteractiveChest.cs`: Interactive chest opening trigger with Cainos animator parameter.
+    - `Level1Builder.cs`: Automated Unity Editor tool for generating and updating the village level scene.
+    - Configured `Player` placeholder at starting grove `(-18, -1.5)` with `PlayerController`, `CapsuleCollider2D`, `Rigidbody2D`, `Health`.
+    - Main Camera with `PixelPerfectCamera` (240x160, 16 PPU) and `CameraFollow` locked to player.
+  - Visual Ground Tiles & Fortress Walls (Resolving Floating Props):
+    - Created textured visual ground slabs using Cainos `TX Tileset Ground` (top grass + deep dirt underfills) across Sector 1 Grove (`y = -2.5`), Sector 2 Terrace (`y = -1.0`), Sector 3 Pit Floor (`y = -7.0`), and Sector 4 Shrine (`y = 1.0`).
+    - Added vertical cliff tile faces lining the left and right drops of the Chasm.
+    - Added stacked fortress brick walls (`PF Village Props - Brick Wall 01`) at the left boundary (`x = -22.2`), terrace retaining wall (`x = -0.5`), bridge buttresses (`x = 17.7`, `28.3`), and right boundary (`x = 48.2`).
+    - Synchronized across root and inner project repositories.

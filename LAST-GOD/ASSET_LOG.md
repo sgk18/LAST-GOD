@@ -21,6 +21,8 @@ This document maintains a running inventory of all external and prototype assets
 | **Alarm Siren SFX** | Freesound.org (`"bitcrushed alarm siren GBA synth"`) | CC0 / Royalty-Free | Red light warning siren during chamber breach | `Assets/Audio/AudioClips/alarm.wav` |
 | **Gunshot SFX** | Freesound.org (`"laser rifle gunshot burst 8bit"`) | CC0 / Royalty-Free | Guard firing sound effect | `Assets/Audio/AudioClips/gunshot.wav` |
 | **Slash SFX** | Freesound.org (`"sword slash blade swing 8bit"`) | CC0 / Royalty-Free | Aeron melee attack sound effect | `Assets/Audio/AudioClips/slash.wav` |
+| **Lab Scene Background Artwork** | User Provided Artwork (`media_1788490070025.jpg`) | Proprietary / Project Asset | High-atmosphere sci-fi laboratory background with central stasis cylinder, mezzanine catwalks, stairways, and consoles | `Assets/Art/Sprites/Lab_Background.png` |
+| **Modular Lab Environment Tiles** | Custom Modular Sci-Fi Palette | Project Asset | Metallic floor slabs, hazard catwalk trims, terminal consoles, and blast security door | `Assets/Art/Sprites/Lab_Tiles.png` |
 
 ---
 

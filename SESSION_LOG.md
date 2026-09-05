@@ -39,3 +39,31 @@ Changelog of progress made in each development session. Append new entries at th
   - Scene transitions after cut to black will connect into Act 1, Scene 2 (Lab Corridor).
 - **Next Logical Prompt**:
   - Act 1, Scene 2: Lab Corridor escape sequence, tilemap geometry, level bounds, and patrol guard encounters.
+
+---
+
+## 📅 [2026-09-04] — Session 3: Lab Scene Background & Level Geometry Overhaul
+- **Built**:
+  - Imported user-provided lab concept artwork as `Assets/Art/Sprites/Lab_Background.png` with Sprite (2D and UI) settings.
+  - Generated modular sci-fi environment tiles (`Lab_Tiles.png`) for floor slabs, catwalk trims, railings, computer terminals, and blast doors.
+  - Replaced flat vignette background with `Lab_Background.png`, framing the 240x160 camera view and central stasis pod perfectly.
+  - Level Geometry & Colliders:
+    - Main deck floor collider spanning `x = -12` to `+12`.
+    - Left & Right Catwalks (`Catwalk_Left`, `Catwalk_Right`) configured with `PlatformEffector2D` one-way platform physics.
+    - Left & Right Stairway Ramps (`Stairs_Left`, `Stairs_Right`) angled at 48 degrees connecting floor to catwalks.
+    - Central chamber dais platform step at `y = -3.3`.
+    - Top ceiling barrier at `y = 6.8`.
+  - 2D Dynamic Lighting (URP Light2D):
+    - `Light2D_StasisChamber`: Soft glowing cyan stasis fluid light.
+    - `Light2D_Ceiling_Left` & `Light2D_Ceiling_Right`: High-intensity luminaires shining down from overhead apparatus.
+    - `Light2D_DoorAlarm`: Red warning indicator over the security door.
+    - `Light2D_ObservationBay`: Cold blue ambient glow from observation window.
+  - Interactive & Sequence Components:
+    - Interactive computer workstations (`LabTerminal_Left`, `LabTerminal_Right`) with `InteractSc.cs`.
+    - Interactive security blast door (`SecurityDoor_Right`) with `InteractSc.cs`.
+    - Realigned `Chamber_Glass` stasis tube and Aeron spawn point over central dais.
+    - Repositioned guard spawn points (Left on catwalk, Right at blast door).
+- **Build Verification & Launch**:
+  - Solution built with `dotnet build LAST-GOD.slnx`: **0 errors, 0 warnings**.
+  - Verified YAML scene syntax and FileID references across all 116 scene objects.
+

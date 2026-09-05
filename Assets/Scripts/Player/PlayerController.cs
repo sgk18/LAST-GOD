@@ -213,22 +213,41 @@ namespace LastGod.Player
         {
             // Horizontal movement
             float h = _moveInput.x;
+#if ENABLE_INPUT_SYSTEM
+            var kb = Keyboard.current;
+            if (kb != null)
+            {
+                if (kb.aKey.isPressed || kb.leftArrowKey.isPressed) h = -1f;
+                else if (kb.dKey.isPressed || kb.rightArrowKey.isPressed) h = 1f;
+            }
+#endif
+#if ENABLE_LEGACY_INPUT_MANAGER
             try
             {
                 float rawH = UnityEngine.Input.GetAxisRaw("Horizontal");
                 if (Mathf.Abs(rawH) > 0.01f) h = rawH;
             }
             catch {}
+#endif
             _currentHorizontalInput = h;
 
             // Vertical movement (for climbing ladders)
             float v = _moveInput.y;
+#if ENABLE_INPUT_SYSTEM
+            if (kb != null)
+            {
+                if (kb.sKey.isPressed || kb.downArrowKey.isPressed) v = -1f;
+                else if (kb.wKey.isPressed || kb.upArrowKey.isPressed) v = 1f;
+            }
+#endif
+#if ENABLE_LEGACY_INPUT_MANAGER
             try
             {
                 float rawV = UnityEngine.Input.GetAxisRaw("Vertical");
                 if (Mathf.Abs(rawV) > 0.01f) v = rawV;
             }
             catch {}
+#endif
             _currentVerticalInput = v;
 
             // Ground & Jumps Reset
@@ -245,6 +264,13 @@ namespace LastGod.Player
 
             // Jump input & Buffer
             bool jumpDown = _jumpPressed;
+#if ENABLE_INPUT_SYSTEM
+            if (kb != null && (kb.spaceKey.wasPressedThisFrame || kb.wKey.wasPressedThisFrame || kb.upArrowKey.wasPressedThisFrame))
+            {
+                jumpDown = true;
+            }
+#endif
+#if ENABLE_LEGACY_INPUT_MANAGER
             try
             {
                 if (UnityEngine.Input.GetButtonDown("Jump") ||
@@ -256,12 +282,20 @@ namespace LastGod.Player
                 }
             }
             catch {}
+#endif
 
             if (jumpDown) _jumpBufferTimer = JumpBufferDuration;
             else _jumpBufferTimer -= Time.deltaTime;
 
             // Variable jump height (releasing jump cuts ascent)
             bool jumpHeld = false;
+#if ENABLE_INPUT_SYSTEM
+            if (kb != null)
+            {
+                jumpHeld = kb.spaceKey.isPressed || kb.wKey.isPressed || kb.upArrowKey.isPressed;
+            }
+#endif
+#if ENABLE_LEGACY_INPUT_MANAGER
             try
             {
                 jumpHeld = UnityEngine.Input.GetButton("Jump") ||
@@ -270,6 +304,7 @@ namespace LastGod.Player
                            UnityEngine.Input.GetKey(KeyCode.UpArrow);
             }
             catch {}
+#endif
 
             if (!jumpHeld && _rb.linearVelocity.y > 0f && !_isClimbing)
             {
@@ -278,6 +313,12 @@ namespace LastGod.Player
 
             // Attack input (Buffering & Multi-key: Left Click, J, Z, F, E)
             bool attackDown = _attackPressed;
+#if ENABLE_INPUT_SYSTEM
+            var mouse = Mouse.current;
+            if (mouse != null && mouse.leftButton.wasPressedThisFrame) attackDown = true;
+            if (kb != null && (kb.jKey.wasPressedThisFrame || kb.zKey.wasPressedThisFrame || kb.fKey.wasPressedThisFrame || kb.eKey.wasPressedThisFrame)) attackDown = true;
+#endif
+#if ENABLE_LEGACY_INPUT_MANAGER
             try
             {
                 if (UnityEngine.Input.GetMouseButtonDown(0) ||
@@ -290,11 +331,19 @@ namespace LastGod.Player
                 }
             }
             catch {}
+#endif
 
             if (attackDown) _attackBufferTimer = 0.2f;
             else _attackBufferTimer -= Time.deltaTime;
 
             // Dash / Dodge Roll input (Left Shift, L, C, Right Shift)
+#if ENABLE_INPUT_SYSTEM
+            if (kb != null && (kb.leftShiftKey.wasPressedThisFrame || kb.rightShiftKey.wasPressedThisFrame || kb.lKey.wasPressedThisFrame || kb.cKey.wasPressedThisFrame))
+            {
+                _dashPressed = true;
+            }
+#endif
+#if ENABLE_LEGACY_INPUT_MANAGER
             try
             {
                 if (UnityEngine.Input.GetKeyDown(KeyCode.LeftShift) ||
@@ -306,9 +355,15 @@ namespace LastGod.Player
                 }
             }
             catch {}
+#endif
 
             // Guard / Block input (Right Click, K, X)
             bool blockHeld = false;
+#if ENABLE_INPUT_SYSTEM
+            if (mouse != null && mouse.rightButton.isPressed) blockHeld = true;
+            if (kb != null && (kb.kKey.isPressed || kb.xKey.isPressed)) blockHeld = true;
+#endif
+#if ENABLE_LEGACY_INPUT_MANAGER
             try
             {
                 blockHeld = UnityEngine.Input.GetMouseButton(1) ||
@@ -316,6 +371,7 @@ namespace LastGod.Player
                             UnityEngine.Input.GetKey(KeyCode.X);
             }
             catch {}
+#endif
 
             if (blockHeld && _state != PlayerState.Hurt && _state != PlayerState.Dead && !_isDashing && !_isClimbing)
             {
@@ -382,7 +438,19 @@ namespace LastGod.Player
             foreach (var col in overlaps)
             {
                 if (col.gameObject == gameObject) continue;
-                if (col.CompareTag("Ladder") || col.name.IndexOf("Ladder", StringComparison.OrdinalIgnoreCase) >= 0)
+                bool isLadder = col.name.IndexOf("Ladder", StringComparison.OrdinalIgnoreCase) >= 0;
+                if (!isLadder)
+                {
+                    try
+                    {
+                        if (col.CompareTag("Ladder")) isLadder = true;
+                    }
+                    catch
+                    {
+                        // Tag "Ladder" not defined in project tags
+                    }
+                }
+                if (isLadder)
                 {
                     _isNearLadder = true;
                     break;

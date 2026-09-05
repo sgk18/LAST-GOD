@@ -45,10 +45,31 @@ namespace LastGod.Player
 
         private void Update()
         {
-            if (UnityEngine.Input.GetKeyDown(KeyCode.H))
+            if (IsToggleKeyPressed())
             {
                 showControlsGuide = !showControlsGuide;
             }
+        }
+
+        private bool IsToggleKeyPressed()
+        {
+#if ENABLE_INPUT_SYSTEM
+            if (UnityEngine.InputSystem.Keyboard.current != null && UnityEngine.InputSystem.Keyboard.current.hKey.wasPressedThisFrame)
+            {
+                return true;
+            }
+#endif
+#if ENABLE_LEGACY_INPUT_MANAGER
+            try
+            {
+                if (UnityEngine.Input.GetKeyDown(KeyCode.H)) return true;
+            }
+            catch
+            {
+                // Legacy input disabled in player settings
+            }
+#endif
+            return false;
         }
 
         private void OnGUI()

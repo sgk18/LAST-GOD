@@ -247,3 +247,26 @@ Changelog of progress made in each development session. Append new entries at th
 - **Verification**:
   - Rebuilt solution via `dotnet build LAST-GOD.slnx`: **Build Succeeded with 0 Errors and 0 Warnings** across all 6 project assemblies.
 
+---
+
+## 📅 [2026-09-06] — Session 12: Aeron Complete Idle Animation, Sprite Extraction & Test Scene
+- **Sprite Extraction & Precision Alignment**:
+  - Extracted 8 discrete idle animation frames from source artwork (`Aeron_Idle_01.png` to `Aeron_Idle_08.png`) alongside composite `Aeron_Idle_Sheet.png` (2560x704).
+  - Standardized on uniform 320x704 RGBA canvas with alpha transparency preserved.
+  - Aligned feet to unified bottom baseline Y=688 (leaving 16px bottom margin) and centered feet midpoint to X=160 across all frames, ensuring absolute zero frame jumping or vertical popping.
+- **Unity Texture Import Configuration**:
+  - Configured Sprite (2D and UI), Single sprite mode, Point filter (Mode 0), Full Rect mesh type, No compression (None / lossless), and exact custom pivot `{x: 0.5, y: 0.022727}` (matching foot ground contact).
+- **Animation Clip & State Machine (`Aeron_Idle.anim`, `Aeron.controller`)**:
+  - `Aeron_Idle.anim`: Configured at 10 FPS with seamless 14-frame ping-pong breathing cycle: `01 -> 02 -> 03 -> 04 -> 05 -> 06 -> 07 -> 08 -> 07 -> 06 -> 05 -> 04 -> 03 -> 02` (1.4s loop duration, zero snap).
+  - `Aeron.controller`: Full state machine featuring `Idle` (default), `Walk`, `Run`, `Attack`, `Dodge`, `Hit`, and `Death` with parameters `Speed`, `IsGrounded`, `Attack`, `Dodge`, `Hit`, and `Dead`.
+- **Idle Variation & Camera Testing Scripts**:
+  - `AeronIdleController.cs`: Ground snapping logic and organic idle micro-variations (Normal Breathing 70%, Subtle Posture Shift 15%, Subtle Head Tilt 10%, Micro-Movement 5%).
+  - `AeronCameraTester.cs`: Interactive framing switcher supporting Full Body View (`1`), Medium Shot (`2`), and Close-Up (`3`) with on-screen toggle buttons.
+- **Prefab & Test Scene**:
+  - `Aeron_Idle.prefab`: Prefab ready for immediate scene instantiation with SpriteRenderer, Animator, CharacterController, AeronIdleController, and future-ready layered child hierarchy (`Head`, `Body`, `Clothing`, `Accessories`, `Effects`).
+  - `Aeron_Idle_Test.unity`: Test scene featuring dark neutral backdrop, ground plane, directional & cyan rim lighting, Aeron grounded flush at Y=0, and interactive camera test rig.
+  - Added `Aeron_Idle_Test.unity` to `EditorBuildSettings.asset`.
+- **Verification**:
+  - Rebuilt solution via `dotnet build LAST-GOD.slnx`: **Build Succeeded with 0 Errors and 0 Warnings**.
+
+

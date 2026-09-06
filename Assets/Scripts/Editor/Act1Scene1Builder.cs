@@ -226,8 +226,7 @@ namespace LastGod.Editor
             ppCam.assetsPPU = 16;
             ppCam.refResolutionX = 240;
             ppCam.refResolutionY = 160;
-            ppCam.upscaleRT = true;
-            ppCam.pixelSnapping = true;
+            ppCam.gridSnapping = PixelPerfectCamera.GridSnapping.UpscaleRenderTexture;
 
             CameraFollow camFollow = mainCamObj.AddComponent<CameraFollow>();
             SerializedObject camSO = new SerializedObject(camFollow);

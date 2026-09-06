@@ -93,7 +93,7 @@ namespace LastGod.Editor
             stasisLight.pointLightOuterRadius = 3.2f;
 
             // 5. Wire into Act1Scene1SequenceManager if present
-            Act1Scene1SequenceManager seqMgr = UnityEngine.Object.FindFirstObjectByType<Act1Scene1SequenceManager>();
+            Act1Scene1SequenceManager seqMgr = UnityEngine.Object.FindAnyObjectByType<Act1Scene1SequenceManager>();
             if (seqMgr != null)
             {
                 SerializedObject so = new SerializedObject(seqMgr);

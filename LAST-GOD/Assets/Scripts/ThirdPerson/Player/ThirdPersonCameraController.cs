@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using Input = UnityEngine.Input;
 using LastGod.ThirdPerson.Combat;
 
 namespace LastGod.ThirdPerson.Player
@@ -12,14 +13,12 @@ namespace LastGod.ThirdPerson.Player
         [SerializeField] private Vector3 shoulderOffset = new Vector3(0.45f, 0.15f, 0f);
         [SerializeField] private float defaultDistance = 3.6f;
         [SerializeField] private float minDistance = 0.8f;
-        [SerializeField] private float maxDistance = 5.0f;
 
         [Header("Rotation & Orbit")]
         [SerializeField] private float yawSpeed = 140f;
         [SerializeField] private float pitchSpeed = 100f;
         [SerializeField] private float minPitch = -35f;
         [SerializeField] private float maxPitch = 65f;
-        [SerializeField] private float rotationSmoothTime = 0.04f;
 
         [Header("Obstacle Collision (Spring Arm)")]
         [SerializeField] private LayerMask collisionLayers;
@@ -142,8 +141,8 @@ namespace LastGod.ThirdPerson.Player
             }
             else
             {
-                float mx = Input.GetAxis("Mouse X") * (yawSpeed * 0.02f);
-                float my = Input.GetAxis("Mouse Y") * (pitchSpeed * 0.02f);
+                float mx = UnityEngine.Input.GetAxis("Mouse X") * (yawSpeed * 0.02f);
+                float my = UnityEngine.Input.GetAxis("Mouse Y") * (pitchSpeed * 0.02f);
 
                 _yaw += mx;
                 _pitch = Mathf.Clamp(_pitch - my, minPitch, maxPitch);

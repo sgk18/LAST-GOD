@@ -1,4 +1,5 @@
 using UnityEngine;
+using Input = UnityEngine.Input;
 
 namespace LastGod.ThirdPerson.Player
 {
@@ -40,40 +41,40 @@ namespace LastGod.ThirdPerson.Player
                 LockOnTriggered = false;
                 SurgeTriggered = false;
                 InteractTriggered = false;
-                PauseTriggered = Input.GetKeyDown(KeyCode.Escape);
+                PauseTriggered = UnityEngine.Input.GetKeyDown(KeyCode.Escape);
                 return;
             }
 
             // WASD / Arrow Movement
-            float h = Input.GetAxisRaw("Horizontal");
-            float v = Input.GetAxisRaw("Vertical");
+            float h = UnityEngine.Input.GetAxisRaw("Horizontal");
+            float v = UnityEngine.Input.GetAxisRaw("Vertical");
             MoveInput = new Vector2(h, v).normalized;
 
             // Mouse Look
-            float mx = Input.GetAxis("Mouse X") * mouseSensitivity;
-            float my = Input.GetAxis("Mouse Y") * mouseSensitivity * (invertY ? 1f : -1f);
+            float mx = UnityEngine.Input.GetAxis("Mouse X") * mouseSensitivity;
+            float my = UnityEngine.Input.GetAxis("Mouse Y") * mouseSensitivity * (invertY ? 1f : -1f);
             LookInput = new Vector2(mx, my);
 
             // Modifiers & Actions
-            SprintPressed = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-            CrouchPressed = Input.GetKey(KeyCode.C) || Input.GetKey(KeyCode.LeftControl);
+            SprintPressed = UnityEngine.Input.GetKey(KeyCode.LeftShift) || UnityEngine.Input.GetKey(KeyCode.RightShift);
+            CrouchPressed = UnityEngine.Input.GetKey(KeyCode.C) || UnityEngine.Input.GetKey(KeyCode.LeftControl);
 
             // Space can serve as Dodge in combat, or Jump when moving forward
-            DodgeTriggered = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.LeftAlt);
-            JumpTriggered = Input.GetKeyDown(KeyCode.Space);
+            DodgeTriggered = UnityEngine.Input.GetKeyDown(KeyCode.Space) || UnityEngine.Input.GetKeyDown(KeyCode.LeftAlt);
+            JumpTriggered = UnityEngine.Input.GetKeyDown(KeyCode.Space);
 
             // Attacks
-            LightAttackTriggered = Input.GetMouseButtonDown(0);
-            HeavyAttackTriggered = Input.GetMouseButtonDown(1);
-            BlockPressed = Input.GetKey(KeyCode.F) || Input.GetKey(KeyCode.K);
+            LightAttackTriggered = UnityEngine.Input.GetMouseButtonDown(0);
+            HeavyAttackTriggered = UnityEngine.Input.GetMouseButtonDown(1);
+            BlockPressed = UnityEngine.Input.GetKey(KeyCode.F) || UnityEngine.Input.GetKey(KeyCode.K);
 
             // Lock-on & Abilities
-            LockOnTriggered = Input.GetMouseButtonDown(2) || Input.GetKeyDown(KeyCode.Tab);
-            SurgeTriggered = Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.Alpha1);
+            LockOnTriggered = UnityEngine.Input.GetMouseButtonDown(2) || UnityEngine.Input.GetKeyDown(KeyCode.Tab);
+            SurgeTriggered = UnityEngine.Input.GetKeyDown(KeyCode.Q) || UnityEngine.Input.GetKeyDown(KeyCode.Alpha1);
 
             // Interaction & System
-            InteractTriggered = Input.GetKeyDown(KeyCode.E);
-            PauseTriggered = Input.GetKeyDown(KeyCode.Escape);
+            InteractTriggered = UnityEngine.Input.GetKeyDown(KeyCode.E);
+            PauseTriggered = UnityEngine.Input.GetKeyDown(KeyCode.Escape);
         }
     }
 }

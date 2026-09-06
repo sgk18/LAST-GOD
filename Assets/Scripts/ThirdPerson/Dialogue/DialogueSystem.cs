@@ -26,7 +26,6 @@ namespace LastGod.ThirdPerson.Dialogue
         private bool _isDisplaying;
         private string _currentSpeaker = "";
         private string _currentDisplayedText = "";
-        private float _displayTimer = 0f;
         private GUIStyle _speakerStyle;
         private GUIStyle _dialogueStyle;
 

@@ -424,8 +424,7 @@ namespace LastGod.Editor
             ppCam.assetsPPU = 16;
             ppCam.refResolutionX = 240;
             ppCam.refResolutionY = 160;
-            ppCam.upscaleRT = true;
-            ppCam.pixelSnapping = true;
+            ppCam.gridSnapping = UnityEngine.Rendering.Universal.PixelPerfectCamera.GridSnapping.UpscaleRenderTexture;
 
             var camFollow = camObj.AddComponent<LastGod.Player.CameraFollow>();
             var targetField = typeof(LastGod.Player.CameraFollow).GetField("target", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);

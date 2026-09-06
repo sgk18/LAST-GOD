@@ -1,4 +1,5 @@
 using UnityEngine;
+using Input = UnityEngine.Input;
 using UnityEngine.SceneManagement;
 using LastGod.ThirdPerson.Save;
 using LastGod.ThirdPerson.Player;
@@ -29,7 +30,7 @@ namespace LastGod.ThirdPerson.UI
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Escape))
             {
                 TogglePause();
             }

@@ -146,3 +146,63 @@ Changelog of progress made in each development session. Append new entries at th
 - **Verification**:
   - Regenerated `Act1_Level1_Village.unity` (327,314 bytes).
   - Verified `dotnet build LAST-GOD.slnx` compiles with **0 errors**.
+
+---
+
+## 📅 [2026-09-06] — Session 7: Post-Glass Chamber Prototype Character Power Locking
+- **Prototype Powers Schema (`PrototypePowerType.cs`)**:
+  - Defined complete catalog of Prototype Character abilities from prototype actions:
+    - Basic Physical (Unlocked): `BasicMovement`, `BasicAttack`, `DodgeRoll`, `ShieldBlock`.
+    - Divine Special Powers (Locked Post-Chamber): `EnergyWave`, `Teleport`, `MagicShield`, `TimeSlow`, `StealthMode`, `PowerBoost`, `WindPower`, `EnergyCharge`, `LightEmission`, `SummonAlly`, `HealthRegeneration`, `Hacking`, `Resurrection`, `AerialCharge`, `BulletDodge`.
+- **Power Control Brain (`PrototypePowerController.cs`)**:
+  - Attached state controller to Aeron (Prototype Character).
+  - Configured stasis dampener lock state (`isPowerLockActive = true`).
+  - Added input hotkey listeners (`1-5`, `Q`, `E`, `R`, `T`, `G`, `V`, `Tab`).
+  - Implemented lock feedback system: playing lock error audio cue and displaying prominent red banner (`🔒 POWER LOCKED: Post-Chamber Stasis Dampener Active`).
+  - Provided programmatic API (`UnlockPower`, `LockPower`, `UnlockAllPowers`, `SetPowerLockState`) for future narrative unlock beats.
+- **Glass Chamber Exit Integration**:
+  - `GlassChamberExitTrigger.cs`: Triggers power lock verification upon stepping out of the glass pod.
+  - `Act1Scene1SequenceManager.cs`: Automatically attaches and activates post-chamber power lock on Aeron when spawning post-chamber rupture.
+- **HUD & UI Updates**:
+  - Updated `PlayerControlsHUD.cs` to show locked prototype powers status indicator.
+- **Verification**:
+  - Executed `dotnet build LAST-GOD.slnx`: Clean compilation with **0 errors, 0 warnings** across all 6 project assemblies.
+
+---
+
+## 📅 [2026-09-06] — Session 8: Character Visibility Fix & Strict Walk/Jump Action Restriction
+- **Character Visibility Fix (`PlayerController.cs` & Asset Import Settings)**:
+  - Corrected `Aeron_Concept.png.meta` texture settings: converted from default texture (Type 0) to Sprite 2D (Type 8), Point filter (Mode 0), PPU=16, and alpha transparency enabled.
+  - Implemented `EnsureCharacterVisibility()` in `PlayerController.cs`: guarantees `SpriteRenderer` is attached, enabled at `SortingOrder = 10`, and auto-generates a crisp high-visibility 16x28 pixel-art GBA hero fallback sprite if any scene asset is missing.
+- **Strict Post-Chamber Action Locking (`lockToWalkAndJumpOnly = true`)**:
+  - Restricted Aeron's actions post-glass chamber exit strictly to **Walk** (horizontal movement) and **Jump** (vertical jump).
+  - Intercepted and blocked Attack Combos, Dodge Roll/Dash, Shield Guard, and Divine Special Powers, outputting interactive lock notifications when attempted (`🔒 ACTION LOCKED: Post-Chamber Stasis State — ONLY Walk & Jump Enabled!`).
+  - Updated `PlayerControlsHUD.cs` overlay to highlight Walk & Jump as active controls and all combat/powers as locked.
+- **Verification**:
+  - Rebuilt solution via `dotnet build LAST-GOD.slnx`: **Build Succeeded with 0 Errors and 0 Warnings**.
+
+---
+
+## 📅 [2026-09-06] — Session 9: Prototype Character Asset Importation
+- **Imported 33 Prototype Character Sprite Sheets**:
+  - Copied all 33 prototype character animation sprite sheets from `prototype/Animations/` into `Assets/Art/Sprites/PrototypeCharacter/`.
+  - Generated dynamic `.meta` files for all 33 sprite sheets: configured Sprite 2D (Type 8), Point filter (Mode 0), Alpha transparency, and sliced into 64x64 / 128x128 grid sub-assets (`Weapon_1_0`, `Weapon_2_0`, `Teleport_0`, `Death_0`, `Energy_Wave_0`, `Double_Srtike_0`, etc.).
+- **Updated Scene Builders & Player Controller**:
+  - Bound `Assets/Art/Sprites/PrototypeCharacter/Weapon_1.png` sliced sub-asset sprite directly to `PlayerController.cs` and `Act1Scene1Builder.cs`.
+- **Verification**:
+  - Rebuilt solution via `dotnet build LAST-GOD.slnx`: **Build Succeeded with 0 Errors and 0 Warnings**.
+
+---
+
+## 📅 [2026-09-06] — Session 10: Post-Chamber Rupture Aeron Awakening Sprite Import
+- **Imported Aeron Post-Chamber Rupture Idle Sprite**:
+  - Created directories `Assets/Art/Sprites/aeron onside idle/` and `Assets/Art/Sprites/aeron outside idle/` (synced to both root and `LAST-GOD/` projects).
+  - Saved user-provided artwork as `01.png` inside the folders.
+  - Configured `.meta` files: Sprite 2D (Type 8), Point filter (Mode 0), Alpha transparency, PPU = 100, custom pivot at feet (`{x: 0.42, y: 0.05}`).
+- **Scene & Script Integration**:
+  - Updated `Act1_Scene1.unity` and `Act1_Scene1_Lab.unity` Player SpriteRenderer to reference `aeron onside idle/01.png` (`guid: a071de01a1c54b2d8e3b123456780001`).
+  - Updated `Act1Scene1Builder.cs` to bind `aeron onside idle/01.png` as default Aeron sprite.
+  - Updated `PlayerController.cs` in `EnsureCharacterVisibility()` to prioritize `aeron onside idle/01.png`.
+  - Logged asset in `ASSET_LOG.md`.
+- **Verification**:
+  - Built solution via `dotnet build LAST-GOD.slnx`: **Build Succeeded with 0 Errors**.

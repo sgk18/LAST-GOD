@@ -23,6 +23,7 @@ This document maintains a running inventory of all external and prototype assets
 | **Slash SFX** | Freesound.org (`"sword slash blade swing 8bit"`) | CC0 / Royalty-Free | Aeron melee attack sound effect | `Assets/Audio/AudioClips/slash.wav` |
 | **Lab Scene Background Artwork** | User Provided Artwork (`media_1788490070025.jpg`) | Proprietary / Project Asset | High-atmosphere sci-fi laboratory background with central stasis cylinder, mezzanine catwalks, stairways, and consoles | `Assets/Art/Sprites/Lab_Background.png` |
 | **Modular Lab Environment Tiles** | Custom Modular Sci-Fi Palette | Project Asset | Metallic floor slabs, hazard catwalk trims, terminal consoles, and blast security door | `Assets/Art/Sprites/Lab_Tiles.png` |
+| **Aeron Post-Chamber Awakening Idle Sprite** | User Provided Artwork (`media_1788699297485.png`) | Proprietary / Project Asset | Aeron awakening/idle stance immediately after glass chamber rupture (barefoot, collar wires, arm rune) | `Assets/Art/Sprites/aeron onside idle/01.png`<br>`Assets/Art/Sprites/aeron outside idle/01.png` |
 
 ---
 

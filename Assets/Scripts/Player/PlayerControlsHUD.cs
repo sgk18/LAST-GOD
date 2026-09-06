@@ -116,7 +116,7 @@ namespace LastGod.Player
         {
             float screenH = Screen.height;
             float boxW = 320f;
-            float boxH = 205f;
+            float boxH = 245f;
             float x = 20f;
             float y = screenH - boxH - 20f;
 
@@ -134,12 +134,16 @@ namespace LastGod.Player
             GUILayout.Label("<color=#D8B468><b>CONTROLS</b></color> <size=10>(Press H to toggle)</size>", _headerStyle);
             GUILayout.Space(4);
 
-            DrawControlRow("A / D  or  ← / →", "Move / Run");
-            DrawControlRow("SPACE", "Jump & Double Jump!");
-            DrawControlRow("Left Click / J / Z", "3-Hit Sword Combo");
-            DrawControlRow("Left Shift / L / C", "Dodge Roll / Dash");
-            DrawControlRow("W / S (on Ladder)", "Climb Up / Down");
-            DrawControlRow("Right Click / K", "Shield Guard / Block");
+            GUILayout.Label("<color=#00FFCC><b>ENABLED ACTIONS:</b></color>", _headerStyle);
+            DrawControlRow("A / D  or  ← / →", "<color=#FFFFFF>Walk / Move</color>");
+            DrawControlRow("SPACE", "<color=#FFFFFF>Jump & Double Jump</color>");
+
+            GUILayout.Space(4);
+            GUILayout.Label("<color=#FF5555><b>RESTRICTED ACTIONS:</b> 🔒 LOCKED</color>", _headerStyle);
+            DrawControlRow("Left Click / J", "<color=#888888>Combat Attack (Locked)</color>");
+            DrawControlRow("Left Shift / L", "<color=#888888>Dodge Dash (Locked)</color>");
+            DrawControlRow("Right Click / K", "<color=#888888>Shield Block (Locked)</color>");
+            DrawControlRow("1 / 2 / 3 / Q / E", "<color=#888888>Special Powers (Locked)</color>");
 
             GUILayout.EndArea();
         }

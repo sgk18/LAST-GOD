@@ -91,67 +91,75 @@ namespace LastGod.Editor
             Rigidbody2D groundRb = groundRoot.AddComponent<Rigidbody2D>();
             groundRb.bodyType = RigidbodyType2D.Static;
 
-            Grid grid = groundRoot.AddComponent<Grid>();
-            grid.cellSize = new Vector3(1f, 1f, 0f);
+            // Main Catwalk Deck Collider (runs from x = -65.5 to +65.5, top edge at Y = -13.03)
+            // Height = 4.5 -> Center Y = -15.28f, covering Y = -17.53 to -13.03 (matching visual walkway slab)
+            BoxCollider2D groundBox = groundRoot.AddComponent<BoxCollider2D>();
+            groundBox.offset = new Vector2(0f, -15.28f);
+            groundBox.size = new Vector2(131.0f, 4.5f); // Top edge at Y = -13.03
 
-            GameObject tilemapObj = new GameObject("Tilemap_Collision");
-            tilemapObj.layer = groundLayer;
-            tilemapObj.transform.SetParent(groundRoot.transform, false);
-
-            Tilemap tilemap = tilemapObj.AddComponent<Tilemap>();
-            TilemapRenderer tmRenderer = tilemapObj.AddComponent<TilemapRenderer>();
-            TilemapCollider2D tmCollider = tilemapObj.AddComponent<TilemapCollider2D>();
-            CompositeCollider2D composite = tilemapObj.AddComponent<CompositeCollider2D>();
-            tmCollider.usedByComposite = true;
-
-            // Main Catwalk Deck Collider (runs from x = -60 to +60 at Y = -14.2)
-            // Top surface of collider at Y = -14.2, height = 2.0 -> Center Y = -15.2
-            GameObject mainDeck = new GameObject("Collider_MainDeck");
-            mainDeck.layer = groundLayer;
-            mainDeck.transform.SetParent(groundRoot.transform, false);
-            mainDeck.transform.position = new Vector3(0f, -15.2f, 0f);
-            BoxCollider2D mainDeckBox = mainDeck.AddComponent<BoxCollider2D>();
-            mainDeckBox.size = new Vector2(120f, 2.0f); // Top edge at Y = -14.2
-
-            // Ledge / Crate Obstacle Break (at x = 12.8, top edge at Y = -12.0)
-            GameObject crateStep = new GameObject("Collider_CrateStep");
-            crateStep.layer = groundLayer;
-            crateStep.transform.SetParent(groundRoot.transform, false);
-            crateStep.transform.position = new Vector3(12.8f, -13.1f, 0f);
-            BoxCollider2D crateBox = crateStep.AddComponent<BoxCollider2D>();
-            crateBox.size = new Vector2(3.0f, 2.2f); // Top edge at Y = -12.0
-
-            // Left Elevated Platform Step (at x = -58.0, top edge at Y = -11.7)
-            GameObject leftStep = new GameObject("Collider_LeftStep");
-            leftStep.layer = groundLayer;
-            leftStep.transform.SetParent(groundRoot.transform, false);
-            leftStep.transform.position = new Vector3(-58.0f, -12.95f, 0f);
-            BoxCollider2D leftStepBox = leftStep.AddComponent<BoxCollider2D>();
-            leftStepBox.size = new Vector2(8.0f, 2.5f);
-
-            // Right Elevated Platform Step (at x = +58.0, top edge at Y = -11.7)
-            GameObject rightStep = new GameObject("Collider_RightStep");
-            rightStep.layer = groundLayer;
-            rightStep.transform.SetParent(groundRoot.transform, false);
-            rightStep.transform.position = new Vector3(58.0f, -12.95f, 0f);
-            BoxCollider2D rightStepBox = rightStep.AddComponent<BoxCollider2D>();
-            rightStepBox.size = new Vector2(8.0f, 2.5f);
-
-            // Left Wall Barrier (x = -64)
+            // Left Wall Barrier (x = -65.5)
             GameObject leftWall = new GameObject("Collider_LeftWall");
             leftWall.layer = groundLayer;
             leftWall.transform.SetParent(groundRoot.transform, false);
-            leftWall.transform.position = new Vector3(-62.5f, 0f, 0f);
+            leftWall.transform.position = new Vector3(-65.5f, 0f, 0f);
             BoxCollider2D leftWallBox = leftWall.AddComponent<BoxCollider2D>();
-            leftWallBox.size = new Vector2(1f, 50f);
+            leftWallBox.size = new Vector2(2f, 45f);
 
-            // Right Wall Barrier (x = +64)
+            // Right Wall Barrier (x = +65.5)
             GameObject rightWall = new GameObject("Collider_RightWall");
             rightWall.layer = groundLayer;
             rightWall.transform.SetParent(groundRoot.transform, false);
-            rightWall.transform.position = new Vector3(62.5f, 0f, 0f);
+            rightWall.transform.position = new Vector3(65.5f, 0f, 0f);
             BoxCollider2D rightWallBox = rightWall.AddComponent<BoxCollider2D>();
-            rightWallBox.size = new Vector2(1f, 50f);
+            rightWallBox.size = new Vector2(2f, 45f);
+
+            // Ceiling Barrier (Y = 22.0)
+            GameObject ceiling = new GameObject("Collider_Ceiling");
+            ceiling.layer = groundLayer;
+            ceiling.transform.SetParent(groundRoot.transform, false);
+            ceiling.transform.position = new Vector3(0f, 22.0f, 0f);
+            BoxCollider2D ceilingBox = ceiling.AddComponent<BoxCollider2D>();
+            ceilingBox.size = new Vector2(131.0f, 4f);
+
+            // Heavy Lab BGM AudioSource
+            GameObject bgmObj = new GameObject("BGM_Player");
+            bgmObj.layer = groundLayer;
+            bgmObj.transform.SetParent(groundRoot.transform, false);
+            bgmObj.transform.position = new Vector3(0f, -15f, 0f);
+            AudioSource bgmSource = bgmObj.AddComponent<AudioSource>();
+            AudioClip bgmClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/lab_bg_music.wav");
+            if (bgmClip != null) bgmSource.clip = bgmClip;
+            bgmSource.playOnAwake = true;
+            bgmSource.loop = true;
+            bgmSource.volume = 0.75f;
+
+            // -------------------------------------------------------------
+            // 5b. GLASS CHAMBER (STASIS POD AT PILLAR B-3)
+            // -------------------------------------------------------------
+            GameObject chamberObj = new GameObject("Glass_Chamber");
+            chamberObj.transform.position = new Vector3(-34.0f, -11.53f, 0f);
+
+            SpriteRenderer chamberSR = chamberObj.AddComponent<SpriteRenderer>();
+            chamberSR.sortingLayerName = "Default";
+            chamberSR.sortingOrder = 5;
+            Sprite chamberSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Glass_Chamber.png");
+            if (chamberSprite == null) chamberSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Chamber_Intact.png");
+            if (chamberSprite != null) chamberSR.sprite = chamberSprite;
+
+            BoxCollider2D chamberCol = chamberObj.AddComponent<BoxCollider2D>();
+            chamberCol.size = new Vector2(2.2f, 2.7f);
+            chamberCol.offset = new Vector2(0f, 0.125f);
+            chamberCol.isTrigger = false;
+
+            GameObject stasisLightObj = new GameObject("Chamber_StasisLight");
+            stasisLightObj.transform.SetParent(chamberObj.transform, false);
+            stasisLightObj.transform.localPosition = new Vector3(0f, 0.2f, 0f);
+            Light2D stasisLight = stasisLightObj.AddComponent<Light2D>();
+            stasisLight.lightType = Light2D.LightType.Point;
+            stasisLight.color = new Color(0.25f, 0.85f, 1.0f, 1.0f);
+            stasisLight.intensity = 1.3f;
+            stasisLight.pointLightInnerRadius = 0.4f;
+            stasisLight.pointLightOuterRadius = 3.2f;
 
             // -------------------------------------------------------------
             // 6. PLAYER (AERON)
@@ -159,16 +167,17 @@ namespace LastGod.Editor
             GameObject playerObj = new GameObject("Player");
             playerObj.tag = "Player";
             playerObj.layer = playerLayer;
-            // Spawn standing squarely ON top of catwalk collider at Y = -14.2
+            // Spawn standing squarely ON top of catwalk collider at Y = -13.03
             // CapsuleCollider2D height = 1.4, offset Y = 0.7 -> bottom of collider at transform.Y
-            // Therefore transform.position.y = -14.20f
-            playerObj.transform.position = new Vector3(0f, -14.20f, 0f);
+            playerObj.transform.position = new Vector3(0f, -13.03f, 0f);
 
             SpriteRenderer playerSR = playerObj.AddComponent<SpriteRenderer>();
             playerSR.sortingLayerName = "Default";
             playerSR.sortingOrder = 10;
-            // Try loading Aeron sprite
-            Sprite playerSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Aeron_Concept.png");
+            // Try loading post-chamber Aeron sprite (aeron onside idle/01.png)
+            Sprite playerSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/aeron onside idle/01.png");
+            if (playerSprite == null) playerSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/aeron outside idle/01.png");
+            if (playerSprite == null) playerSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Aeron_Concept.png");
             if (playerSprite != null) playerSR.sprite = playerSprite;
 
             Rigidbody2D playerRb = playerObj.AddComponent<Rigidbody2D>();
@@ -208,6 +217,7 @@ namespace LastGod.Editor
             CameraFollow camFollow = mainCamObj.AddComponent<CameraFollow>();
             SerializedObject camSO = new SerializedObject(camFollow);
             camSO.FindProperty("target").objectReferenceValue = playerObj.transform;
+            camSO.FindProperty("offset").vector3Value = new Vector3(0f, 3.5f, -10f);
             camSO.ApplyModifiedProperties();
 
             // Save Scene

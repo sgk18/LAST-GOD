@@ -61,6 +61,15 @@ namespace LastGod.Core
             if (aeronPrefab != null && aeronSpawnPoint != null)
             {
                 _spawnedAeron = Instantiate(aeronPrefab, aeronSpawnPoint.position, Quaternion.identity);
+
+                // Initialize Prototype Power Lock on Aeron after leaving the glass chamber (decoupled via reflection/SendMessage)
+                var powerCtrlType = System.Type.GetType("LastGod.Player.PrototypePowerController, LastGod.Player");
+                if (powerCtrlType != null && _spawnedAeron.GetComponent(powerCtrlType) == null)
+                {
+                    _spawnedAeron.AddComponent(powerCtrlType);
+                }
+                _spawnedAeron.SendMessage("SetPowerLockState", true, SendMessageOptions.DontRequireReceiver);
+
                 if (cameraFollow != null)
                 {
                     var field = cameraFollow.GetType().GetField("target");
@@ -171,6 +180,14 @@ namespace LastGod.Core
             if (aeronPrefab != null && aeronSpawnPoint != null)
             {
                 _spawnedAeron = Instantiate(aeronPrefab, aeronSpawnPoint.position, Quaternion.identity);
+
+                // Initialize Prototype Power Lock on Aeron after leaving the glass chamber (decoupled via reflection/SendMessage)
+                var powerCtrlType = System.Type.GetType("LastGod.Player.PrototypePowerController, LastGod.Player");
+                if (powerCtrlType != null && _spawnedAeron.GetComponent(powerCtrlType) == null)
+                {
+                    _spawnedAeron.AddComponent(powerCtrlType);
+                }
+                _spawnedAeron.SendMessage("SetPowerLockState", true, SendMessageOptions.DontRequireReceiver);
 
                 if (cameraFollow != null)
                 {

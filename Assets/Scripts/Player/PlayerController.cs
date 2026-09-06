@@ -40,6 +40,16 @@ namespace LastGod.Player
         [Header("Movement")]
         [SerializeField] private float moveSpeed = 6.5f;
 
+        [Header("Post-Chamber Action Locking")]
+        [Tooltip("When true, the character can ONLY walk and jump. Attack, Dash, Block, and Special Powers are strictly locked.")]
+        [SerializeField] private bool lockToWalkAndJumpOnly = true;
+
+        public bool LockToWalkAndJumpOnly
+        {
+            get => lockToWalkAndJumpOnly;
+            set => lockToWalkAndJumpOnly = value;
+        }
+
         [Header("Jump & Double Jump")]
         [SerializeField] private float jumpForce = 13.5f;
         [SerializeField] private float doubleJumpForce = 12f;
@@ -167,6 +177,96 @@ namespace LastGod.Player
             catch (Exception ex)
             {
                 Debug.LogWarning($"[PlayerController] PlayerInputActions initialization note: {ex.Message}");
+            }
+
+            EnsureCharacterVisibility();
+        }
+
+        private void Start()
+        {
+            EnsureCharacterVisibility();
+        }
+
+        private void EnsureCharacterVisibility()
+        {
+            if (_sr == null) _sr = GetComponent<SpriteRenderer>();
+            if (_sr == null) _sr = gameObject.AddComponent<SpriteRenderer>();
+
+            _sr.sortingLayerName = "Default";
+            _sr.sortingOrder = 10;
+            _sr.enabled = true;
+
+            if (_sr.sprite == null)
+            {
+                Sprite spr = Resources.Load<Sprite>("aeron onside idle/01") ??
+                             Resources.Load<Sprite>("01") ??
+                             Resources.Load<Sprite>("Aeron_Concept") ?? 
+                             Resources.Load<Sprite>("Aeron_Spritesheet");
+
+#if UNITY_EDITOR
+                if (spr == null)
+                {
+                    spr = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/aeron onside idle/01.png") ??
+                          UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/aeron outside idle/01.png") ??
+                          UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Aeron_Concept.png") ??
+                          UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Aeron_Spritesheet.png");
+
+                    if (spr == null)
+                    {
+                        var protoAssets = UnityEditor.AssetDatabase.LoadAllAssetsAtPath("Assets/Art/Sprites/PrototypeCharacter/Weapon_1.png");
+                        if (protoAssets != null)
+                        {
+                            foreach (var a in protoAssets)
+                            {
+                                if (a is Sprite protoSprite)
+                                {
+                                    spr = protoSprite;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+#endif
+
+                if (spr == null)
+                {
+                    // Generate crisp GBA Hero pixel art sprite (16x28 pixels)
+                    Texture2D tex = new Texture2D(16, 28, TextureFormat.RGBA32, false);
+                    tex.filterMode = FilterMode.Point;
+                    Color[] colors = new Color[16 * 28];
+
+                    Color armorGold  = new Color(0.95f, 0.75f, 0.25f, 1f);
+                    Color tunicCyan  = new Color(0.20f, 0.75f, 0.95f, 1f);
+                    Color skinTone   = new Color(0.95f, 0.80f, 0.65f, 1f);
+                    Color darkBoots  = new Color(0.15f, 0.15f, 0.25f, 1f);
+                    Color eyeGlow    = new Color(1.00f, 1.00f, 1.00f, 1f);
+                    Color clear      = Color.clear;
+
+                    for (int y = 0; y < 28; y++)
+                    {
+                        for (int x = 0; x < 16; x++)
+                        {
+                            Color px = clear;
+                            if (y <= 4 && x >= 4 && x <= 11) px = darkBoots;
+                            else if (y >= 5 && y <= 10 && x >= 4 && x <= 11) px = tunicCyan;
+                            else if (y >= 11 && y <= 19 && x >= 3 && x <= 12) px = (x >= 5 && x <= 10) ? armorGold : tunicCyan;
+                            else if (y >= 20 && y <= 26 && x >= 4 && x <= 11)
+                            {
+                                if (y == 23 && (x == 6 || x == 9)) px = eyeGlow;
+                                else if (y >= 25) px = armorGold;
+                                else px = skinTone;
+                            }
+                            colors[y * 16 + x] = px;
+                        }
+                    }
+
+                    tex.SetPixels(colors);
+                    tex.Apply();
+                    spr = Sprite.Create(tex, new Rect(0, 0, 16, 28), new Vector2(0.5f, 0.0f), 16f);
+                }
+
+                _sr.sprite = spr;
             }
         }
 
@@ -372,6 +472,20 @@ namespace LastGod.Player
             }
             catch {}
 #endif
+
+            // Intercept non-walk/jump actions when lockToWalkAndJumpOnly is active
+            if (lockToWalkAndJumpOnly)
+            {
+                if (attackDown || _dashPressed || blockHeld)
+                {
+                    SendMessage("ShowNotification", "🔒 ACTION LOCKED: Post-Chamber Stasis State — ONLY Walk & Jump Enabled!", SendMessageOptions.DontRequireReceiver);
+                }
+
+                attackDown = false;
+                _attackBufferTimer = 0f;
+                _dashPressed = false;
+                blockHeld = false;
+            }
 
             if (blockHeld && _state != PlayerState.Hurt && _state != PlayerState.Dead && !_isDashing && !_isClimbing)
             {

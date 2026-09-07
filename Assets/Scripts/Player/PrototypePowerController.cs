@@ -94,19 +94,19 @@ namespace LastGod.Player
 #if ENABLE_LEGACY_INPUT_MANAGER
             try
             {
-                if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Q))
+                if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha1) || UnityEngine.Input.GetKeyDown(KeyCode.Q))
                     TryActivatePower(PrototypePowerType.EnergyWave);
-                else if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.E))
+                else if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha2) || UnityEngine.Input.GetKeyDown(KeyCode.E))
                     TryActivatePower(PrototypePowerType.Teleport);
-                else if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.R))
+                else if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha3) || UnityEngine.Input.GetKeyDown(KeyCode.R))
                     TryActivatePower(PrototypePowerType.MagicShield);
-                else if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.T))
+                else if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha4) || UnityEngine.Input.GetKeyDown(KeyCode.T))
                     TryActivatePower(PrototypePowerType.TimeSlow);
-                else if (Input.GetKeyDown(KeyCode.Alpha5) || Input.GetKeyDown(KeyCode.G))
+                else if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha5) || UnityEngine.Input.GetKeyDown(KeyCode.G))
                     TryActivatePower(PrototypePowerType.StealthMode);
-                else if (Input.GetKeyDown(KeyCode.V))
+                else if (UnityEngine.Input.GetKeyDown(KeyCode.V))
                     TryActivatePower(PrototypePowerType.PowerBoost);
-                else if (Input.GetKeyDown(KeyCode.Tab))
+                else if (UnityEngine.Input.GetKeyDown(KeyCode.Tab))
                     TryActivatePower(PrototypePowerType.EnergyCharge);
             }
             catch {}

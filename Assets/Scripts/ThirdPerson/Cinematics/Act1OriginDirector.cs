@@ -65,7 +65,7 @@ namespace LastGod.ThirdPerson.Cinematics
 
         private void Update()
         {
-            if (!_cutsceneFinished && !_isCombatActive && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return)))
+            if (!_cutsceneFinished && !_isCombatActive && (UnityEngine.Input.GetKeyDown(KeyCode.Space) || UnityEngine.Input.GetKeyDown(KeyCode.Return)))
             {
                 SkipCutscene();
             }

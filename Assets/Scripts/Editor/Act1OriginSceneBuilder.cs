@@ -48,13 +48,6 @@ namespace LastGod.ThirdPerson.Editor
             else
             {
                 EditorSceneManager.OpenScene("Assets/Scenes/Act1_Origin.unity", OpenSceneMode.Single);
-                EditorApplication.delayCall += () =>
-                {
-                    if (!EditorApplication.isPlaying)
-                    {
-                        EditorApplication.isPlaying = true;
-                    }
-                };
             }
         }
 
@@ -64,13 +57,6 @@ namespace LastGod.ThirdPerson.Editor
             if (System.IO.File.Exists("Assets/Scenes/Act1_Origin.unity"))
             {
                 EditorSceneManager.OpenScene("Assets/Scenes/Act1_Origin.unity", OpenSceneMode.Single);
-                EditorApplication.delayCall += () =>
-                {
-                    if (!EditorApplication.isPlaying)
-                    {
-                        EditorApplication.isPlaying = true;
-                    }
-                };
             }
             else
             {

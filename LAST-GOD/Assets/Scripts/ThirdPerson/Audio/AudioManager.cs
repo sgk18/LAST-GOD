@@ -188,5 +188,47 @@ namespace LastGod.ThirdPerson.Audio
             clip.SetData(samples, 0);
             return clip;
         }
+
+        public static AudioClip GenerateAmbientHumClip()
+        {
+            int sampleRate = 44100;
+            float length = 2.0f;
+            int totalSamples = (int)(sampleRate * length);
+            float[] samples = new float[totalSamples];
+
+            for (int i = 0; i < totalSamples; i++)
+            {
+                float t = (float)i / sampleRate;
+                float hum1 = Mathf.Sin(2f * Mathf.PI * 60f * t) * 0.4f;
+                float hum2 = Mathf.Sin(2f * Mathf.PI * 120f * t) * 0.15f;
+                float sub = Mathf.Sin(2f * Mathf.PI * 30f * t) * 0.2f;
+                samples[i] = Mathf.Clamp(hum1 + hum2 + sub, -1f, 1f);
+            }
+
+            AudioClip clip = AudioClip.Create("Procedural_AmbientHum", totalSamples, 1, sampleRate, false);
+            clip.SetData(samples, 0);
+            return clip;
+        }
+
+        public static AudioClip GenerateCombatPulseClip()
+        {
+            int sampleRate = 44100;
+            float length = 2.0f;
+            int totalSamples = (int)(sampleRate * length);
+            float[] samples = new float[totalSamples];
+
+            for (int i = 0; i < totalSamples; i++)
+            {
+                float t = (float)i / sampleRate;
+                float pulseEnv = Mathf.PingPong(t * 2.5f, 1f);
+                float bass = Mathf.Sin(2f * Mathf.PI * 90f * t) * pulseEnv * 0.5f;
+                float sub = Mathf.Sin(2f * Mathf.PI * 45f * t) * 0.25f;
+                samples[i] = Mathf.Clamp(bass + sub, -1f, 1f);
+            }
+
+            AudioClip clip = AudioClip.Create("Procedural_CombatPulse", totalSamples, 1, sampleRate, false);
+            clip.SetData(samples, 0);
+            return clip;
+        }
     }
 }

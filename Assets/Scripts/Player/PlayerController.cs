@@ -527,9 +527,15 @@ namespace LastGod.Player
             {
                 int animState = (_isGrounded && Mathf.Abs(_currentHorizontalInput) > 0.05f) ? 1 : 0;
                 animator.SetInteger("AnimState", animState);
+                animator.SetFloat("Speed", Mathf.Abs(_currentHorizontalInput));
+            }
+            else
+            {
+                animator.SetFloat("Speed", 0f);
             }
 
             animator.SetBool("Grounded", _isGrounded);
+            animator.SetBool("IsGrounded", _isGrounded);
             animator.SetFloat("AirSpeedY", _rb.linearVelocity.y);
         }
 

@@ -17,7 +17,6 @@ using LastGod.Characters.Aeron;
 
 namespace LastGod.ThirdPerson.Editor
 {
-    // Auto-reload trigger: 09:57
     [InitializeOnLoad]
     public static class Act1OriginSceneBuilder
     {
@@ -72,10 +71,27 @@ namespace LastGod.ThirdPerson.Editor
 
             // 1. Lighting Environment & Ambient
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.08f, 0.10f, 0.14f);
+            RenderSettings.ambientLight = new Color(0.14f, 0.17f, 0.22f);
             RenderSettings.fog = true;
             RenderSettings.fogColor = new Color(0.04f, 0.05f, 0.08f);
-            RenderSettings.fogDensity = 0.035f;
+            RenderSettings.fogDensity = 0.025f;
+
+            // Directional Fill Light for Atmospheric Volume & Shadows
+            GameObject dirLightObj = new GameObject("Lab_Directional_Fill");
+            dirLightObj.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
+            Light dirLight = dirLightObj.AddComponent<Light>();
+            dirLight.type = LightType.Directional;
+            dirLight.color = new Color(0.65f, 0.75f, 0.90f);
+            dirLight.intensity = 0.55f;
+            dirLight.shadows = LightShadows.Soft;
+
+            // Audio Clips
+            AudioClip alarmClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/alarm.wav") ?? AudioManager.GenerateAlarmKlaxonClip();
+            AudioClip shatterClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/glass_shatter.wav") ?? AudioManager.GenerateGlassShatterClip();
+            AudioClip droneClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/machine_hum.wav") ?? AudioManager.GenerateAmbientHumClip();
+            AudioClip heartbeatClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/heartbeat.wav") ?? AudioManager.GenerateHeartbeatClip();
+            AudioClip combatClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/lab_bg_music.wav") ?? AudioManager.GenerateCombatPulseClip();
+            AudioClip gunshotClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/gunshot.wav") ?? AudioManager.GenerateGunshotClip();
 
             // 2. Core Managers Root
             GameObject managersRoot = new GameObject("=== CORE MANAGERS ===");
@@ -146,31 +162,33 @@ namespace LastGod.ThirdPerson.Editor
             SetSerializedField(lightingCtrl, "sterileLights", sterileLights);
             SetSerializedField(lightingCtrl, "emergencyRedLights", emergencyLights);
             AudioSource alarmSource = lightingObj.AddComponent<AudioSource>();
-            alarmSource.clip = AudioManager.GenerateAlarmKlaxonClip();
+            alarmSource.clip = alarmClip;
             alarmSource.loop = true;
             SetSerializedField(lightingCtrl, "alarmAudioSource", alarmSource);
-            SetSerializedField(lightingCtrl, "alarmKlaxonSFX", alarmSource.clip);
+            SetSerializedField(lightingCtrl, "alarmKlaxonSFX", alarmClip);
 
             // 5. Containment Chamber (Central Dais at 0, 0.7, 0)
             GameObject chamberObj = new GameObject("StasisChamber_Root");
             chamberObj.transform.position = new Vector3(0f, 0.7f, 0f);
             var chamber = chamberObj.AddComponent<StasisChamber>();
 
-            // Glass Cylinder
+            // Glass Cylinder (collider removed so player is not blocked)
             GameObject glassCyl = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             glassCyl.name = "GlassCylinder";
             glassCyl.transform.SetParent(chamberObj.transform);
             glassCyl.transform.localPosition = new Vector3(0f, 1.4f, 0f);
             glassCyl.transform.localScale = new Vector3(2.2f, 1.4f, 2.2f);
+            Object.DestroyImmediate(glassCyl.GetComponent<Collider>());
             var glassMat = CreateGlassMaterial();
             glassCyl.GetComponent<Renderer>().material = glassMat;
 
-            // Liquid Surface
+            // Liquid Surface (collider removed)
             GameObject liquidObj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             liquidObj.name = "StasisLiquid";
             liquidObj.transform.SetParent(chamberObj.transform);
             liquidObj.transform.localPosition = new Vector3(0f, 1.3f, 0f);
             liquidObj.transform.localScale = new Vector3(2.1f, 1.3f, 2.1f);
+            Object.DestroyImmediate(liquidObj.GetComponent<Collider>());
             var liquidMat = CreateLiquidMaterial();
             liquidObj.GetComponent<Renderer>().material = liquidMat;
 
@@ -184,13 +202,22 @@ namespace LastGod.ThirdPerson.Editor
             chLight.color = new Color(0.15f, 0.9f, 1.0f);
             chLight.intensity = 2.5f;
 
+            // Chamber Particle Systems
+            var bubbles = CreateBubblesParticleSystem(chamberObj.transform);
+            var shatterVFX = CreateBurstParticleSystem(chamberObj.transform, "ShatterGlass_VFX", new Color(0.8f, 0.95f, 1f, 0.7f), 60);
+            var liquidVFX = CreateBurstParticleSystem(chamberObj.transform, "LiquidBurst_VFX", new Color(0.1f, 0.8f, 0.95f, 0.8f), 80);
+
             AudioSource chAudio = chamberObj.AddComponent<AudioSource>();
-            AudioClip shatterClip = AudioManager.GenerateGlassShatterClip();
             SetSerializedField(chamber, "glassCylinder", glassCyl);
             SetSerializedField(chamber, "liquidSurface", liquidObj);
             SetSerializedField(chamber, "chamberInternalLight", chLight);
             SetSerializedField(chamber, "audioSource", chAudio);
             SetSerializedField(chamber, "glassShatterSFX", shatterClip);
+            SetSerializedField(chamber, "glassCrackSFX", shatterClip);
+            SetSerializedField(chamber, "liquidDrainSFX", droneClip);
+            SetSerializedField(chamber, "bubblesVFX", bubbles);
+            SetSerializedField(chamber, "shatterGlassVFX", shatterVFX);
+            SetSerializedField(chamber, "liquidBurstVFX", liquidVFX);
 
             // 6. Aeron (Playable Protagonist with Authentic Seamless Idle Animation)
             GameObject aeron = CreateAeronCharacter(new Vector3(0f, 0.7f, 0f));
@@ -256,7 +283,7 @@ namespace LastGod.ThirdPerson.Editor
 
             for (int i = 0; i < guardSpawns.Length; i++)
             {
-                GameObject gObj = CreateGuardEnemy($"Guard_Security_{i + 1}", guardSpawns[i]);
+                GameObject gObj = CreateGuardEnemy($"Guard_Security_{i + 1}", guardSpawns[i], gunshotClip);
                 guardList.Add(gObj.GetComponent<GuardAI>());
             }
 
@@ -279,7 +306,10 @@ namespace LastGod.ThirdPerson.Editor
             SetSerializedField(director, "guards", guardList);
             SetSerializedField(director, "ambientSource", ambientSource);
             SetSerializedField(director, "sfxSource", sfxSource);
-            SetSerializedField(director, "heartbeatSFX", AudioManager.GenerateHeartbeatClip());
+            SetSerializedField(director, "heartbeatSFX", heartbeatClip);
+            SetSerializedField(director, "ambientLabDrone", droneClip);
+            SetSerializedField(director, "combatPulseMusic", combatClip);
+            SetSerializedField(director, "ominousEndingDrone", droneClip);
 
             // Save Scene
             string scenePath = "Assets/Scenes/Act1_Origin.unity";
@@ -300,6 +330,16 @@ namespace LastGod.ThirdPerson.Editor
 
             // Open Scene
             EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
+
+            // Auto-launch into Play Mode
+            EditorApplication.delayCall += () =>
+            {
+                if (!EditorApplication.isPlaying)
+                {
+                    Debug.Log("<color=green>[The Last God]</color> Auto-launching Act 1 (Origin) into Play Mode...");
+                    EditorApplication.isPlaying = true;
+                }
+            };
         }
 
         [MenuItem("The Last God/Build Main Menu Scene", false, 2)]
@@ -484,7 +524,7 @@ namespace LastGod.ThirdPerson.Editor
             return voss;
         }
 
-        private static GameObject CreateGuardEnemy(string name, Vector3 position)
+        private static GameObject CreateGuardEnemy(string name, Vector3 position, AudioClip gunshotClip)
         {
             GameObject guard = new GameObject(name);
             guard.tag = "Enemy";
@@ -503,7 +543,7 @@ namespace LastGod.ThirdPerson.Editor
 
             AudioSource gAudio = guard.AddComponent<AudioSource>();
             SetSerializedField(weapon, "audioSource", gAudio);
-            SetSerializedField(weapon, "gunshotSFX", AudioManager.GenerateGunshotClip());
+            SetSerializedField(weapon, "gunshotSFX", gunshotClip);
 
             // Visual Tactical Suit
             GameObject body = GameObject.CreatePrimitive(PrimitiveType.Capsule);
@@ -552,23 +592,85 @@ namespace LastGod.ThirdPerson.Editor
             return guard;
         }
 
+        private static ParticleSystem CreateBubblesParticleSystem(Transform parent)
+        {
+            GameObject pObj = new GameObject("Bubbles_VFX");
+            pObj.transform.SetParent(parent);
+            pObj.transform.localPosition = new Vector3(0f, 0.2f, 0f);
+            ParticleSystem ps = pObj.AddComponent<ParticleSystem>();
+            var main = ps.main;
+            main.startColor = new Color(0.3f, 0.85f, 1f, 0.5f);
+            main.startSize = 0.08f;
+            main.startSpeed = 0.6f;
+            main.startLifetime = 2.0f;
+            main.maxParticles = 80;
+            var shape = ps.shape;
+            shape.shapeType = ParticleSystemShapeType.Circle;
+            shape.radius = 0.8f;
+            var emission = ps.emission;
+            emission.rateOverTime = 20f;
+            return ps;
+        }
+
+        private static ParticleSystem CreateBurstParticleSystem(Transform parent, string name, Color color, int count)
+        {
+            GameObject pObj = new GameObject(name);
+            pObj.transform.SetParent(parent);
+            pObj.transform.localPosition = new Vector3(0f, 1.2f, 0f);
+            ParticleSystem ps = pObj.AddComponent<ParticleSystem>();
+            var main = ps.main;
+            main.startColor = color;
+            main.startSize = 0.15f;
+            main.startSpeed = 4.0f;
+            main.startLifetime = 1.0f;
+            main.loop = false;
+            main.playOnAwake = false;
+            main.maxParticles = count;
+            var shape = ps.shape;
+            shape.shapeType = ParticleSystemShapeType.Sphere;
+            shape.radius = 0.5f;
+            var emission = ps.emission;
+            emission.rateOverTime = 0;
+            emission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0f, count) });
+            return ps;
+        }
+
         private static void SetSerializedField(Object target, string fieldName, object value)
         {
+            if (target == null) return;
             var serializedObj = new SerializedObject(target);
             var prop = serializedObj.FindProperty(fieldName);
             if (prop != null)
             {
-                if (value is Object uObj) prop.objectReferenceValue = uObj;
+                if (value is Object uObj)
+                {
+                    prop.objectReferenceValue = uObj;
+                }
+                else if (value is System.Collections.IList list)
+                {
+                    prop.arraySize = list.Count;
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        var elementProp = prop.GetArrayElementAtIndex(i);
+                        if (list[i] is Object elemObj)
+                        {
+                            elementProp.objectReferenceValue = elemObj;
+                        }
+                    }
+                }
+                else if (value is float f) prop.floatValue = f;
+                else if (value is int num) prop.intValue = num;
+                else if (value is bool b) prop.boolValue = b;
+                else if (value is string s) prop.stringValue = s;
+
                 serializedObj.ApplyModifiedPropertiesWithoutUndo();
             }
-            else
+
+            // Always assign directly via reflection as well to ensure runtime consistency
+            var field = target.GetType().GetField(fieldName, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+            if (field != null)
             {
-                // Reflection fallback for private fields
-                var field = target.GetType().GetField(fieldName, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-                if (field != null)
-                {
-                    field.SetValue(target, value);
-                }
+                try { field.SetValue(target, value); } catch {}
             }
         }
 
@@ -586,8 +688,16 @@ namespace LastGod.ThirdPerson.Editor
         {
             Shader shader = Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard");
             Material mat = new Material(shader);
-            mat.color = new Color(0.25f, 0.55f, 0.85f, 0.35f);
+            mat.color = new Color(0.18f, 0.65f, 0.9f, 0.25f);
             if (mat.HasProperty("_Surface")) mat.SetFloat("_Surface", 1f);
+            if (mat.HasProperty("_Blend")) mat.SetFloat("_Blend", 0f);
+            mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            mat.SetInt("_ZWrite", 0);
+            mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+            mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            if (mat.HasProperty("_Smoothness")) mat.SetFloat("_Smoothness", 0.95f);
+            if (mat.HasProperty("_Metallic")) mat.SetFloat("_Metallic", 0.1f);
             return mat;
         }
 
@@ -595,8 +705,16 @@ namespace LastGod.ThirdPerson.Editor
         {
             Shader shader = Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard");
             Material mat = new Material(shader);
-            mat.color = new Color(0.1f, 0.8f, 0.95f, 0.65f);
+            mat.color = new Color(0.08f, 0.75f, 0.92f, 0.45f);
             if (mat.HasProperty("_Surface")) mat.SetFloat("_Surface", 1f);
+            if (mat.HasProperty("_Blend")) mat.SetFloat("_Blend", 0f);
+            mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            mat.SetInt("_ZWrite", 0);
+            mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+            mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            mat.EnableKeyword("_EMISSION");
+            if (mat.HasProperty("_EmissionColor")) mat.SetColor("_EmissionColor", new Color(0.05f, 0.45f, 0.65f) * 0.8f);
             return mat;
         }
 

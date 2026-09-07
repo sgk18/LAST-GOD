@@ -30,9 +30,16 @@ namespace LastGod.ThirdPerson.UI
 
         private void Update()
         {
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Escape))
+            try
             {
-                TogglePause();
+                if (UnityEngine.Input.GetKeyDown(KeyCode.Escape))
+                {
+                    TogglePause();
+                }
+            }
+            catch (System.InvalidOperationException)
+            {
+                // Legacy input inactive
             }
         }
 

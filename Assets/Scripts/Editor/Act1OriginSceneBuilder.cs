@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering.Universal;
 using LastGod.ThirdPerson.Player;
 using LastGod.ThirdPerson.AI;
 using LastGod.ThirdPerson.Combat;
@@ -12,6 +13,7 @@ using LastGod.ThirdPerson.Environment;
 using LastGod.ThirdPerson.Dialogue;
 using LastGod.ThirdPerson.UI;
 using LastGod.ThirdPerson.Audio;
+using LastGod.Characters.Aeron;
 
 namespace LastGod.ThirdPerson.Editor
 {
@@ -25,10 +27,11 @@ namespace LastGod.ThirdPerson.Editor
 
         private static void AutoBuildIfNeeded()
         {
-            if (!System.IO.File.Exists("Assets/Scenes/Act1_Origin.unity"))
+            string triggerFile = "Temp/rebuild_act1_origin.trigger";
+            bool forceRebuild = System.IO.File.Exists(triggerFile);
+            if (forceRebuild)
             {
-                Debug.Log("[Act1OriginSceneBuilder] Act1_Origin.unity missing. Building complete Act 1 (Origin) scene...");
-                BuildAct1OriginScene();
+                try { System.IO.File.Delete(triggerFile); } catch {}
             }
 
             if (!System.IO.File.Exists("Assets/Scenes/MainMenu_Origin.unity"))
@@ -36,7 +39,45 @@ namespace LastGod.ThirdPerson.Editor
                 Debug.Log("[Act1OriginSceneBuilder] MainMenu_Origin.unity missing. Building cinematic main menu scene...");
                 BuildMainMenuScene();
             }
+
+            if (forceRebuild || !System.IO.File.Exists("Assets/Scenes/Act1_Origin.unity"))
+            {
+                Debug.Log("[Act1OriginSceneBuilder] Building complete Act 1 (Origin) scene with authentic Aeron Idle Animation...");
+                BuildAct1OriginScene();
+            }
+            else
+            {
+                EditorSceneManager.OpenScene("Assets/Scenes/Act1_Origin.unity", OpenSceneMode.Single);
+                EditorApplication.delayCall += () =>
+                {
+                    if (!EditorApplication.isPlaying)
+                    {
+                        EditorApplication.isPlaying = true;
+                    }
+                };
+            }
         }
+
+        [MenuItem("The Last God/Open Act 1 (Origin) Scene", false, 0)]
+        public static void OpenAct1OriginScene()
+        {
+            if (System.IO.File.Exists("Assets/Scenes/Act1_Origin.unity"))
+            {
+                EditorSceneManager.OpenScene("Assets/Scenes/Act1_Origin.unity", OpenSceneMode.Single);
+                EditorApplication.delayCall += () =>
+                {
+                    if (!EditorApplication.isPlaying)
+                    {
+                        EditorApplication.isPlaying = true;
+                    }
+                };
+            }
+            else
+            {
+                BuildAct1OriginScene();
+            }
+        }
+
         [MenuItem("The Last God/Build Complete Act 1 (Origin) Scene", false, 1)]
         public static void BuildAct1OriginScene()
         {
@@ -44,10 +85,27 @@ namespace LastGod.ThirdPerson.Editor
 
             // 1. Lighting Environment & Ambient
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.08f, 0.10f, 0.14f);
+            RenderSettings.ambientLight = new Color(0.14f, 0.17f, 0.22f);
             RenderSettings.fog = true;
             RenderSettings.fogColor = new Color(0.04f, 0.05f, 0.08f);
-            RenderSettings.fogDensity = 0.035f;
+            RenderSettings.fogDensity = 0.025f;
+
+            // Directional Fill Light for Atmospheric Volume & Shadows
+            GameObject dirLightObj = new GameObject("Lab_Directional_Fill");
+            dirLightObj.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
+            Light dirLight = dirLightObj.AddComponent<Light>();
+            dirLight.type = LightType.Directional;
+            dirLight.color = new Color(0.65f, 0.75f, 0.90f);
+            dirLight.intensity = 0.55f;
+            dirLight.shadows = LightShadows.Soft;
+
+            // Audio Clips
+            AudioClip alarmClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/alarm.wav") ?? AudioManager.GenerateAlarmKlaxonClip();
+            AudioClip shatterClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/glass_shatter.wav") ?? AudioManager.GenerateGlassShatterClip();
+            AudioClip droneClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/machine_hum.wav") ?? AudioManager.GenerateAmbientHumClip();
+            AudioClip heartbeatClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/heartbeat.wav") ?? AudioManager.GenerateHeartbeatClip();
+            AudioClip combatClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/lab_bg_music.wav") ?? AudioManager.GenerateCombatPulseClip();
+            AudioClip gunshotClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/gunshot.wav") ?? AudioManager.GenerateGunshotClip();
 
             // 2. Core Managers Root
             GameObject managersRoot = new GameObject("=== CORE MANAGERS ===");
@@ -118,31 +176,33 @@ namespace LastGod.ThirdPerson.Editor
             SetSerializedField(lightingCtrl, "sterileLights", sterileLights);
             SetSerializedField(lightingCtrl, "emergencyRedLights", emergencyLights);
             AudioSource alarmSource = lightingObj.AddComponent<AudioSource>();
-            alarmSource.clip = AudioManager.GenerateAlarmKlaxonClip();
+            alarmSource.clip = alarmClip;
             alarmSource.loop = true;
             SetSerializedField(lightingCtrl, "alarmAudioSource", alarmSource);
-            SetSerializedField(lightingCtrl, "alarmKlaxonSFX", alarmSource.clip);
+            SetSerializedField(lightingCtrl, "alarmKlaxonSFX", alarmClip);
 
             // 5. Containment Chamber (Central Dais at 0, 0.7, 0)
             GameObject chamberObj = new GameObject("StasisChamber_Root");
             chamberObj.transform.position = new Vector3(0f, 0.7f, 0f);
             var chamber = chamberObj.AddComponent<StasisChamber>();
 
-            // Glass Cylinder
+            // Glass Cylinder (collider removed so player is not blocked)
             GameObject glassCyl = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             glassCyl.name = "GlassCylinder";
             glassCyl.transform.SetParent(chamberObj.transform);
             glassCyl.transform.localPosition = new Vector3(0f, 1.4f, 0f);
             glassCyl.transform.localScale = new Vector3(2.2f, 1.4f, 2.2f);
+            Object.DestroyImmediate(glassCyl.GetComponent<Collider>());
             var glassMat = CreateGlassMaterial();
             glassCyl.GetComponent<Renderer>().material = glassMat;
 
-            // Liquid Surface
+            // Liquid Surface (collider removed)
             GameObject liquidObj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             liquidObj.name = "StasisLiquid";
             liquidObj.transform.SetParent(chamberObj.transform);
             liquidObj.transform.localPosition = new Vector3(0f, 1.3f, 0f);
             liquidObj.transform.localScale = new Vector3(2.1f, 1.3f, 2.1f);
+            Object.DestroyImmediate(liquidObj.GetComponent<Collider>());
             var liquidMat = CreateLiquidMaterial();
             liquidObj.GetComponent<Renderer>().material = liquidMat;
 
@@ -156,15 +216,24 @@ namespace LastGod.ThirdPerson.Editor
             chLight.color = new Color(0.15f, 0.9f, 1.0f);
             chLight.intensity = 2.5f;
 
+            // Chamber Particle Systems
+            var bubbles = CreateBubblesParticleSystem(chamberObj.transform);
+            var shatterVFX = CreateBurstParticleSystem(chamberObj.transform, "ShatterGlass_VFX", new Color(0.8f, 0.95f, 1f, 0.7f), 60);
+            var liquidVFX = CreateBurstParticleSystem(chamberObj.transform, "LiquidBurst_VFX", new Color(0.1f, 0.8f, 0.95f, 0.8f), 80);
+
             AudioSource chAudio = chamberObj.AddComponent<AudioSource>();
-            AudioClip shatterClip = AudioManager.GenerateGlassShatterClip();
             SetSerializedField(chamber, "glassCylinder", glassCyl);
             SetSerializedField(chamber, "liquidSurface", liquidObj);
             SetSerializedField(chamber, "chamberInternalLight", chLight);
             SetSerializedField(chamber, "audioSource", chAudio);
             SetSerializedField(chamber, "glassShatterSFX", shatterClip);
+            SetSerializedField(chamber, "glassCrackSFX", shatterClip);
+            SetSerializedField(chamber, "liquidDrainSFX", droneClip);
+            SetSerializedField(chamber, "bubblesVFX", bubbles);
+            SetSerializedField(chamber, "shatterGlassVFX", shatterVFX);
+            SetSerializedField(chamber, "liquidBurstVFX", liquidVFX);
 
-            // 6. Aeron (Playable Protagonist)
+            // 6. Aeron (Playable Protagonist with Authentic Seamless Idle Animation)
             GameObject aeron = CreateAeronCharacter(new Vector3(0f, 0.7f, 0f));
 
             // 7. Third-Person Main Camera
@@ -174,7 +243,14 @@ namespace LastGod.ThirdPerson.Editor
             cam.fieldOfView = 60f;
             cam.nearClipPlane = 0.1f;
             cam.farClipPlane = 300f;
+            cam.clearFlags = CameraClearFlags.Color;
+            cam.backgroundColor = new Color(0.04f, 0.05f, 0.08f);
             camObj.AddComponent<AudioListener>();
+
+            var camData = camObj.AddComponent<UniversalAdditionalCameraData>();
+            SetSerializedField(camData, "m_RendererIndex", 1);
+            camData.renderPostProcessing = true;
+
             var camCtrl = camObj.AddComponent<ThirdPersonCameraController>();
             camCtrl.SetTarget(aeron.transform);
 
@@ -221,7 +297,7 @@ namespace LastGod.ThirdPerson.Editor
 
             for (int i = 0; i < guardSpawns.Length; i++)
             {
-                GameObject gObj = CreateGuardEnemy($"Guard_Security_{i + 1}", guardSpawns[i]);
+                GameObject gObj = CreateGuardEnemy($"Guard_Security_{i + 1}", guardSpawns[i], gunshotClip);
                 guardList.Add(gObj.GetComponent<GuardAI>());
             }
 
@@ -244,15 +320,40 @@ namespace LastGod.ThirdPerson.Editor
             SetSerializedField(director, "guards", guardList);
             SetSerializedField(director, "ambientSource", ambientSource);
             SetSerializedField(director, "sfxSource", sfxSource);
-            SetSerializedField(director, "heartbeatSFX", AudioManager.GenerateHeartbeatClip());
+            SetSerializedField(director, "heartbeatSFX", heartbeatClip);
+            SetSerializedField(director, "ambientLabDrone", droneClip);
+            SetSerializedField(director, "combatPulseMusic", combatClip);
+            SetSerializedField(director, "ominousEndingDrone", droneClip);
 
             // Save Scene
             string scenePath = "Assets/Scenes/Act1_Origin.unity";
             EditorSceneManager.SaveScene(scene, scenePath);
             Debug.Log($"<color=cyan>[The Last God]</color> Successfully built master playable scene: {scenePath}");
 
-            // Also build Main Menu Scene
-            BuildMainMenuScene();
+            try
+            {
+                string syncPath = Application.dataPath.Replace("\\", "/").Contains("/LAST-GOD/Assets")
+                    ? System.IO.Path.GetFullPath(System.IO.Path.Combine(Application.dataPath, "../../Assets/Scenes/Act1_Origin.unity"))
+                    : System.IO.Path.GetFullPath(System.IO.Path.Combine(Application.dataPath, "../LAST-GOD/Assets/Scenes/Act1_Origin.unity"));
+                if (System.IO.Directory.Exists(System.IO.Path.GetDirectoryName(syncPath)))
+                {
+                    System.IO.File.Copy(scenePath, syncPath, true);
+                }
+            }
+            catch {}
+
+            // Open Scene
+            EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
+
+            // Auto-launch into Play Mode
+            EditorApplication.delayCall += () =>
+            {
+                if (!EditorApplication.isPlaying)
+                {
+                    Debug.Log("<color=green>[The Last God]</color> Auto-launching Act 1 (Origin) into Play Mode...");
+                    EditorApplication.isPlaying = true;
+                }
+            };
         }
 
         [MenuItem("The Last God/Build Main Menu Scene", false, 2)]
@@ -271,6 +372,10 @@ namespace LastGod.ThirdPerson.Editor
             camObj.transform.position = new Vector3(0f, 2.0f, -4.5f);
             camObj.transform.rotation = Quaternion.Euler(12f, 0f, 0f);
             camObj.AddComponent<AudioListener>();
+
+            var camData = camObj.AddComponent<UniversalAdditionalCameraData>();
+            SetSerializedField(camData, "m_RendererIndex", 1);
+            camData.renderPostProcessing = true;
 
             // Main Menu UI Controller
             camObj.AddComponent<MainMenuUI>();
@@ -296,6 +401,18 @@ namespace LastGod.ThirdPerson.Editor
             string menuPath = "Assets/Scenes/MainMenu_Origin.unity";
             EditorSceneManager.SaveScene(menuScene, menuPath);
             Debug.Log($"<color=cyan>[The Last God]</color> Successfully built cinematic main menu: {menuPath}");
+
+            try
+            {
+                string syncMenuPath = Application.dataPath.Replace("\\", "/").Contains("/LAST-GOD/Assets")
+                    ? System.IO.Path.GetFullPath(System.IO.Path.Combine(Application.dataPath, "../../Assets/Scenes/MainMenu_Origin.unity"))
+                    : System.IO.Path.GetFullPath(System.IO.Path.Combine(Application.dataPath, "../LAST-GOD/Assets/Scenes/MainMenu_Origin.unity"));
+                if (System.IO.Directory.Exists(System.IO.Path.GetDirectoryName(syncMenuPath)))
+                {
+                    System.IO.File.Copy(menuPath, syncMenuPath, true);
+                }
+            }
+            catch {}
         }
 
         private static GameObject CreateAeronCharacter(Vector3 position)
@@ -321,33 +438,63 @@ namespace LastGod.ThirdPerson.Editor
             SetSerializedField(controller, "punchSFX", AudioManager.GeneratePunchImpactClip());
             SetSerializedField(controller, "heavyStrikeSFX", AudioManager.GeneratePunchImpactClip());
 
-            // Visual mesh body
+            // Visual mesh body with Authentic Seamless Idle Animation
             GameObject visual = new GameObject("Aeron_Visual");
             visual.transform.SetParent(aeron.transform);
             visual.transform.localPosition = Vector3.zero;
+            visual.transform.localScale = new Vector3(0.28f, 0.28f, 0.28f);
 
-            // Torso
-            GameObject torso = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            torso.name = "Torso";
-            torso.transform.SetParent(visual.transform);
-            torso.transform.localPosition = new Vector3(0f, 0.95f, 0f);
-            torso.transform.localScale = new Vector3(0.55f, 0.55f, 0.35f);
-            Object.DestroyImmediate(torso.GetComponent<Collider>());
-            torso.GetComponent<Renderer>().material = CreateColorMaterial(new Color(0.08f, 0.08f, 0.10f), 0.2f, 0.5f); // Black containment suit
+            // 1. Sprite Renderer with Aeron Idle Frame
+            SpriteRenderer sr = visual.AddComponent<SpriteRenderer>();
+            Sprite idleSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Characters/Aeron/Sprites/Idle/Aeron_Idle_01.png");
+            if (idleSprite != null)
+            {
+                sr.sprite = idleSprite;
+            }
+            sr.sortingOrder = 10;
+            Shader spriteShader = Shader.Find("Sprites/Default") ?? Shader.Find("Universal Render Pipeline/2D/Sprite-Unlit-Default") ?? Shader.Find("Unlit/Texture");
+            if (spriteShader != null)
+            {
+                sr.material = new Material(spriteShader);
+            }
 
-            // Head
-            GameObject head = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            head.name = "Head";
-            head.transform.SetParent(visual.transform);
-            head.transform.localPosition = new Vector3(0f, 1.62f, 0f);
-            head.transform.localScale = new Vector3(0.32f, 0.35f, 0.32f);
-            Object.DestroyImmediate(head.GetComponent<Collider>());
-            head.GetComponent<Renderer>().material = CreateColorMaterial(new Color(0.85f, 0.78f, 0.72f), 0.05f, 0.3f); // Pale skin
+            // 2. Animator with Aeron Runtime Controller
+            Animator anim = visual.AddComponent<Animator>();
+            RuntimeAnimatorController animController = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>("Assets/Characters/Aeron/Animator/Aeron.controller");
+            if (animController != null)
+            {
+                anim.runtimeAnimatorController = animController;
+            }
 
-            // Eye glow for Ascension Surge
+            // 3. Procedural Idle Motion Nodes
+            GameObject headNode = new GameObject("HeadNode");
+            headNode.transform.SetParent(visual.transform);
+            headNode.transform.localPosition = new Vector3(0f, 5.8f, 0f);
+
+            GameObject torsoNode = new GameObject("TorsoNode");
+            torsoNode.transform.SetParent(visual.transform);
+            torsoNode.transform.localPosition = new Vector3(0f, 3.5f, 0f);
+
+            GameObject backTubesNode = new GameObject("BackTubesNode");
+            backTubesNode.transform.SetParent(visual.transform);
+            backTubesNode.transform.localPosition = new Vector3(0f, 3.8f, 0f);
+
+            // 4. Aeron Idle Controller
+            AeronIdleController idleController = visual.AddComponent<AeronIdleController>();
+            SetSerializedField(idleController, "animator", anim);
+            SetSerializedField(idleController, "spriteRenderer", sr);
+            SetSerializedField(idleController, "snapToGround", false);
+            SetSerializedField(idleController, "headNode", headNode.transform);
+            SetSerializedField(idleController, "torsoNode", torsoNode.transform);
+            SetSerializedField(idleController, "backTubesNode", backTubesNode.transform);
+
+            // 5. Billboard Alignment to Third-Person Camera
+            AeronBillboard billboard = visual.AddComponent<AeronBillboard>();
+
+            // 6. Eye glow for Ascension Surge
             GameObject eyeLight = new GameObject("EyeGlowLight");
-            eyeLight.transform.SetParent(head.transform);
-            eyeLight.transform.localPosition = new Vector3(0f, 0.05f, 0.2f);
+            eyeLight.transform.SetParent(visual.transform);
+            eyeLight.transform.localPosition = new Vector3(0f, 5.8f, 0.5f);
             Light eLight = eyeLight.AddComponent<Light>();
             eLight.type = LightType.Point;
             eLight.color = new Color(0.2f, 0.9f, 1.0f);
@@ -356,10 +503,11 @@ namespace LastGod.ThirdPerson.Editor
             eLight.enabled = false;
             SetSerializedField(surge, "eyeGlowLight", eLight);
 
-            // Procedural Animator Link
+            // 7. Third-Person Player Animator Link
             var pAnim = visual.AddComponent<ThirdPersonPlayerAnimator>();
-            SetSerializedField(pAnim, "torso", torso.transform);
-            SetSerializedField(pAnim, "head", head.transform);
+            SetSerializedField(pAnim, "torso", torsoNode.transform);
+            SetSerializedField(pAnim, "head", headNode.transform);
+            SetSerializedField(pAnim, "characterRenderer", sr);
 
             return aeron;
         }
@@ -390,7 +538,7 @@ namespace LastGod.ThirdPerson.Editor
             return voss;
         }
 
-        private static GameObject CreateGuardEnemy(string name, Vector3 position)
+        private static GameObject CreateGuardEnemy(string name, Vector3 position, AudioClip gunshotClip)
         {
             GameObject guard = new GameObject(name);
             guard.tag = "Enemy";
@@ -409,7 +557,7 @@ namespace LastGod.ThirdPerson.Editor
 
             AudioSource gAudio = guard.AddComponent<AudioSource>();
             SetSerializedField(weapon, "audioSource", gAudio);
-            SetSerializedField(weapon, "gunshotSFX", AudioManager.GenerateGunshotClip());
+            SetSerializedField(weapon, "gunshotSFX", gunshotClip);
 
             // Visual Tactical Suit
             GameObject body = GameObject.CreatePrimitive(PrimitiveType.Capsule);
@@ -458,23 +606,85 @@ namespace LastGod.ThirdPerson.Editor
             return guard;
         }
 
+        private static ParticleSystem CreateBubblesParticleSystem(Transform parent)
+        {
+            GameObject pObj = new GameObject("Bubbles_VFX");
+            pObj.transform.SetParent(parent);
+            pObj.transform.localPosition = new Vector3(0f, 0.2f, 0f);
+            ParticleSystem ps = pObj.AddComponent<ParticleSystem>();
+            var main = ps.main;
+            main.startColor = new Color(0.3f, 0.85f, 1f, 0.5f);
+            main.startSize = 0.08f;
+            main.startSpeed = 0.6f;
+            main.startLifetime = 2.0f;
+            main.maxParticles = 80;
+            var shape = ps.shape;
+            shape.shapeType = ParticleSystemShapeType.Circle;
+            shape.radius = 0.8f;
+            var emission = ps.emission;
+            emission.rateOverTime = 20f;
+            return ps;
+        }
+
+        private static ParticleSystem CreateBurstParticleSystem(Transform parent, string name, Color color, int count)
+        {
+            GameObject pObj = new GameObject(name);
+            pObj.transform.SetParent(parent);
+            pObj.transform.localPosition = new Vector3(0f, 1.2f, 0f);
+            ParticleSystem ps = pObj.AddComponent<ParticleSystem>();
+            var main = ps.main;
+            main.startColor = color;
+            main.startSize = 0.15f;
+            main.startSpeed = 4.0f;
+            main.startLifetime = 1.0f;
+            main.loop = false;
+            main.playOnAwake = false;
+            main.maxParticles = count;
+            var shape = ps.shape;
+            shape.shapeType = ParticleSystemShapeType.Sphere;
+            shape.radius = 0.5f;
+            var emission = ps.emission;
+            emission.rateOverTime = 0;
+            emission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0f, count) });
+            return ps;
+        }
+
         private static void SetSerializedField(Object target, string fieldName, object value)
         {
+            if (target == null) return;
             var serializedObj = new SerializedObject(target);
             var prop = serializedObj.FindProperty(fieldName);
             if (prop != null)
             {
-                if (value is Object uObj) prop.objectReferenceValue = uObj;
+                if (value is Object uObj)
+                {
+                    prop.objectReferenceValue = uObj;
+                }
+                else if (value is System.Collections.IList list)
+                {
+                    prop.arraySize = list.Count;
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        var elementProp = prop.GetArrayElementAtIndex(i);
+                        if (list[i] is Object elemObj)
+                        {
+                            elementProp.objectReferenceValue = elemObj;
+                        }
+                    }
+                }
+                else if (value is float f) prop.floatValue = f;
+                else if (value is int num) prop.intValue = num;
+                else if (value is bool b) prop.boolValue = b;
+                else if (value is string s) prop.stringValue = s;
+
                 serializedObj.ApplyModifiedPropertiesWithoutUndo();
             }
-            else
+
+            // Always assign directly via reflection as well to ensure runtime consistency
+            var field = target.GetType().GetField(fieldName, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+            if (field != null)
             {
-                // Reflection fallback for private fields
-                var field = target.GetType().GetField(fieldName, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-                if (field != null)
-                {
-                    field.SetValue(target, value);
-                }
+                try { field.SetValue(target, value); } catch {}
             }
         }
 
@@ -492,8 +702,16 @@ namespace LastGod.ThirdPerson.Editor
         {
             Shader shader = Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard");
             Material mat = new Material(shader);
-            mat.color = new Color(0.25f, 0.55f, 0.85f, 0.35f);
+            mat.color = new Color(0.18f, 0.65f, 0.9f, 0.25f);
             if (mat.HasProperty("_Surface")) mat.SetFloat("_Surface", 1f);
+            if (mat.HasProperty("_Blend")) mat.SetFloat("_Blend", 0f);
+            mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            mat.SetInt("_ZWrite", 0);
+            mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+            mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            if (mat.HasProperty("_Smoothness")) mat.SetFloat("_Smoothness", 0.95f);
+            if (mat.HasProperty("_Metallic")) mat.SetFloat("_Metallic", 0.1f);
             return mat;
         }
 
@@ -501,8 +719,16 @@ namespace LastGod.ThirdPerson.Editor
         {
             Shader shader = Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard");
             Material mat = new Material(shader);
-            mat.color = new Color(0.1f, 0.8f, 0.95f, 0.65f);
+            mat.color = new Color(0.08f, 0.75f, 0.92f, 0.45f);
             if (mat.HasProperty("_Surface")) mat.SetFloat("_Surface", 1f);
+            if (mat.HasProperty("_Blend")) mat.SetFloat("_Blend", 0f);
+            mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            mat.SetInt("_ZWrite", 0);
+            mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+            mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            mat.EnableKeyword("_EMISSION");
+            if (mat.HasProperty("_EmissionColor")) mat.SetColor("_EmissionColor", new Color(0.05f, 0.45f, 0.65f) * 0.8f);
             return mat;
         }
 

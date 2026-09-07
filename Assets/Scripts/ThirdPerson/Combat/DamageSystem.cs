@@ -4,6 +4,10 @@ using UnityEngine.Events;
 
 namespace LastGod.ThirdPerson.Combat
 {
+    public class DamageSystem : MonoBehaviour
+    {
+    }
+
     public struct DamageInfo
     {
         public float Amount;

@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "aseprite": {
+      "command": "C:/Users/Surya VM/.local/bin/uv.exe",
+      "args": [
+        "--directory",
+        "C:/projects/aseprite-mcp",
+        "run",
+        "-m",
+        "aseprite_mcp"
+      ],
+      "env": {
+        "ASEPRITE_PATH": "C:/projects/aseprite/build/bin/aseprite.exe"
+      }
+    }
+  }
+}

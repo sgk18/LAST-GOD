@@ -20,7 +20,8 @@ namespace LastGod.Editor
 
             string[] scenes = new string[]
             {
-                "Assets/Scenes/Act1_Scene1_Lab.unity"
+                "Assets/Scenes/MainMenu_Origin.unity",
+                "Assets/Scenes/Act1_Origin.unity"
             };
 
             BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions

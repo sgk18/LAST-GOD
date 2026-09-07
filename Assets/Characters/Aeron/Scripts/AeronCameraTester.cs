@@ -33,9 +33,16 @@ namespace LastGod.Characters.Aeron
 
         private void Update()
         {
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha1)) SetView(ViewDistance.FullBody);
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha2)) SetView(ViewDistance.MediumShot);
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha3)) SetView(ViewDistance.CloseUp);
+            try
+            {
+                if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha1)) SetView(ViewDistance.FullBody);
+                if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha2)) SetView(ViewDistance.MediumShot);
+                if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha3)) SetView(ViewDistance.CloseUp);
+            }
+            catch (System.InvalidOperationException)
+            {
+                // Legacy input inactive
+            }
 
             Vector3 basePos = target != null ? target.position : Vector3.zero;
             Vector3 desiredPos = basePos + _targetPos;

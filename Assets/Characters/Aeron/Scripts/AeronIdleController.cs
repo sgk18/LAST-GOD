@@ -21,6 +21,8 @@ namespace LastGod.Characters.Aeron
         [Header("Animator Control")]
         [SerializeField] private Animator animator;
         [SerializeField] private SpriteRenderer spriteRenderer;
+        [Range(0.1f, 2.0f)]
+        [SerializeField] private float playbackSpeed = 1.0f;
 
         [Header("Grounding")]
         [SerializeField] private bool snapToGround = true;
@@ -67,9 +69,22 @@ namespace LastGod.Characters.Aeron
 
         private void Start()
         {
+            if (animator != null)
+            {
+                animator.speed = playbackSpeed;
+            }
+
             if (snapToGround)
             {
                 PerformGroundSnap();
+            }
+        }
+
+        private void OnValidate()
+        {
+            if (animator != null)
+            {
+                animator.speed = playbackSpeed;
             }
         }
 

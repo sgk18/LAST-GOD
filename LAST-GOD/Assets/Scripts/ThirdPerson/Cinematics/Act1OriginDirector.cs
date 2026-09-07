@@ -34,7 +34,7 @@ namespace LastGod.ThirdPerson.Cinematics
         [SerializeField] private AudioClip ominousEndingDrone;
 
         [Header("GUI / Title Overlay")]
-        private float _fadeAlpha = 1.0f;
+        private float _fadeAlpha = 0.0f;
         private string _centerBanner = "";
         private string _titleCardText = "";
         private bool _actComplete;
@@ -42,6 +42,8 @@ namespace LastGod.ThirdPerson.Cinematics
         private int _guardsDefeatedCount;
         private bool _isCombatActive;
         private bool _hasPlayedHandMoment;
+        private bool _cutsceneFinished;
+        private Coroutine _progressionCoroutine;
 
         public bool IsCombatActive => _isCombatActive;
         public bool IsActComplete => _actComplete;
@@ -58,7 +60,56 @@ namespace LastGod.ThirdPerson.Cinematics
 
         private void Start()
         {
-            StartCoroutine(MasterAct1ProgressionRoutine());
+            _progressionCoroutine = StartCoroutine(MasterAct1ProgressionRoutine());
+        }
+
+        private void Update()
+        {
+            if (!_cutsceneFinished && !_isCombatActive && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return)))
+            {
+                SkipCutscene();
+            }
+        }
+
+        public void SkipCutscene()
+        {
+            if (_cutsceneFinished || _isCombatActive) return;
+            if (_progressionCoroutine != null)
+            {
+                StopCoroutine(_progressionCoroutine);
+            }
+            StartCoroutine(ImmediateCombatStart());
+        }
+
+        private IEnumerator ImmediateCombatStart()
+        {
+            _cutsceneFinished = true;
+            _fadeAlpha = 0f;
+            if (lighting != null) lighting.SetLightingMode(LabLightingController.LightingMode.EmergencyAlert);
+            if (chamber != null) chamber.ShatterChamber();
+            if (securityDoor != null) securityDoor.UnlockAndOpen();
+            if (cameraController != null) cameraController.ReleaseCinematicControl();
+            if (player != null) player.SetInputLocked(false);
+            SaveSystem.SaveCheckpoint(1);
+
+            StartCoroutine(DisplayAwakenPrompt());
+
+            _isCombatActive = true;
+            foreach (var g in guards)
+            {
+                if (g != null) g.TriggerAlert();
+            }
+
+            if (ambientSource != null && combatPulseMusic != null)
+            {
+                ambientSource.clip = combatPulseMusic;
+                ambientSource.loop = true;
+                ambientSource.volume = 0.5f;
+                ambientSource.Play();
+            }
+
+            _progressionCoroutine = StartCoroutine(CombatToClimaxRoutine());
+            yield break;
         }
 
         private IEnumerator MasterAct1ProgressionRoutine()
@@ -256,6 +307,11 @@ namespace LastGod.ThirdPerson.Cinematics
                 ambientSource.Play();
             }
 
+            yield return StartCoroutine(CombatToClimaxRoutine());
+        }
+
+        private IEnumerator CombatToClimaxRoutine()
+        {
             // Wait until guards are defeated
             while (AreGuardsAlive())
             {
@@ -365,11 +421,23 @@ namespace LastGod.ThirdPerson.Cinematics
         private void OnGUI()
         {
             // Fullscreen fade overlay
-            if (_fadeAlpha > 0.001f)
+            if (Application.isPlaying && _fadeAlpha > 0.01f)
             {
                 GUI.color = new Color(0f, 0f, 0f, _fadeAlpha);
                 GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), Texture2D.whiteTexture);
                 GUI.color = Color.white;
+            }
+
+            // Cutscene skip hint
+            if (Application.isPlaying && !_cutsceneFinished && !_isCombatActive)
+            {
+                GUIStyle skipStyle = new GUIStyle(GUI.skin.label)
+                {
+                    fontSize = 13,
+                    alignment = TextAnchor.LowerRight
+                };
+                skipStyle.normal.textColor = new Color(0.8f, 0.9f, 1f, 0.5f);
+                GUI.Label(new Rect(0, Screen.height - 45, Screen.width - 25, 30), "[SPACE / ENTER] Skip Cinematic", skipStyle);
             }
 
             // Awakening subtle message

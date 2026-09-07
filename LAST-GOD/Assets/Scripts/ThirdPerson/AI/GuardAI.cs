@@ -59,10 +59,14 @@ namespace LastGod.ThirdPerson.AI
         {
             _cc = GetComponent<CharacterController>();
             _health = GetComponent<Health3D>();
+            if (_health == null) _health = gameObject.AddComponent<Health3D>();
             if (weapon == null) weapon = GetComponentInChildren<GuardWeapon>();
 
-            _health.OnDamaged.AddListener(OnTakeDamage);
-            _health.OnDeath.AddListener(OnDeath);
+            if (_health != null)
+            {
+                _health.OnDamaged.AddListener(OnTakeDamage);
+                _health.OnDeath.AddListener(OnDeath);
+            }
         }
 
         private void Start()

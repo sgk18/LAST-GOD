@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering.Universal;
 using LastGod.ThirdPerson.Player;
 using LastGod.ThirdPerson.AI;
 using LastGod.ThirdPerson.Combat;
@@ -12,9 +13,11 @@ using LastGod.ThirdPerson.Environment;
 using LastGod.ThirdPerson.Dialogue;
 using LastGod.ThirdPerson.UI;
 using LastGod.ThirdPerson.Audio;
+using LastGod.Characters.Aeron;
 
 namespace LastGod.ThirdPerson.Editor
 {
+    // Auto-reload trigger: 09:57
     [InitializeOnLoad]
     public static class Act1OriginSceneBuilder
     {
@@ -25,10 +28,11 @@ namespace LastGod.ThirdPerson.Editor
 
         private static void AutoBuildIfNeeded()
         {
-            if (!System.IO.File.Exists("Assets/Scenes/Act1_Origin.unity"))
+            string triggerFile = "Temp/rebuild_act1_origin.trigger";
+            bool forceRebuild = System.IO.File.Exists(triggerFile);
+            if (forceRebuild)
             {
-                Debug.Log("[Act1OriginSceneBuilder] Act1_Origin.unity missing. Building complete Act 1 (Origin) scene...");
-                BuildAct1OriginScene();
+                try { System.IO.File.Delete(triggerFile); } catch {}
             }
 
             if (!System.IO.File.Exists("Assets/Scenes/MainMenu_Origin.unity"))
@@ -36,7 +40,31 @@ namespace LastGod.ThirdPerson.Editor
                 Debug.Log("[Act1OriginSceneBuilder] MainMenu_Origin.unity missing. Building cinematic main menu scene...");
                 BuildMainMenuScene();
             }
+
+            if (forceRebuild || !System.IO.File.Exists("Assets/Scenes/Act1_Origin.unity"))
+            {
+                Debug.Log("[Act1OriginSceneBuilder] Building complete Act 1 (Origin) scene with authentic Aeron Idle Animation...");
+                BuildAct1OriginScene();
+            }
+            else
+            {
+                EditorSceneManager.OpenScene("Assets/Scenes/Act1_Origin.unity", OpenSceneMode.Single);
+            }
         }
+
+        [MenuItem("The Last God/Open Act 1 (Origin) Scene", false, 0)]
+        public static void OpenAct1OriginScene()
+        {
+            if (System.IO.File.Exists("Assets/Scenes/Act1_Origin.unity"))
+            {
+                EditorSceneManager.OpenScene("Assets/Scenes/Act1_Origin.unity", OpenSceneMode.Single);
+            }
+            else
+            {
+                BuildAct1OriginScene();
+            }
+        }
+
         [MenuItem("The Last God/Build Complete Act 1 (Origin) Scene", false, 1)]
         public static void BuildAct1OriginScene()
         {
@@ -164,7 +192,7 @@ namespace LastGod.ThirdPerson.Editor
             SetSerializedField(chamber, "audioSource", chAudio);
             SetSerializedField(chamber, "glassShatterSFX", shatterClip);
 
-            // 6. Aeron (Playable Protagonist)
+            // 6. Aeron (Playable Protagonist with Authentic Seamless Idle Animation)
             GameObject aeron = CreateAeronCharacter(new Vector3(0f, 0.7f, 0f));
 
             // 7. Third-Person Main Camera
@@ -174,7 +202,14 @@ namespace LastGod.ThirdPerson.Editor
             cam.fieldOfView = 60f;
             cam.nearClipPlane = 0.1f;
             cam.farClipPlane = 300f;
+            cam.clearFlags = CameraClearFlags.Color;
+            cam.backgroundColor = new Color(0.04f, 0.05f, 0.08f);
             camObj.AddComponent<AudioListener>();
+
+            var camData = camObj.AddComponent<UniversalAdditionalCameraData>();
+            SetSerializedField(camData, "m_RendererIndex", 1);
+            camData.renderPostProcessing = true;
+
             var camCtrl = camObj.AddComponent<ThirdPersonCameraController>();
             camCtrl.SetTarget(aeron.transform);
 
@@ -251,8 +286,20 @@ namespace LastGod.ThirdPerson.Editor
             EditorSceneManager.SaveScene(scene, scenePath);
             Debug.Log($"<color=cyan>[The Last God]</color> Successfully built master playable scene: {scenePath}");
 
-            // Also build Main Menu Scene
-            BuildMainMenuScene();
+            try
+            {
+                string syncPath = Application.dataPath.Replace("\\", "/").Contains("/LAST-GOD/Assets")
+                    ? System.IO.Path.GetFullPath(System.IO.Path.Combine(Application.dataPath, "../../Assets/Scenes/Act1_Origin.unity"))
+                    : System.IO.Path.GetFullPath(System.IO.Path.Combine(Application.dataPath, "../LAST-GOD/Assets/Scenes/Act1_Origin.unity"));
+                if (System.IO.Directory.Exists(System.IO.Path.GetDirectoryName(syncPath)))
+                {
+                    System.IO.File.Copy(scenePath, syncPath, true);
+                }
+            }
+            catch {}
+
+            // Open Scene
+            EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
         }
 
         [MenuItem("The Last God/Build Main Menu Scene", false, 2)]
@@ -271,6 +318,10 @@ namespace LastGod.ThirdPerson.Editor
             camObj.transform.position = new Vector3(0f, 2.0f, -4.5f);
             camObj.transform.rotation = Quaternion.Euler(12f, 0f, 0f);
             camObj.AddComponent<AudioListener>();
+
+            var camData = camObj.AddComponent<UniversalAdditionalCameraData>();
+            SetSerializedField(camData, "m_RendererIndex", 1);
+            camData.renderPostProcessing = true;
 
             // Main Menu UI Controller
             camObj.AddComponent<MainMenuUI>();
@@ -296,6 +347,18 @@ namespace LastGod.ThirdPerson.Editor
             string menuPath = "Assets/Scenes/MainMenu_Origin.unity";
             EditorSceneManager.SaveScene(menuScene, menuPath);
             Debug.Log($"<color=cyan>[The Last God]</color> Successfully built cinematic main menu: {menuPath}");
+
+            try
+            {
+                string syncMenuPath = Application.dataPath.Replace("\\", "/").Contains("/LAST-GOD/Assets")
+                    ? System.IO.Path.GetFullPath(System.IO.Path.Combine(Application.dataPath, "../../Assets/Scenes/MainMenu_Origin.unity"))
+                    : System.IO.Path.GetFullPath(System.IO.Path.Combine(Application.dataPath, "../LAST-GOD/Assets/Scenes/MainMenu_Origin.unity"));
+                if (System.IO.Directory.Exists(System.IO.Path.GetDirectoryName(syncMenuPath)))
+                {
+                    System.IO.File.Copy(menuPath, syncMenuPath, true);
+                }
+            }
+            catch {}
         }
 
         private static GameObject CreateAeronCharacter(Vector3 position)
@@ -321,33 +384,63 @@ namespace LastGod.ThirdPerson.Editor
             SetSerializedField(controller, "punchSFX", AudioManager.GeneratePunchImpactClip());
             SetSerializedField(controller, "heavyStrikeSFX", AudioManager.GeneratePunchImpactClip());
 
-            // Visual mesh body
+            // Visual mesh body with Authentic Seamless Idle Animation
             GameObject visual = new GameObject("Aeron_Visual");
             visual.transform.SetParent(aeron.transform);
             visual.transform.localPosition = Vector3.zero;
+            visual.transform.localScale = new Vector3(0.28f, 0.28f, 0.28f);
 
-            // Torso
-            GameObject torso = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            torso.name = "Torso";
-            torso.transform.SetParent(visual.transform);
-            torso.transform.localPosition = new Vector3(0f, 0.95f, 0f);
-            torso.transform.localScale = new Vector3(0.55f, 0.55f, 0.35f);
-            Object.DestroyImmediate(torso.GetComponent<Collider>());
-            torso.GetComponent<Renderer>().material = CreateColorMaterial(new Color(0.08f, 0.08f, 0.10f), 0.2f, 0.5f); // Black containment suit
+            // 1. Sprite Renderer with Aeron Idle Frame
+            SpriteRenderer sr = visual.AddComponent<SpriteRenderer>();
+            Sprite idleSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Characters/Aeron/Sprites/Idle/Aeron_Idle_01.png");
+            if (idleSprite != null)
+            {
+                sr.sprite = idleSprite;
+            }
+            sr.sortingOrder = 10;
+            Shader spriteShader = Shader.Find("Sprites/Default") ?? Shader.Find("Universal Render Pipeline/2D/Sprite-Unlit-Default") ?? Shader.Find("Unlit/Texture");
+            if (spriteShader != null)
+            {
+                sr.material = new Material(spriteShader);
+            }
 
-            // Head
-            GameObject head = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            head.name = "Head";
-            head.transform.SetParent(visual.transform);
-            head.transform.localPosition = new Vector3(0f, 1.62f, 0f);
-            head.transform.localScale = new Vector3(0.32f, 0.35f, 0.32f);
-            Object.DestroyImmediate(head.GetComponent<Collider>());
-            head.GetComponent<Renderer>().material = CreateColorMaterial(new Color(0.85f, 0.78f, 0.72f), 0.05f, 0.3f); // Pale skin
+            // 2. Animator with Aeron Runtime Controller
+            Animator anim = visual.AddComponent<Animator>();
+            RuntimeAnimatorController animController = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>("Assets/Characters/Aeron/Animator/Aeron.controller");
+            if (animController != null)
+            {
+                anim.runtimeAnimatorController = animController;
+            }
 
-            // Eye glow for Ascension Surge
+            // 3. Procedural Idle Motion Nodes
+            GameObject headNode = new GameObject("HeadNode");
+            headNode.transform.SetParent(visual.transform);
+            headNode.transform.localPosition = new Vector3(0f, 5.8f, 0f);
+
+            GameObject torsoNode = new GameObject("TorsoNode");
+            torsoNode.transform.SetParent(visual.transform);
+            torsoNode.transform.localPosition = new Vector3(0f, 3.5f, 0f);
+
+            GameObject backTubesNode = new GameObject("BackTubesNode");
+            backTubesNode.transform.SetParent(visual.transform);
+            backTubesNode.transform.localPosition = new Vector3(0f, 3.8f, 0f);
+
+            // 4. Aeron Idle Controller
+            AeronIdleController idleController = visual.AddComponent<AeronIdleController>();
+            SetSerializedField(idleController, "animator", anim);
+            SetSerializedField(idleController, "spriteRenderer", sr);
+            SetSerializedField(idleController, "snapToGround", false);
+            SetSerializedField(idleController, "headNode", headNode.transform);
+            SetSerializedField(idleController, "torsoNode", torsoNode.transform);
+            SetSerializedField(idleController, "backTubesNode", backTubesNode.transform);
+
+            // 5. Billboard Alignment to Third-Person Camera
+            AeronBillboard billboard = visual.AddComponent<AeronBillboard>();
+
+            // 6. Eye glow for Ascension Surge
             GameObject eyeLight = new GameObject("EyeGlowLight");
-            eyeLight.transform.SetParent(head.transform);
-            eyeLight.transform.localPosition = new Vector3(0f, 0.05f, 0.2f);
+            eyeLight.transform.SetParent(visual.transform);
+            eyeLight.transform.localPosition = new Vector3(0f, 5.8f, 0.5f);
             Light eLight = eyeLight.AddComponent<Light>();
             eLight.type = LightType.Point;
             eLight.color = new Color(0.2f, 0.9f, 1.0f);
@@ -356,10 +449,11 @@ namespace LastGod.ThirdPerson.Editor
             eLight.enabled = false;
             SetSerializedField(surge, "eyeGlowLight", eLight);
 
-            // Procedural Animator Link
+            // 7. Third-Person Player Animator Link
             var pAnim = visual.AddComponent<ThirdPersonPlayerAnimator>();
-            SetSerializedField(pAnim, "torso", torso.transform);
-            SetSerializedField(pAnim, "head", head.transform);
+            SetSerializedField(pAnim, "torso", torsoNode.transform);
+            SetSerializedField(pAnim, "head", headNode.transform);
+            SetSerializedField(pAnim, "characterRenderer", sr);
 
             return aeron;
         }

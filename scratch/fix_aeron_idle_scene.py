@@ -1,4 +1,7 @@
-%YAML 1.1
+import os
+
+def build_aeron_idle_test_scene():
+    yaml_content = """%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!29 &1
 OcclusionCullingSettings:
@@ -507,3 +510,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 100003}
+"""
+    targets = [
+        r"c:\projects\LAST-GOD\Assets\Scenes\Aeron_Idle_Test.unity",
+        r"c:\projects\LAST-GOD\LAST-GOD\Assets\Scenes\Aeron_Idle_Test.unity"
+    ]
+    for target in targets:
+        os.makedirs(os.path.dirname(target), exist_ok=True)
+        with open(target, "w", encoding="utf-8") as f:
+            f.write(yaml_content)
+        print(f"Written updated test scene: {target}")
+
+if __name__ == "__main__":
+    build_aeron_idle_test_scene()

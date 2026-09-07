@@ -16,7 +16,6 @@ namespace LastGod.Editor
     public static class AddChamberToScene
     {
         private const string ScenePath = "Assets/Scenes/Act1_Scene1.unity";
-        private const string LabScenePath = "Assets/Scenes/Act1_Scene1_Lab.unity";
         private const string ChamberSpritePath = "Assets/Art/Sprites/Glass_Chamber.png";
         private const string ChamberIntactPath = "Assets/Art/Sprites/Chamber_Intact.png";
         private const string CrackedSpritePath = "Assets/Art/Sprites/Chamber_Cracked.png";

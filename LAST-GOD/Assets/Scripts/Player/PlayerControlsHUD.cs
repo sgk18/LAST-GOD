@@ -45,10 +45,31 @@ namespace LastGod.Player
 
         private void Update()
         {
-            if (UnityEngine.Input.GetKeyDown(KeyCode.H))
+            if (IsToggleKeyPressed())
             {
                 showControlsGuide = !showControlsGuide;
             }
+        }
+
+        private bool IsToggleKeyPressed()
+        {
+#if ENABLE_INPUT_SYSTEM
+            if (UnityEngine.InputSystem.Keyboard.current != null && UnityEngine.InputSystem.Keyboard.current.hKey.wasPressedThisFrame)
+            {
+                return true;
+            }
+#endif
+#if ENABLE_LEGACY_INPUT_MANAGER
+            try
+            {
+                if (UnityEngine.Input.GetKeyDown(KeyCode.H)) return true;
+            }
+            catch
+            {
+                // Legacy input disabled in player settings
+            }
+#endif
+            return false;
         }
 
         private void OnGUI()
@@ -94,8 +115,8 @@ namespace LastGod.Player
         private void DrawControlsOverlay()
         {
             float screenH = Screen.height;
-            float boxW = 320f;
-            float boxH = 205f;
+            float boxW = 240f;
+            float boxH = 200f;
             float x = 20f;
             float y = screenH - boxH - 20f;
 
@@ -108,17 +129,37 @@ namespace LastGod.Player
             GUI.DrawTexture(new Rect(x, y, boxW, boxH), _bgTexture);
 
             // Content
-            GUILayout.BeginArea(new Rect(x + 12, y + 8, boxW - 24, boxH - 16));
+            GUILayout.BeginArea(new Rect(x + 10, y + 6, boxW - 20, boxH - 12));
 
-            GUILayout.Label("<color=#D8B468><b>CONTROLS</b></color> <size=10>(Press H to toggle)</size>", _headerStyle);
-            GUILayout.Space(4);
+            GUILayout.Label("<color=#D8B468><b>CONTROLS</b></color> <size=9>(Press H to toggle)</size>", _headerStyle);
+            GUILayout.Space(2);
 
-            DrawControlRow("A / D  or  ← / →", "Move / Run");
-            DrawControlRow("SPACE", "Jump & Double Jump!");
-            DrawControlRow("Left Click / J / Z", "3-Hit Sword Combo");
-            DrawControlRow("Left Shift / L / C", "Dodge Roll / Dash");
-            DrawControlRow("W / S (on Ladder)", "Climb Up / Down");
-            DrawControlRow("Right Click / K", "Shield Guard / Block");
+            bool isUnlocked = playerController != null && playerController.HasFireballPower;
+
+            if (isUnlocked)
+            {
+                GUILayout.Label("<color=#00FFCC><b>ACTIONS: (UNLOCKED)</b></color>", _headerStyle);
+                DrawControlRow("A/D or ←/→", "<color=#FFFFFF>Walk / Move</color>");
+                DrawControlRow("SPACE", "<color=#FFFFFF>Jump & Double</color>");
+                DrawControlRow("Left Click / J", "<color=#FF9933>Aim & Shoot Fire</color>");
+                DrawControlRow("Shift / L", "<color=#FFFFFF>Dodge Dash</color>");
+                DrawControlRow("Right Click", "<color=#FFFFFF>Shield Block</color>");
+                DrawControlRow("1/2/3/Q/E", "<color=#64D2FF>Special Powers</color>");
+            }
+            else
+            {
+                GUILayout.Label("<color=#00FFCC><b>ENABLED:</b></color>", _headerStyle);
+                DrawControlRow("A/D or ←/→", "<color=#FFFFFF>Walk / Move</color>");
+                DrawControlRow("SPACE", "<color=#FFFFFF>Jump & Double</color>");
+
+                GUILayout.Space(3);
+                GUILayout.Label("<color=#FFCC00><b>AWAKEN POWER:</b></color>", _headerStyle);
+                DrawControlRow("Left Click / J", "<color=#00FFCC>Awaken Power!</color>");
+
+                GUILayout.Space(3);
+                GUILayout.Label("<color=#FF5555><b>RESTRICTED:</b> 🔒 LOCKED</color>", _headerStyle);
+                DrawControlRow("Combat/Fire", "<color=#888888>Press J to Unlock</color>");
+            }
 
             GUILayout.EndArea();
         }
@@ -126,7 +167,7 @@ namespace LastGod.Player
         private void DrawControlRow(string key, string action)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label($"<color=#64D2FF><b>{key}</b></color>", _keyStyle, GUILayout.Width(130));
+            GUILayout.Label($"<color=#64D2FF><b>{key}</b></color>", _keyStyle, GUILayout.Width(100));
             GUILayout.Label(action, _bodyStyle);
             GUILayout.EndHorizontal();
         }

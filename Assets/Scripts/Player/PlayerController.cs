@@ -207,6 +207,12 @@ namespace LastGod.Player
         {
             EnsureCharacterVisibility();
             EnsureChronosAuraVisual();
+            // Start with walk & jump unlocked, combat locked until player presses to awaken
+            _controlsLocked = false;
+            if (chronosAuraVisual != null)
+            {
+                chronosAuraVisual.SetActive(false);
+            }
         }
 
         private void EnsureCharacterVisibility()
@@ -318,9 +324,49 @@ namespace LastGod.Player
             UpdateAnimationParameters();
             ProcessInput();
 
-            if (hasChronosAura && chronosAuraVisual != null)
+            // Check for player press to awaken Aeron and activate Chronos Chakra
+            if (!hasFireballPower && _awakeningCoroutine == null)
             {
-                chronosAuraVisual.transform.Rotate(0f, 0f, -45f * Time.deltaTime);
+                bool awakenPressed = false;
+#if ENABLE_INPUT_SYSTEM
+                var kb = Keyboard.current;
+                var mouse = Mouse.current;
+                if (kb != null)
+                {
+                    if (kb.jKey.wasPressedThisFrame || kb.eKey.wasPressedThisFrame || kb.qKey.wasPressedThisFrame ||
+                        kb.enterKey.wasPressedThisFrame || kb.fKey.wasPressedThisFrame || kb.kKey.wasPressedThisFrame ||
+                        kb.digit1Key.wasPressedThisFrame || kb.digit2Key.wasPressedThisFrame || kb.digit3Key.wasPressedThisFrame)
+                    {
+                        awakenPressed = true;
+                    }
+                }
+                if (mouse != null && (mouse.leftButton.wasPressedThisFrame || mouse.rightButton.wasPressedThisFrame))
+                {
+                    awakenPressed = true;
+                }
+#endif
+#if ENABLE_LEGACY_INPUT_MANAGER
+                try
+                {
+                    if (UnityEngine.Input.GetKeyDown(KeyCode.J) || UnityEngine.Input.GetKeyDown(KeyCode.E) ||
+                        UnityEngine.Input.GetKeyDown(KeyCode.Q) || UnityEngine.Input.GetKeyDown(KeyCode.F) ||
+                        UnityEngine.Input.GetKeyDown(KeyCode.Return) || UnityEngine.Input.GetMouseButtonDown(0) ||
+                        UnityEngine.Input.GetMouseButtonDown(1))
+                    {
+                        awakenPressed = true;
+                    }
+                }
+                catch { }
+#endif
+                if (awakenPressed)
+                {
+                    TriggerAwakening(2.4f);
+                }
+            }
+
+            if (chronosAuraVisual != null && chronosAuraVisual.activeSelf)
+            {
+                chronosAuraVisual.transform.Rotate(0f, 0f, -60f * Time.deltaTime);
             }
 
             // Clear single-frame flags
@@ -903,6 +949,7 @@ namespace LastGod.Player
 
             if (animator != null)
             {
+                animator.SetTrigger("Attack");
                 animator.SetTrigger("Attack" + _currentAttack);
             }
 
@@ -1082,8 +1129,37 @@ namespace LastGod.Player
             _rb.linearVelocity = Vector2.zero;
 
             EnsureChronosAuraVisual();
-            if (chronosAuraVisual != null) chronosAuraVisual.SetActive(true);
 
+            SpriteRenderer auraSr = chronosAuraVisual != null ? chronosAuraVisual.GetComponent<SpriteRenderer>() : null;
+            if (auraSr != null && auraSr.sprite == null)
+            {
+#if UNITY_EDITOR
+                auraSr.sprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Chronos_Aura_FX.png");
+#endif
+            }
+
+            // Calculate exact target scale so halo diameter is ~2.4 world units around Aeron's chest
+            float targetScale = 0.6f;
+            if (auraSr != null && auraSr.sprite != null && auraSr.sprite.rect.width > 0)
+            {
+                float spriteWorldWidth = auraSr.sprite.rect.width / auraSr.sprite.pixelsPerUnit;
+                targetScale = 2.4f / Mathf.Max(0.1f, spriteWorldWidth);
+            }
+
+            if (chronosAuraVisual != null)
+            {
+                chronosAuraVisual.transform.localPosition = new Vector3(0f, 0.6f, 0f);
+                chronosAuraVisual.transform.localScale = Vector3.zero;
+                chronosAuraVisual.SetActive(true);
+            }
+
+#if UNITY_EDITOR
+            if (awakeningVoiceClip == null)
+            {
+                awakeningVoiceClip = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/aeron_wakeup_voice.wav");
+            }
+#endif
+            if (audioSource == null) audioSource = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
             if (awakeningVoiceClip != null && audioSource != null)
             {
                 audioSource.PlayOneShot(awakeningVoiceClip);
@@ -1094,7 +1170,60 @@ namespace LastGod.Player
                 animator.SetTrigger("Hurt"); // Visual surge pulse
             }
 
-            yield return new WaitForSeconds(duration);
+            // Animate Chronos Chakra surge:
+            // Phase 1: Expand & flare up (0.0 to 0.4s)
+            // Phase 2: Glow & rotate while voice plays (0.4s to duration - 0.6s)
+            // Phase 3: Contract, fade out, and DISAPPEAR COMPLETELY (last 0.6s)
+            float elapsed = 0f;
+            float fadeOutStart = Mathf.Max(0.5f, duration - 0.6f);
+
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                float currentScale = targetScale;
+                float currentAlpha = 0.85f;
+
+                if (elapsed < 0.4f)
+                {
+                    // Expanding burst
+                    float t = elapsed / 0.4f;
+                    currentScale = Mathf.Lerp(0.05f, targetScale * 1.15f, Mathf.SmoothStep(0f, 1f, t));
+                    currentAlpha = Mathf.Lerp(0f, 0.85f, t);
+                }
+                else if (elapsed < fadeOutStart)
+                {
+                    // Rotating and gentle breathing pulse
+                    float pulse = 1f + 0.06f * Mathf.Sin((elapsed - 0.4f) * 10f);
+                    currentScale = targetScale * pulse;
+                    currentAlpha = 0.85f;
+                }
+                else
+                {
+                    // Contracting and fading out smoothly
+                    float t = (elapsed - fadeOutStart) / (duration - fadeOutStart);
+                    currentScale = Mathf.Lerp(targetScale, 0f, Mathf.SmoothStep(0f, 1f, t));
+                    currentAlpha = Mathf.Lerp(0.85f, 0f, t);
+                }
+
+                if (chronosAuraVisual != null)
+                {
+                    chronosAuraVisual.transform.localScale = new Vector3(currentScale, currentScale, 1f);
+                    chronosAuraVisual.transform.Rotate(0f, 0f, -160f * Time.deltaTime);
+                    if (auraSr != null)
+                    {
+                        auraSr.color = new Color(0f, 0.95f, 1.0f, currentAlpha);
+                    }
+                }
+
+                yield return null;
+            }
+
+            // AT THE END OF THE SURGE: THE CIRCLE CHAKRA MUST GO (DEACTIVATE COMPLETELY)!
+            if (chronosAuraVisual != null)
+            {
+                chronosAuraVisual.transform.localScale = Vector3.zero;
+                chronosAuraVisual.SetActive(false);
+            }
 
             hasChronosAura = true;
             hasFireballPower = true;
@@ -1124,13 +1253,13 @@ namespace LastGod.Player
                 {
                     GameObject auraObj = new GameObject("ChronosAura");
                     auraObj.transform.SetParent(transform, false);
-                    auraObj.transform.localPosition = new Vector3(0f, 1.2f, 0f);
-                    auraObj.transform.localScale = new Vector3(1.4f, 1.4f, 1f);
+                    auraObj.transform.localPosition = new Vector3(0f, 0.6f, 0f);
+                    auraObj.transform.localScale = Vector3.zero;
 
                     SpriteRenderer sr = auraObj.AddComponent<SpriteRenderer>();
                     sr.sortingLayerName = "Default";
-                    sr.sortingOrder = 11;
-                    sr.color = new Color(0f, 0.9f, 1.0f, 0.65f);
+                    sr.sortingOrder = 8; // Render BEHIND Aeron (order 10)
+                    sr.color = new Color(0f, 0.9f, 1.0f, 0.8f);
 
 #if UNITY_EDITOR
                     Sprite auraSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Chronos_Aura_FX.png");
@@ -1142,7 +1271,7 @@ namespace LastGod.Player
 
             if (chronosAuraVisual != null)
             {
-                chronosAuraVisual.SetActive(hasChronosAura);
+                chronosAuraVisual.SetActive(false); // MUST be inactive by default
             }
         }
 
@@ -1156,9 +1285,22 @@ namespace LastGod.Player
 
         public void CastFireball()
         {
+            StartCoroutine(PerformCastRoutine());
+        }
+
+        private System.Collections.IEnumerator PerformCastRoutine()
+        {
+            if (animator != null)
+            {
+                animator.SetTrigger("Attack");
+            }
+
+            // Frame 1 is aiming hand up (0.0 - 0.12s), Frame 2 releases the fire bullet (0.12s+)
+            yield return new WaitForSeconds(0.12f);
+
             Vector3 spawnPos = fireballSpawnPoint != null 
                 ? fireballSpawnPoint.position 
-                : transform.position + new Vector3(_facingRight ? 1.0f : -1.0f, 1.2f, 0f);
+                : transform.position + new Vector3(_facingRight ? 1.3f : -1.3f, 0.4f, 0f);
 
             GameObject fb = null;
             if (fireballPrefab != null)

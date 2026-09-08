@@ -207,17 +207,6 @@ namespace LastGod.Enemies
                     Vector2 shootDir = (_targetPlayer.position - spawnPos).normalized;
                     bullet.Initialize(shootDir, _targetPlayer);
                 }
-
-                // Awaken Aeron on first shot
-                if (!_hasAwakenedAeron)
-                {
-                    _hasAwakenedAeron = true;
-                    var pc = _targetPlayer.GetComponent<LastGod.Player.PlayerController>() ?? FindAnyObjectByType<LastGod.Player.PlayerController>();
-                    if (pc != null)
-                    {
-                        pc.AwakenByGuardShot();
-                    }
-                }
             }
         }
 

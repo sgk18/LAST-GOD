@@ -1,0 +1,6 @@
+{
+  "className": "CheckBounds",
+  "methodName": "Execute",
+  "isMethodBody": false,
+  "csharpCode": "using UnityEngine;\nusing UnityEngine.Tilemaps;\n\npublic class CheckBounds\n{\n    public static string Execute()\n    {\n        var groundTm = GameObject.Find(\"Grid_CatwalkFloor/Tilemap_CatwalkFloor\")?.GetComponent<Tilemap>();\n        var oneWayTm = GameObject.Find(\"Grid_CatwalkFloor/Tilemap_OneWayPlatforms\")?.GetComponent<Tilemap>();\n        \n        string gBounds = groundTm != null ? groundTm.cellBounds.ToString() : \"null\";\n        string oBounds = oneWayTm != null ? oneWayTm.cellBounds.ToString() : \"null\";\n        \n        return $\"Ground Bounds: {gBounds} | OneWay Bounds: {oBounds}\";\n    }\n}"
+}

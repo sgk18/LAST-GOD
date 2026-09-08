@@ -1,0 +1,6 @@
+{
+  "className": "CheckTimeScaleAndManager",
+  "methodName": "Execute",
+  "isMethodBody": false,
+  "csharpCode": "using UnityEngine;\n\npublic class CheckTimeScaleAndManager\n{\n    public static string Execute()\n    {\n        var seq = Object.FindFirstObjectByType<LastGod.Core.Act1Scene1SequenceManager>();\n        string seqInfo = seq != null ? \"SequenceManager found\" : \"No SequenceManager\";\n\n        return $\"Time.timeScale: {Time.timeScale}, Time.time: {Time.time}, {seqInfo}\";\n    }\n}"
+}

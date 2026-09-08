@@ -1,0 +1,6 @@
+{
+  "className": "InspectColliders",
+  "methodName": "Execute",
+  "isMethodBody": false,
+  "csharpCode": "using UnityEngine;\n\npublic class InspectColliders\n{\n    public static string Execute()\n    {\n        var guard = GameObject.Find(\"CyberGuard_Catwalk\");\n        if (guard == null) return \"Guard not found\";\n\n        var sb = new System.Text.StringBuilder();\n        sb.AppendLine(\"Guard Colliders:\");\n        foreach (var c in guard.GetComponents<Collider2D>())\n        {\n            sb.AppendLine($\"- Type: {c.GetType().Name}, isTrigger: {c.isTrigger}, bounds: {c.bounds}\");\n        }\n\n        var aeron = GameObject.Find(\"Aeron_Protagonist\");\n        if (aeron != null)\n        {\n            sb.AppendLine(\"Aeron Colliders:\");\n            foreach (var c in aeron.GetComponents<Collider2D>())\n            {\n                sb.AppendLine($\"- Type: {c.GetType().Name}, isTrigger: {c.isTrigger}, bounds: {c.bounds}\");\n            }\n        }\n\n        return sb.ToString();\n    }\n}"
+}

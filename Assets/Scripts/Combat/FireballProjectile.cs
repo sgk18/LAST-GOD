@@ -15,6 +15,7 @@ namespace LastGod.Combat
         [SerializeField] private float speed = 14f;
         [SerializeField] private int damage = 4;
         [SerializeField] private float lifeTime = 3.5f;
+        [SerializeField] private GameObject detonationVfxPrefab;
         [SerializeField] private AudioClip impactSFX;
 
         private Vector2 _direction = Vector2.right;
@@ -33,6 +34,10 @@ namespace LastGod.Combat
             _col.radius = 0.45f;
 
 #if UNITY_EDITOR
+            if (detonationVfxPrefab == null)
+            {
+                detonationVfxPrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/VFX/VFX_FireballDetonation.prefab");
+            }
             if (impactSFX == null)
             {
                 impactSFX = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/dark_magic_hit.wav");
@@ -80,6 +85,16 @@ namespace LastGod.Combat
 
             _hasHit = true;
 
+            if (detonationVfxPrefab != null)
+            {
+                Instantiate(detonationVfxPrefab, transform.position, Quaternion.identity);
+            }
+
+            if (impactSFX != null)
+            {
+                AudioSource.PlayClipAtPoint(impactSFX, transform.position, 1.0f);
+            }
+
             if (collision.TryGetComponent<IDamageable>(out var damageable))
             {
                 damageable.TakeDamage(damage, _direction * 4f);
@@ -87,11 +102,6 @@ namespace LastGod.Combat
             else if (collision.attachedRigidbody != null && collision.attachedRigidbody.TryGetComponent<IDamageable>(out var rbDamageable))
             {
                 rbDamageable.TakeDamage(damage, _direction * 4f);
-            }
-
-            if (impactSFX != null)
-            {
-                AudioSource.PlayClipAtPoint(impactSFX, transform.position, 1.0f);
             }
 
             Destroy(gameObject);

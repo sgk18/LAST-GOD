@@ -14,19 +14,35 @@ namespace LastGod.Combat
         [SerializeField] private float slowSpeed = 2f;
         [SerializeField] private float slowProximityRadius = 2.5f;
 
-        [Header("Damage")]
+        [Header("Damage & VFX")]
         [SerializeField] private int damage = 1;
         [SerializeField] private float lifetime = 4f;
+        [SerializeField] private GameObject impactVfxPrefab;
+        [SerializeField] private AudioClip impactSFX;
 
         private Vector2 _direction = Vector2.right;
         private Transform _playerTransform;
         private bool _isInitialized;
+
+        private void Awake()
+        {
+#if UNITY_EDITOR
+            if (impactVfxPrefab == null)
+            {
+                impactVfxPrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/VFX/VFX_LaserImpact_Sparks.prefab");
+            }
+#endif
+        }
 
         public void Initialize(Vector2 direction, Transform playerTarget)
         {
             _direction = direction.normalized;
             _playerTransform = playerTarget;
             _isInitialized = true;
+
+            float angle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0f, 0f, angle);
+
             Destroy(gameObject, lifetime);
         }
 
@@ -51,19 +67,25 @@ namespace LastGod.Combat
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            // Ignore other bullets or guards who fired
-            if (other.CompareTag("Enemy") || other.GetComponent<Bullet>() != null) return;
+            // Ignore other bullets, guards who fired, and enemies
+            if (other.CompareTag("Enemy") || other.name.IndexOf("Guard", System.StringComparison.OrdinalIgnoreCase) >= 0 || other.GetComponent<Bullet>() != null || other.isTrigger) return;
+
+            if (impactVfxPrefab != null)
+            {
+                Instantiate(impactVfxPrefab, transform.position, Quaternion.identity);
+            }
+
+            if (impactSFX != null)
+            {
+                AudioSource.PlayClipAtPoint(impactSFX, transform.position, 0.8f);
+            }
 
             if (other.TryGetComponent<IDamageable>(out var damageable))
             {
-                damageable.TakeDamage(damage, _direction);
-                Destroy(gameObject);
+                damageable.TakeDamage(damage, _direction * 2f);
             }
-            else if (!other.isTrigger)
-            {
-                // Hit wall / obstacle
-                Destroy(gameObject);
-            }
+
+            Destroy(gameObject);
         }
     }
 }

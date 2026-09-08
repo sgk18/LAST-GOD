@@ -1,0 +1,6 @@
+{
+  "className": "InspectAeronComponents",
+  "methodName": "Execute",
+  "isMethodBody": false,
+  "csharpCode": "using UnityEngine;\n\npublic class InspectAeronComponents\n{\n    public static string Execute()\n    {\n        var aeron = GameObject.Find(\"Aeron_Protagonist\");\n        if (aeron == null) return \"Aeron not found\";\n\n        var sb = new System.Text.StringBuilder();\n        sb.AppendLine(\"Components on \" + aeron.name + \":\");\n        foreach (var c in aeron.GetComponents<Component>())\n        {\n            sb.AppendLine(\"- \" + c.GetType().FullName);\n        }\n        return sb.ToString();\n    }\n}"
+}

@@ -1,0 +1,6 @@
+{
+  "className": "InspectGuardDetails",
+  "methodName": "Execute",
+  "isMethodBody": false,
+  "csharpCode": "using UnityEngine;\n\npublic class InspectGuardDetails\n{\n    public static string Execute()\n    {\n        var guard = GameObject.Find(\"CyberGuard_Catwalk\");\n        if (guard == null) return \"Guard not found\";\n\n        var sr = guard.GetComponent<SpriteRenderer>();\n        var col = guard.GetComponent<CapsuleCollider2D>();\n        var firePoint = guard.transform.Find(\"FirePoint\");\n\n        string s = \"SR Bounds: \" + (sr != null ? sr.bounds.ToString() : \"null\") +\n                   \" | Col Bounds: \" + (col != null ? col.bounds.ToString() : \"null\") +\n                   \" | FirePoint World: \" + (firePoint != null ? firePoint.position.ToString() : \"null\");\n        return s;\n    }\n}"
+}

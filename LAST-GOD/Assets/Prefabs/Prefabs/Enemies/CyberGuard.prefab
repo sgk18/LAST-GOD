@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 4570141858088108717}
   m_Layer: 0
   m_Name: CyberGuard
-  m_TagString: Enemy
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -325,7 +325,7 @@ MonoBehaviour:
   maxAttackRange: 9
   groundLayer:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 0
   edgeCheckForwardOffset: 0.8
   edgeCheckDownDistance: 1.6
   wallCheckDistance: 0.8

@@ -1,0 +1,6 @@
+{
+  "className": "CaptureGameScreenshot",
+  "methodName": "Execute",
+  "isMethodBody": false,
+  "csharpCode": "using UnityEngine;\nusing System.IO;\n\npublic class CaptureGameScreenshot\n{\n    public static string Execute()\n    {\n        int width = 1280;\n        int height = 720;\n        var cam = Camera.main;\n        if (cam == null) cam = Object.FindFirstObjectByType<Camera>();\n        if (cam == null) return \"No camera found\";\n\n        RenderTexture rt = new RenderTexture(width, height, 24);\n        var prevRt = cam.targetTexture;\n        cam.targetTexture = rt;\n        cam.Render();\n        cam.targetTexture = prevRt;\n\n        RenderTexture.active = rt;\n        Texture2D tex = new Texture2D(width, height, TextureFormat.RGB24, false);\n        tex.ReadPixels(new Rect(0, 0, width, height), 0, 0);\n        tex.Apply();\n        RenderTexture.active = null;\n        Object.DestroyImmediate(rt);\n\n        byte[] bytes = tex.EncodeToPNG();\n        Object.DestroyImmediate(tex);\n\n        string outPath = @\"C:\\Users\\Surya VM\\.gemini\\antigravity-ide\\brain\\142d7740-0700-4fab-bd10-b847b06cc0c7\\scratch\\gameplay_platformer_shot.png\";\n        File.WriteAllBytes(outPath, bytes);\n\n        return \"Screenshot saved to \" + outPath;\n    }\n}"
+}

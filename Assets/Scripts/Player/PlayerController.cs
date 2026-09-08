@@ -296,6 +296,13 @@ namespace LastGod.Player
 
                 _sr.sprite = spr;
             }
+
+#if UNITY_EDITOR
+            if (fireballPrefab == null)
+            {
+                fireballPrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Combat/Aeron_Fireball_FX.prefab");
+            }
+#endif
         }
 
         private void OnEnable()
@@ -714,6 +721,14 @@ namespace LastGod.Player
             // --- Jump & Double Jump ---
             if (_jumpBufferTimer > 0f && !_isBlocking)
             {
+                // One-way platform drop-through: S or Down Arrow + Jump
+                if (_isGrounded && _currentVerticalInput < -0.3f)
+                {
+                    StartCoroutine(DropThroughPlatformRoutine());
+                    _jumpBufferTimer = 0f;
+                    return;
+                }
+
                 // First Jump (from ground or coyote time)
                 if (_isGrounded || _coyoteTimer > 0f)
                 {
@@ -783,6 +798,38 @@ namespace LastGod.Player
             {
                 if (_state != PlayerState.Jump && _state != PlayerState.Attack)
                     SetState(PlayerState.Jump);
+            }
+        }
+
+        private System.Collections.IEnumerator DropThroughPlatformRoutine()
+        {
+            if (_col == null) yield break;
+
+            Bounds b = _col.bounds;
+            Vector2 origin = new(b.center.x, b.min.y);
+            Vector2 size = new(b.size.x * 0.9f, groundCheckDistance + 0.3f);
+            Collider2D[] hits = Physics2D.OverlapBoxAll(origin, size, 0f);
+            var ignored = new System.Collections.Generic.List<Collider2D>();
+
+            foreach (var hit in hits)
+            {
+                if (hit != _col && (hit.usedByEffector || hit.name.IndexOf("OneWay", System.StringComparison.OrdinalIgnoreCase) >= 0 || hit.GetComponent<PlatformEffector2D>() != null))
+                {
+                    Physics2D.IgnoreCollision(_col, hit, true);
+                    ignored.Add(hit);
+                }
+            }
+
+            if (ignored.Count > 0)
+            {
+                yield return new WaitForSeconds(0.35f);
+                foreach (var hit in ignored)
+                {
+                    if (hit != null && _col != null)
+                    {
+                        Physics2D.IgnoreCollision(_col, hit, false);
+                    }
+                }
             }
         }
 
@@ -1300,7 +1347,7 @@ namespace LastGod.Player
 
             Vector3 spawnPos = fireballSpawnPoint != null 
                 ? fireballSpawnPoint.position 
-                : transform.position + new Vector3(_facingRight ? 1.3f : -1.3f, 0.4f, 0f);
+                : transform.position + new Vector3(_facingRight ? 1.3f : -1.3f, 1.4f, 0f);
 
             GameObject fb = null;
             if (fireballPrefab != null)

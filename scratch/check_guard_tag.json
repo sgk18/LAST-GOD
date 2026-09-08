@@ -1,0 +1,6 @@
+{
+  "className": "CheckGuardTag",
+  "methodName": "Execute",
+  "isMethodBody": false,
+  "csharpCode": "using UnityEngine;\n\npublic class CheckGuardTag\n{\n    public static string Execute()\n    {\n        var guard = GameObject.Find(\"CyberGuard_Catwalk\");\n        if (guard == null) return \"Guard not found\";\n        return \"Guard Tag: \" + guard.tag;\n    }\n}"
+}

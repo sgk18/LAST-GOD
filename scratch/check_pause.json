@@ -1,0 +1,6 @@
+{
+  "className": "CheckEditorPause",
+  "methodName": "Execute",
+  "isMethodBody": false,
+  "csharpCode": "using UnityEngine;\nusing UnityEditor;\n\npublic class CheckEditorPause\n{\n    public static string Execute()\n    {\n        bool isPaused = EditorApplication.isPaused;\n        bool isPlaying = EditorApplication.isPlaying;\n        bool runInBg = Application.runInBackground;\n\n        if (isPaused)\n        {\n            EditorApplication.isPaused = false;\n        }\n        Application.runInBackground = true;\n\n        return $\"isPlaying: {isPlaying}, isPaused: {isPaused} (set to false now), runInBackground: {runInBg} (set to true), Time: {Time.time}\";\n    }\n}"
+}

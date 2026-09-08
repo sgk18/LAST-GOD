@@ -30,6 +30,7 @@ namespace LastGod.EditorTools
         {
             var activeScene = EditorSceneManager.GetActiveScene();
             if (!activeScene.isLoaded) return;
+            if (activeScene.name == "Act1_Scene1" || activeScene.name == "Act1_Origin") return; // Dedicated Lab interior backgrounds
 
             Sprite farSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Backgrounds/Layer1_FarBackground.png");
             Sprite midSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Backgrounds/Layer2_Midground.png");

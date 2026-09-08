@@ -3,16 +3,19 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 using UnityEngine.Rendering.Universal;
+using TMPro;
 using LastGod.Core;
 using LastGod.Player;
+using LastGod.Enemies;
+using LastGod.Combat;
 
 namespace LastGod.Editor
 {
     /// <summary>
     /// Programmatically generates and updates Act1_Scene1.unity with flickering lab background,
-    /// solid catwalk ground geometry, and Aeron player setup.
+    /// solid catwalk ground geometry, Aeron player setup, 2 guard enemies, and master sequence director.
     /// </summary>
     [InitializeOnLoad]
     public static class Act1Scene1Builder
@@ -43,7 +46,7 @@ namespace LastGod.Editor
         [MenuItem("Tools/LAST-GOD/Build Act 1 Scene 1")]
         public static void BuildAct1Scene1()
         {
-            Debug.Log("[Act1Scene1Builder] === Assembling Act 1 Scene 1 (Lab Background & Catwalk Geometry) ===");
+            Debug.Log("[Act1Scene1Builder] === Assembling Act 1 Scene 1 (Lab Background, Catwalk, Aeron & Guards) ===");
 
             // 1. Create a new scene
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
@@ -55,16 +58,29 @@ namespace LastGod.Editor
             // -------------------------------------------------------------
             // 3. BACKGROUND & AMBIENT FLICKER
             // -------------------------------------------------------------
+            // Solid Dark Opaque Backdrop (Bedrock at Z = 10, completely solid slate charcoal)
+            GameObject backdropObj = new GameObject("Backdrop_Solid");
+            backdropObj.transform.position = new Vector3(0f, 0f, 10f);
+            SpriteRenderer backdropSR = backdropObj.AddComponent<SpriteRenderer>();
+            backdropSR.sortingLayerName = "Background";
+            backdropSR.sortingOrder = -100;
+            backdropSR.color = new Color(0.04f, 0.05f, 0.08f, 1f);
+            Sprite solidSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Backgrounds/Backdrop_Solid_Dark.png");
+            if (solidSprite != null) backdropSR.sprite = solidSprite;
+            backdropSR.drawMode = SpriteDrawMode.Sliced;
+            backdropSR.size = new Vector2(250f, 120f);
+
+            // Lab Interior Ambient Flicker Background (100% Opaque painterly laboratory)
             GameObject bgObj = new GameObject("Background");
             bgObj.transform.position = Vector3.zero;
 
             SpriteRenderer bgRenderer = bgObj.AddComponent<SpriteRenderer>();
             bgRenderer.sortingLayerName = "Background";
             bgRenderer.sortingOrder = 0;
+            bgRenderer.color = Color.white;
 
             Sprite f1 = AssetDatabase.LoadAssetAtPath<Sprite>(Frame1Path);
             Sprite f2 = AssetDatabase.LoadAssetAtPath<Sprite>(Frame2Path);
-
             if (f1 != null) bgRenderer.sprite = f1;
 
             AmbientBackgroundFlicker flicker = bgObj.AddComponent<AmbientBackgroundFlicker>();
@@ -101,7 +117,7 @@ namespace LastGod.Editor
             groundBox.offset = new Vector2(0f, -19.35f);
             groundBox.size = new Vector2(131.0f, 4.5f); // Top edge at Y = -17.10
 
-            // Raised Computer Console / Terminal Crate Platform (top edge at Y = -13.03)
+            // Raised Computer Console Platform
             GameObject consoleObj = new GameObject("Collider_ComputerConsole");
             consoleObj.layer = groundLayer;
             consoleObj.transform.SetParent(groundRoot.transform, false);
@@ -154,8 +170,8 @@ namespace LastGod.Editor
             SpriteRenderer chamberSR = chamberObj.AddComponent<SpriteRenderer>();
             chamberSR.sortingLayerName = "Default";
             chamberSR.sortingOrder = 5;
-            Sprite chamberSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Glass_Chamber.png");
-            if (chamberSprite == null) chamberSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Chamber_Intact.png");
+            Sprite chamberSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Chamber_Intact.png") ??
+                                  AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Glass_Chamber.png");
             if (chamberSprite != null) chamberSR.sprite = chamberSprite;
 
             BoxCollider2D chamberCol = chamberObj.AddComponent<BoxCollider2D>();
@@ -179,16 +195,13 @@ namespace LastGod.Editor
             GameObject playerObj = new GameObject("Player");
             playerObj.tag = "Player";
             playerObj.layer = playerLayer;
-            // Spawn standing cleanly ON the walkway deck floor at Y = -17.10 (not on the computer)
-            playerObj.transform.position = new Vector3(5.0f, -17.10f, 0f);
+            // Spawn standing cleanly ON the walkway deck floor at Y = -17.10 near chamber
+            playerObj.transform.position = new Vector3(-31.5f, -17.10f, 0f);
 
             SpriteRenderer playerSR = playerObj.AddComponent<SpriteRenderer>();
             playerSR.sortingLayerName = "Default";
             playerSR.sortingOrder = 10;
             Sprite playerSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Characters/Aeron/Sprites/Idle/Aeron_Idle_01.png");
-            if (playerSprite == null) playerSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/aeron onside idle/01.png");
-            if (playerSprite == null) playerSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/aeron outside idle/01.png");
-            if (playerSprite == null) playerSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Aeron_Concept.png");
             if (playerSprite != null) playerSR.sprite = playerSprite;
 
             Rigidbody2D playerRb = playerObj.AddComponent<Rigidbody2D>();
@@ -206,21 +219,32 @@ namespace LastGod.Editor
             RuntimeAnimatorController aCtrl = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>("Assets/Characters/Aeron/Animator/Aeron.controller");
             if (aCtrl != null) playerAnim.runtimeAnimatorController = aCtrl;
 
-            PlayerController pCtrl = playerObj.AddComponent<PlayerController>();
+            LastGod.Player.PlayerController pCtrl = playerObj.AddComponent<LastGod.Player.PlayerController>();
+            pCtrl.LockToWalkAndJumpOnly = true;
+
             Health pHealth = playerObj.AddComponent<Health>();
+            SerializedObject pHealthSO = new SerializedObject(pHealth);
+            var maxHealthProp = pHealthSO.FindProperty("maxHP") ?? pHealthSO.FindProperty("maxHealth");
+            if (maxHealthProp != null) maxHealthProp.intValue = 20;
+            pHealthSO.ApplyModifiedProperties();
+
+            playerObj.AddComponent<PrototypePowerController>();
 
             // -------------------------------------------------------------
-            // 7. CAMERA SETUP (ZOOMED OUT FOR BALANCED METROIDVANIA FRAMING)
+            // 7. CAMERA SETUP
             // -------------------------------------------------------------
             GameObject mainCamObj = new GameObject("Main Camera");
             mainCamObj.tag = "MainCamera";
-            mainCamObj.transform.position = new Vector3(5.0f, -14.3f, -10f);
+            mainCamObj.transform.position = new Vector3(-31.5f, -14.3f, -10f);
 
             Camera cam = mainCamObj.AddComponent<Camera>();
             cam.orthographic = true;
-            cam.orthographicSize = 7.5f; // Zoomed out cleanly
-            cam.backgroundColor = new Color(0.08f, 0.10f, 0.14f, 1f);
+            cam.orthographicSize = 7.5f;
+            cam.backgroundColor = new Color(0.04f, 0.05f, 0.08f, 1f);
             cam.clearFlags = CameraClearFlags.SolidColor;
+
+            UniversalAdditionalCameraData camData = mainCamObj.AddComponent<UniversalAdditionalCameraData>();
+            camData.renderPostProcessing = true;
 
             CameraFollow camFollow = mainCamObj.AddComponent<CameraFollow>();
             SerializedObject camSO = new SerializedObject(camFollow);
@@ -229,9 +253,141 @@ namespace LastGod.Editor
             camSO.FindProperty("cameraZ").floatValue = -10f;
             camSO.ApplyModifiedProperties();
 
+            mainCamObj.AddComponent<LastGod.Core.CameraShake2D>();
+            mainCamObj.AddComponent<AudioListener>();
+
+            // -------------------------------------------------------------
+            // 8. CUTSCENE UI CANVAS & OVERLAYS
+            // -------------------------------------------------------------
+            GameObject canvasObj = new GameObject("CutsceneCanvas");
+            Canvas canvas = canvasObj.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 100;
+            canvasObj.AddComponent<CanvasScaler>();
+            canvasObj.AddComponent<GraphicRaycaster>();
+
+            // Fullscreen Black Overlay
+            GameObject blackObj = new GameObject("BlackOverlay");
+            blackObj.transform.SetParent(canvasObj.transform, false);
+            RectTransform blackRect = blackObj.AddComponent<RectTransform>();
+            blackRect.anchorMin = Vector2.zero;
+            blackRect.anchorMax = Vector2.one;
+            blackRect.sizeDelta = Vector2.zero;
+            Image blackImg = blackObj.AddComponent<Image>();
+            blackImg.color = new Color(0f, 0f, 0f, 1f); // Pure black cold open
+
+            // Red Emergency Alarm Overlay
+            GameObject redObj = new GameObject("RedAlarmOverlay");
+            redObj.transform.SetParent(canvasObj.transform, false);
+            RectTransform redRect = redObj.AddComponent<RectTransform>();
+            redRect.anchorMin = Vector2.zero;
+            redRect.anchorMax = Vector2.one;
+            redRect.sizeDelta = Vector2.zero;
+            Image redImg = redObj.AddComponent<Image>();
+            redImg.color = new Color(1f, 0f, 0f, 0f);
+
+            // Typewriter Dialogue Text
+            GameObject textObj = new GameObject("DialogueText");
+            textObj.transform.SetParent(canvasObj.transform, false);
+            RectTransform textRect = textObj.AddComponent<RectTransform>();
+            textRect.anchorMin = new Vector2(0.1f, 0.35f);
+            textRect.anchorMax = new Vector2(0.9f, 0.65f);
+            textRect.sizeDelta = Vector2.zero;
+            TextMeshProUGUI tmpText = textObj.AddComponent<TextMeshProUGUI>();
+            tmpText.alignment = TextAlignmentOptions.Center;
+            tmpText.fontSize = 28;
+            tmpText.color = Color.white;
+            tmpText.text = "";
+
+            CutsceneUIController uiCtrl = canvasObj.AddComponent<CutsceneUIController>();
+            SerializedObject uiSO = new SerializedObject(uiCtrl);
+            uiSO.FindProperty("blackOverlay").objectReferenceValue = blackImg;
+            uiSO.FindProperty("redAlarmOverlay").objectReferenceValue = redImg;
+            uiSO.FindProperty("dialogueText").objectReferenceValue = tmpText;
+            uiSO.ApplyModifiedProperties();
+
+            // -------------------------------------------------------------
+            // 9. CYBER GUARDS (TACTICAL ENCOUNTER)
+            // -------------------------------------------------------------
+            GameObject guard1 = CreateGuard("Guard_01", new Vector3(-14.0f, -17.10f, 0f), playerObj.transform);
+            GameObject guard2 = CreateGuard("Guard_02", new Vector3(-6.0f, -17.10f, 0f), playerObj.transform);
+
+            // -------------------------------------------------------------
+            // 10. MASTER SEQUENCE DIRECTOR
+            // -------------------------------------------------------------
+            GameObject seqObj = new GameObject("Act1Scene1SequenceManager");
+            Act1Scene1SequenceManager seqMgr = seqObj.AddComponent<Act1Scene1SequenceManager>();
+
+            AudioSource humSource = seqObj.AddComponent<AudioSource>();
+            AudioClip humClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/machine_hum.wav");
+            if (humClip != null) humSource.clip = humClip;
+            humSource.loop = true;
+            humSource.playOnAwake = false;
+
+            AudioSource sfxSource = seqObj.AddComponent<AudioSource>();
+
+            SerializedObject seqSO = new SerializedObject(seqMgr);
+            seqSO.FindProperty("ambientHumSource").objectReferenceValue = humSource;
+            seqSO.FindProperty("sfxSource").objectReferenceValue = sfxSource;
+            seqSO.FindProperty("heartbeatSFX").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/heartbeat.wav");
+            seqSO.FindProperty("glassShatterSFX").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/glass_shatter.wav");
+            seqSO.FindProperty("alarmSFX").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/alarm.wav");
+            seqSO.FindProperty("chamberRenderer").objectReferenceValue = chamberSR;
+            seqSO.FindProperty("crackedChamberSprite").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Chamber_Cracked.png");
+            seqSO.FindProperty("shatteredChamberSprite").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Chamber_Shattered.png");
+            seqSO.FindProperty("cameraFollow").objectReferenceValue = camFollow;
+            seqSO.FindProperty("uiController").objectReferenceValue = uiCtrl;
+            seqSO.FindProperty("skipIntroSequence").boolValue = false;
+            seqSO.ApplyModifiedProperties();
+
             // Save Scene
             EditorSceneManager.SaveScene(scene, ScenePath);
             Debug.Log($"[Act1Scene1Builder] Successfully generated and saved scene at: {ScenePath}");
+        }
+
+        private static GameObject CreateGuard(string name, Vector3 position, Transform targetPlayer)
+        {
+            GameObject guardObj = new GameObject(name);
+            guardObj.tag = "Enemy";
+            guardObj.transform.position = position;
+
+            SpriteRenderer sr = guardObj.AddComponent<SpriteRenderer>();
+            sr.sortingLayerName = "Default";
+            sr.sortingOrder = 9;
+            Sprite guardSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Guard_Spritesheet.png");
+            if (guardSprite != null) sr.sprite = guardSprite;
+
+            Rigidbody2D rb = guardObj.AddComponent<Rigidbody2D>();
+            rb.bodyType = RigidbodyType2D.Dynamic;
+            rb.gravityScale = 3.0f;
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+
+            CapsuleCollider2D col = guardObj.AddComponent<CapsuleCollider2D>();
+            col.size = new Vector2(1.8f, 5.0f);
+            col.offset = new Vector2(0f, 2.5f);
+
+            Health hp = guardObj.AddComponent<Health>();
+            SerializedObject hpSO = new SerializedObject(hp);
+            var guardHealthProp = hpSO.FindProperty("maxHP") ?? hpSO.FindProperty("maxHealth");
+            if (guardHealthProp != null) guardHealthProp.intValue = 6;
+            hpSO.ApplyModifiedProperties();
+
+            guardObj.AddComponent<AudioSource>();
+
+            EnemyAI ai = guardObj.AddComponent<EnemyAI>();
+            SerializedObject aiSO = new SerializedObject(ai);
+            aiSO.FindProperty("moveSpeed").floatValue = 3.2f;
+            aiSO.FindProperty("attackRange").floatValue = 7.0f;
+            aiSO.FindProperty("stopDistance").floatValue = 2.5f;
+            aiSO.FindProperty("attackCooldown").floatValue = 1.6f;
+            aiSO.FindProperty("spriteRenderer").objectReferenceValue = sr;
+            aiSO.FindProperty("deadSprite").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Guard_Dead.png");
+            aiSO.FindProperty("gunshotSFX").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/gunshot.wav");
+            aiSO.ApplyModifiedProperties();
+
+            ai.SetTarget(targetPlayer);
+            return guardObj;
         }
     }
 }

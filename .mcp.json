@@ -12,6 +12,10 @@
       "env": {
         "ASEPRITE_PATH": "C:/projects/aseprite/build/bin/aseprite.exe"
       }
+    },
+    "ai-game-developer": {
+      "type": "http",
+      "url": "https://ai-game.dev/mcp/p/66f3c6b5"
     }
   }
 }

@@ -122,6 +122,7 @@ namespace LastGod.Player
         private bool _isNearLadder;
         private bool _isClimbing;
         private bool _isWallSliding;
+        private static bool _ladderTagValid = true;
 
         // Attack Combo
         private int _currentAttack = 0;
@@ -558,8 +559,9 @@ namespace LastGod.Player
             foreach (var col in overlaps)
             {
                 if (col.gameObject == gameObject) continue;
-                bool isLadder = col.name.IndexOf("Ladder", StringComparison.OrdinalIgnoreCase) >= 0;
-                if (!isLadder)
+                bool isLadder = col.name.IndexOf("Ladder", StringComparison.OrdinalIgnoreCase) >= 0
+                    || (col.transform.parent != null && col.transform.parent.name.IndexOf("Ladder", StringComparison.OrdinalIgnoreCase) >= 0);
+                if (!isLadder && _ladderTagValid)
                 {
                     try
                     {
@@ -567,7 +569,8 @@ namespace LastGod.Player
                     }
                     catch
                     {
-                        // Tag "Ladder" not defined in project tags
+                        // Tag "Ladder" not defined in project tags; suppress future checks this session
+                        _ladderTagValid = false;
                     }
                 }
                 if (isLadder)

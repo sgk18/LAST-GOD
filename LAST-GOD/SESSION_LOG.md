@@ -269,4 +269,119 @@ Changelog of progress made in each development session. Append new entries at th
 - **Verification**:
   - Rebuilt solution via `dotnet build LAST-GOD.slnx`: **Build Succeeded with 0 Errors and 0 Warnings**.
 
+---
+
+## 📅 [2026-09-08] — Session 13: Complete Act 1 Scene 1 Vertical Slice (Chamber Break to Scene Resolution)
+- **Phase 0 & 1: Audit, Brownfield Adoption & Design**:
+  - Authored [`design/gdd/gdd-act1-scene1.md`](file:///C:/projects/LAST-GOD/design/gdd/gdd-act1-scene1.md) unifying CONTEXT.md specifications into a single canonical GDD.
+  - Formulated 4 formal Architecture Decision Records in `docs/adr/`:
+    - `0001-state-machine-architecture.md`
+    - `0002-shared-idamageable-pipeline.md`
+    - `0003-camera-delta-parallax-system.md`
+    - `0004-awakening-power-state-machine-integration.md`
+  - Created [`docs/control-manifest.md`](file:///C:/projects/LAST-GOD/docs/control-manifest.md).
+- **Phase 3: Art Bible & Nano Banana Asset Generation**:
+  - Authored [`design/art/art-bible.md`](file:///C:/projects/LAST-GOD/design/art/art-bible.md).
+  - Generated and integrated 4 new pixel-art assets via Nano Banana:
+    - `Aeron_Awakening_Sheet.png`: Awakening power sprites with cyan eye flare, temporal distortion glyphs.
+    - `Guard_Spritesheet.png`: Tactical cyber soldier sheet (idle, patrol, aim, fire, damage, collapse).
+    - `Chronos_Aura_FX.png`: Temporal distortion glyph ring VFX for Aeron's bullet slowdown aura.
+    - `Laser_Bullet_FX.png`: High-intensity red plasma beam energy projectile for guard rifle.
+  - Configured texture `.meta` files for all new sprites with Point (no filter), PPU 16, and uncompressed texture settings.
+  - Documented new assets with prompts and licensing in `ASSET_LOG.md`.
+- **Phase 4: Stories & Systems Implementation**:
+  - **Story 1 (Movement & Animation)**:
+    - Verified `Aeron_Idle.anim` and `Aeron_Walk.anim` wired directly into `Aeron.controller`.
+    - Standardized pivot `{x: 0.5, y: 0.022727}` and baseline alignment across frames with zero sprite popping or ground sinking.
+  - **Story 2 (Chamber Cracking -> Shattering Progression)**:
+    - Updated `Act1Scene1SequenceManager.cs` to execute 3-state chamber art rupture (`Chamber_Intact` -> `Chamber_Cracked` -> `Chamber_Shattered`), camera shake, glass shatter SFX, emergency alarm loop, red alarm screen flash, and procedural glass shard particle bursts.
+  - **Story 3 (Awakening & Chronos Aura Integration)**:
+    - Integrated `PlayerState.Awakening` directly into `PlayerController.cs`.
+    - Added `TriggerAwakening()`, `LockControls()`, and `UnlockCombat()`.
+    - Aeron surges with cyan eye flare, emits rotating `Chronos_Aura_FX` visual, and unlocks `PrototypePowerType.TimeSlow`.
+  - **Story 4 (Tactical Guard Encounter & IDamageable)**:
+    - Upgraded `EnemyAI.cs` with plasma laser bullet firing, automated `Guard_Spritesheet` visuals and `gunshot.wav` fallback, and persistent floor collapse upon death.
+    - Temporal bullet deceleration: bullets entering Aeron's Chronos Aura decelerate from 8.0 to 2.0 speed, enabling responsive evasion and melee combat.
+  - **Story 5 & 6 (Catwalk Ground, Parallax & Scene Construction)**:
+    - Updated `Act1Scene1Builder.cs` to assemble the full Act 1 Scene 1 world with solid catwalk deck at Y = -17.10, glass chamber at Pillar B-3, Aeron starting at X = -31.5, 2 Cyber Guards at X = -14.0 and X = -6.0, Parallax controller (`ParallaxAutoSetup`), camera follow + screen shake, and Cutscene UI Canvas (black overlay, red alarm overlay, TextMeshPro typewriter dialogue).
+  - **Story 7 (Scene Resolution)**:
+    - After both guards are defeated, `Act1Scene1SequenceManager.cs` locks Aeron's controls, pauses 1.0s, stops alarm siren, and plays concluding V.O. typewriter dialogue ("THEY WILL FEAR YOU." -> "THEY SHOULD.") before cleanly fading to black.
+- **Phase 5: Verification & Quality Gate**:
+  - Rebuilt solution via `dotnet build LAST-GOD.slnx`: **Build Succeeded with 0 Errors and 0 Warnings** across all 6 project assemblies (`LastGod.Core`, `LastGod.Player`, `LastGod.Combat`, `LastGod.Enemies`, `Assembly-CSharp`, `Assembly-CSharp-Editor`).
+
+---
+
+## 📅 [2026-09-08] — Session 14: Background Transparency & Checkerboard Fix
+- **Root Cause Analysis**:
+  - `Act1Scene1Builder.cs` inadvertently spawned a `Parallax_Controller` running `ParallaxAutoSetup`, while `ParallaxAutoConnector.cs` and `ParallaxSetupMenu.cs` in the Editor also automatically hooked into `Background` on domain reload/scene open.
+  - This created three layers (`FarBackground_Parallax`, `Midground_Parallax`, and `Foreground_Parallax`), with `Foreground_Parallax` assigned to sorting layer `Foreground` (order 10, in front of everything) displaying `Layer3_Foreground.png`.
+  - The baked checkerboard artifact on `Layer3_Foreground.png` completely obscured the genuine laboratory background (`frame-1.png` / `frame-2.png`), creating a transparent checkerboard appearance over the scene.
+  - In addition, the Main Camera was missing `UniversalAdditionalCameraData` and a solid fallback bedrock backdrop.
+- **Implemented Fixes**:
+  1. **Editor & Runtime Isolation**:
+     - Updated [`Assets/Editor/ParallaxAutoConnector.cs`](file:///C:/projects/LAST-GOD/Assets/Editor/ParallaxAutoConnector.cs) and [`Assets/Editor/ParallaxSetupMenu.cs`](file:///C:/projects/LAST-GOD/Assets/Editor/ParallaxSetupMenu.cs) with immediate guard clauses `if (activeScene.name == "Act1_Scene1") return;` to prevent automated injection of parallax layers into the 2D laboratory scene.
+     - Updated [`Assets/Scripts/Core/ParallaxRuntimeManager.cs`](file:///C:/projects/LAST-GOD/Assets/Scripts/Core/ParallaxRuntimeManager.cs) to skip initialization in `Act1_Scene1`.
+  2. **Scene Generator Upgrade (`Act1Scene1Builder.cs`)**:
+     - Removed `Parallax_Controller` / `ParallaxAutoSetup` instantiation entirely.
+     - Added `Backdrop_Solid`: 100% opaque slate-charcoal bedrock (`Backdrop_Solid_Dark.png`) rendered at Z = 10, sorting layer `Background`, order `-100`, spanning 250×120 units behind the entire stage.
+     - Configured `Background` with 100% opaque `frame-1.png` and `frame-2.png` via `AmbientBackgroundFlicker` at sorting layer `Background`, order `0`, color `Color.white`.
+     - Attached `UniversalAdditionalCameraData` to `Main Camera` with `renderPostProcessing = true` and explicit solid background clear `#0a0d14`.
+  3. **Scene Sanitization (`Act1_Scene1.unity`)**:
+     - Purged `Parallax_Controller`, `FarBackground_Parallax`, `Midground_Parallax`, `Foreground_Parallax`, and `ParallaxRuntimeManager` from the scene.
+---
+
+## 📅 [2026-09-08] — Session 15: Cyber Guard Sprite Isolation, Missing Assets & Diagnostics Resolution
+- **User Issue & Diagnostics**:
+  - The scene displayed `Guard_01` as a giant 64-unit box showing an entire raw concept sheet containing 5 labeled poses ("1 Alert Idle", "2 Tactical Approach", etc.) on an opaque gray background.
+  - Unity logs warned about missing `TextMesh Pro Essential Resources`.
+  - Console repeatedly logged `Tag: Ladder is not defined` during player ground detection.
+  - Console logged `There are no audio listeners in the scene`.
+- **Implemented Fixes**:
+  1. **Cyber Guard & Laser Bullet Nano Banana Asset Pipeline**:
+     - Generated individual high-fidelity Cyber Guard combat sprite, dead collapsed pose, and cyan/magenta plasma laser projectile via Nano Banana.
+     - Processed images: trimmed borders, keyed out backgrounds to transparent RGBA, and exported to:
+       - `Assets/Art/Sprites/Guard_Spritesheet.png` & `Guard_Combat.png` (669x944 px, single tactical soldier facing right).
+       - `Assets/Art/Sprites/Guard_Dead.png` (901x351 px, defeated cyber guard lying prone).
+       - `Assets/Art/Sprites/Laser_Bullet_FX.png` (222x140 px, glowing laser projectile).
+     - Configured texture `.meta` files:
+       - `Guard_Spritesheet.png.meta` & `Guard_Combat.png.meta`: `spritePixelsToUnits: 150`, `alignment: 9`, `spritePivot: {x: 0.5, y: 0.0}`, `enableMipMap: 0`, `filterMode: 0`. Height matches Aeron (~6.3 units, standing squarely on catwalk at Y = -17.10).
+       - `Guard_Dead.png.meta`: `spritePixelsToUnits: 150`, `alignment: 9`, `spritePivot: {x: 0.5, y: 0.0}`, `enableMipMap: 0`, `filterMode: 0`.
+       - `Laser_Bullet_FX.png.meta`: `spritePixelsToUnits: 100`, `alignment: 0`, `spritePivot: {x: 0.5, y: 0.5}`, `enableMipMap: 0`, `filterMode: 0`.
+  2. **Scene & AI Wiring**:
+     - In [`Assets/Scripts/Editor/Act1Scene1Builder.cs`](file:///c:/projects/LAST-GOD/Assets/Scripts/Editor/Act1Scene1Builder.cs): wired `deadSprite` to `Assets/Art/Sprites/Guard_Dead.png`.
+     - In [`Assets/Scenes/Act1_Scene1.unity`](file:///c:/projects/LAST-GOD/Assets/Scenes/Act1_Scene1.unity): wired `deadSprite` on `Guard_01` and `Guard_02`, and set `m_FlipX: 1` so both guards face left towards Aeron.
+  3. **TextMesh Pro Essential Resources**:
+     - Extracted `TMP Essential Resources.unitypackage` from Unity Package Cache into `Assets/TextMesh Pro/` and `LAST-GOD/Assets/TextMesh Pro/`, clearing the red editor warning bar.
+  4. **Tag System & Ground Checking Fixes**:
+     - Added `Ladder` and `Ground` tags to `ProjectSettings/TagManager.asset`.
+     - In [`PlayerController.cs`](file:///c:/projects/LAST-GOD/Assets/Scripts/Player/PlayerController.cs), added static `_ladderTagValid` guard and parent name fallback in `CheckGroundAndSurroundings()` to prevent native tag exceptions.
+  5. **AudioListener Guarantee**:
+     - Created [`AudioListenerEnforcer.cs`](file:///c:/projects/LAST-GOD/Assets/Scripts/Core/AudioListenerEnforcer.cs) to auto-verify and attach an active `AudioListener` upon scene loading.
+     - Ensured `Main Camera` in `Act1_Scene1.unity` and `Act1Scene1Builder.cs` has an explicit `AudioListener` component.
+- **Verification**:
+  - Rebuilt all 6 assemblies via `dotnet build`: **0 Warning(s), 0 Error(s)**.
+  - Scene hierarchy and sprite import settings verified with zero visual box glitches or missing resource warnings.
+
+---
+
+## 📅 [2026-09-08] — Session 16: Act1_Origin Checkerboard Artifact Purge & Aeron Ground Alignment
+- **Problem & Root Cause Diagnostics**:
+  1. **Baked Opaque Checkerboard**: `Layer2_Midground.png` and `Layer3_Foreground.png` had 73,353 and 29,876 baked opaque checkerboard pixels (neutral white/gray squares `#ffffff` and `#cccccc`) in their transparent cutout zones, obscuring the stasis chamber background when rendered in `Act1_Origin`.
+  2. **Aeron Floating in Mid-Air**: In [`Assets/Scenes/Act1_Origin.unity`](file:///c:/projects/LAST-GOD/Assets/Scenes/Act1_Origin.unity), Aeron was placed at `Y = -1.20` and `Floor_MainDeck` was at `Y = -2.00` (top `Y = -1.50`). However, in the visual background art (`Layer1_FarBackground.png` at `Y = 2.5`), the illuminated catwalk floor with railings is actually at `world Y = -5.70`. Aeron was hovering ~4.5 units above the visual floor.
+- **Implemented Fixes**:
+  1. **Purged Checkerboard Transparency**:
+     - Processed `Layer2_Midground.png` and `Layer3_Foreground.png` across both `Assets/Art/Backgrounds/` and `LAST-GOD/Assets/Art/Backgrounds/`: keyed all neutral checkerboard pixels (`abs(R-G) < 8`, `abs(G-B) < 8`, `R > 170`) to `alpha = 0`.
+     - Verified composite contains **0** checkerboard pixels, allowing `Layer1_FarBackground.png`'s rich cyan stasis chamber to show through seamlessly.
+  2. **Editor Parallax Isolation**:
+     - Updated [`Assets/Editor/ParallaxAutoConnector.cs`](file:///c:/projects/LAST-GOD/Assets/Editor/ParallaxAutoConnector.cs) and [`Assets/Editor/ParallaxSetupMenu.cs`](file:///c:/projects/LAST-GOD/Assets/Editor/ParallaxSetupMenu.cs) to exclude both `Act1_Scene1` and `Act1_Origin` from automated runtime parallax re-injection.
+  3. **Grounded Aeron & Aligned Colliders in `Act1_Origin.unity`**:
+     - Anchored `Aeron_Protagonist` at `Y = -5.70` so his feet rest flush on the illuminated catwalk floor.
+     - Repositioned `Floor_MainDeck` to `LocalPosition: {x: 0, y: -6.20, z: 0}`, `Size: {x: 60, y: 1.0}`, placing its top collision surface squarely at `Y = -5.70`.
+     - Aligned `Platform_CenterDais` to `Y = -5.70` (`Size: {x: 6, y: 0.2}`), side catwalks to `Y = -2.50`, and lab walls to `Y = 0` (`Size: {x: 1, y: 16}`).
+     - Repositioned `Rim Light 2D (Cyan Dais)` to `Y = -5.50` and `StasisChamber_Root` light to `Y = -2.50`.
+     - Pre-centered `Main Camera` to `Y = -2.90` (matching `CameraFollow` `offsetY = 2.8` on Aeron).
+     - Synchronized to both [`Assets/Scenes/Act1_Origin.unity`](file:///c:/projects/LAST-GOD/Assets/Scenes/Act1_Origin.unity) and [`LAST-GOD/Assets/Scenes/Act1_Origin.unity`](file:///c:/projects/LAST-GOD/LAST-GOD/Assets/Scenes/Act1_Origin.unity).
+- **Verification**:
+  - Rebuilt all 6 assemblies via `dotnet build`: **0 Warning(s), 0 Error(s)**.
+  - Verified 0 checkerboard pixels across all background layers and verified Aeron's feet rest squarely on the catwalk floor.
 

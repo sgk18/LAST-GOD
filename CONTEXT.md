@@ -8,24 +8,24 @@
 ## Current Scope & Status (Single Source of Truth)
 
 ### ✅ Built So Far
-- **Foundation Core**:
-  - `PlayerController`: Enum state machine (`Idle`, `Run`, `Jump`, `Attack`, `Hurt`, `Dead`), horizontal movement, variable height jump, dash with i-frames, facing direction, and melee combat hit detection.
+- **Foundation Core & Architecture**:
+  - `PlayerController`: Single-enum state machine (`Idle`, `Run`, `Jump`, `Climb`, `Attack`, `Hurt`, `Dead`, `Awakening`), horizontal movement, variable jump height, dash with i-frames, facing direction flip, and 3-hit melee combo hit detection.
+  - `Chronos Aura & Awakening`: `TriggerAwakening()` initiates cinematic surge, cyan eye flare, rotating `Chronos_Aura_FX` ring visual, temporal bullet deceleration aura, and unlock of `PrototypePowerType.TimeSlow`.
   - `IDamageable` & `Health`: Decoupled health pool component with `OnDamaged(int)` and `OnDeath` UnityEvents, knockback impulse logic.
   - `PlayerInputActions`: New Input System integration configured for Gamepad and Keyboard.
   - `CameraFollow` & `CameraShake2D`: Pixel-perfect camera tracking and screen-shake system.
-- **Act 1, Scene 1 (INT. LAB – NIGHT) Playable Beat**:
-  - `Act1_Scene1.unity`: Scene setup with 240x160 resolution, dark lab room geometry, center glass chamber, and spawn points.
-  - `Act1Scene1SequenceManager`: Master coroutine director driving the opening flow.
-  - **Sequence Flow**:
-    1. Pitch darkness, ambient machine hum loop, thumping heartbeat audio.
-    2. V.O. Dialogue: *"WAKE UP."* → *"YOU WERE NOT MADE TO SLEEP."* (typewriter text).
-    3. Chamber rupture: glass cracks → shatters with particle burst, glass shatter SFX, blaring alarm siren, red light flicker, screen shake.
-    4. Aeron prefab spawns, camera locks on Aeron, player input unlocks.
-    5. 2–3 Guard enemies spawn using `EnemyAI` (`Idle`, `Approach`, `Attack`, `Hurt`, `Dead`).
-    6. Guards fire `Bullet` projectiles that slow down near Aeron ("bullets slow near Aeron").
-    7. Raw instinctive combat: player defeats guards, guard bodies stay on ground upon death.
-    8. Input locks on final death, camera holds on Aeron.
-    9. Ending V.O. Dialogue: *"THEY WILL FEAR YOU."* → *"THEY SHOULD."* → Cut to black.
+  - Architecture Records: Formal ADRs accepted (`0001` through `0004`) in `docs/adr/`.
+- **Act 1, Scene 1 (INT. LAB – NIGHT) Vertical Slice**:
+  - Canonical GDD: [`design/gdd/gdd-act1-scene1.md`](file:///C:/projects/LAST-GOD/design/gdd/gdd-act1-scene1.md).
+  - Art Bible: [`design/art/art-bible.md`](file:///C:/projects/LAST-GOD/design/art/art-bible.md).
+  - `Act1_Scene1.unity`: Constructed via `Act1Scene1Builder.cs` with catwalk deck at visual floor Y = -17.10, glass chamber at Pillar B-3, Aeron starting at X = -31.5, 2 Cyber Guards at X = -14.0 and X = -6.0, solid opaque bedrock backdrop with ambient flickering laboratory interior (`frame-1.png` / `frame-2.png`), camera follow + shake, and Cutscene UI Canvas.
+  - `Act1Scene1SequenceManager`: Master coroutine director driving the complete 6-step vertical slice flow:
+    1. Pitch darkness, ambient machine hum loop, thumping heartbeat audio pulses.
+    2. V.O. Dialogue: *"WAKE UP."* → *"YOU WERE NOT MADE TO SLEEP."* (typewriter text via TextMeshPro).
+    3. Chamber rupture: glass cracks → shatters with glass shard particle burst, glass shatter SFX, blaring alarm siren, red light flicker, screen shake.
+    4. Awakening & Power Unlock: Aeron triggers `PlayerState.Awakening`, cyan eye flare pulses, Chronos Aura ring emerges, temporal bullet deceleration active, controls unlock into `PlayerState.Idle`.
+    5. Tactical Guard Encounter: 2 Cyber Guards approach using `EnemyAI.cs`, firing plasma laser bullets. Bullets smoothly decelerate to 2.0 speed inside Aeron's Chronos Aura. Aeron defeats guards with 3-hit melee combo; guard bodies stay on ground upon death.
+    6. Scene Resolution: Input locks on Aeron (`LockControls(true)`), alarm klaxon stops, concluding V.O. dialogue: *"THEY WILL FEAR YOU."* → *"THEY SHOULD."* → Fade to black.
 
 ### ⏳ Not Built Yet
 - **Act 1, Scene 2**: Lab Corridor escape sequence.

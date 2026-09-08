@@ -24,6 +24,11 @@ This document maintains a running inventory of all external and prototype assets
 | **Lab Scene Background Artwork** | User Provided Artwork (`media_1788490070025.jpg`) | Proprietary / Project Asset | High-atmosphere sci-fi laboratory background with central stasis cylinder, mezzanine catwalks, stairways, and consoles | `Assets/Art/Sprites/Lab_Background.png` |
 | **Modular Lab Environment Tiles** | Custom Modular Sci-Fi Palette | Project Asset | Metallic floor slabs, hazard catwalk trims, terminal consoles, and blast security door | `Assets/Art/Sprites/Lab_Tiles.png` |
 | **Aeron Post-Chamber Awakening Idle Sprite** | User Provided Artwork (`media_1788699297485.png`) | Proprietary / Project Asset | Aeron awakening/idle stance immediately after glass chamber rupture (barefoot, collar wires, arm rune) | `Assets/Art/Sprites/aeron onside idle/01.png`<br>`Assets/Art/Sprites/aeron outside idle/01.png` |
+| **Aeron Awakening Power Sheet** | Nano Banana AI Generator | Project Asset | Aeron awakening surge sprites with cyan eye flare, temporal distortion glyphs | `Assets/Art/Sprites/Aeron_Awakening_Sheet.png` |
+| **Cyber Guard Combat Sheet** | Nano Banana AI Generator | Project Asset | Combat guard spritesheet (patrol, aim, fire, damage, collapse) | `Assets/Art/Sprites/Guard_Spritesheet.png` |
+| **Chronos Aura Temporal FX** | Nano Banana AI Generator | Project Asset | Temporal distortion glyph ring VFX for Aeron's bullet slowdown aura | `Assets/Art/Sprites/Chronos_Aura_FX.png` |
+| **Laser Bullet Projectile FX** | Nano Banana AI Generator | Project Asset | High-intensity red/magenta plasma laser beam projectile for guard weapon | `Assets/Art/Sprites/Laser_Bullet_FX.png` |
+| **Solid Dark Backdrop** | Procedural 16 PPU Solid Texture | Project Asset | Bedrock solid opaque slate-charcoal backdrop behind laboratory interior | `Assets/Art/Backgrounds/Backdrop_Solid_Dark.png` |
 
 ---
 

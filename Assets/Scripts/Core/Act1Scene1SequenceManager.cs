@@ -152,7 +152,7 @@ namespace LastGod.Core
                 chamberRenderer.sprite = shatteredChamberSprite;
             }
 
-            if (shatterParticles != null) shatterParticles.Play();
+            TriggerGlassParticles();
 
             if (sfxSource != null && glassShatterSFX != null)
             {
@@ -173,21 +173,31 @@ namespace LastGod.Core
             yield return new WaitForSeconds(0.5f);
 
             // -------------------------------------------------------------
-            // STEP 4: PLAYER CONTROL UNLOCKS. AERON SPAWNS.
+            // STEP 4: PLAYER CONTROL UNLOCKS. AERON AWAKENS & EMITS CHRONOS AURA.
             // -------------------------------------------------------------
             if (uiController != null) yield return uiController.FadeBlackOverlay(0f, 0.5f);
 
-            if (aeronPrefab != null && aeronSpawnPoint != null)
+            if (_spawnedAeron == null && aeronPrefab != null && aeronSpawnPoint != null)
             {
                 _spawnedAeron = Instantiate(aeronPrefab, aeronSpawnPoint.position, Quaternion.identity);
+            }
+            if (_spawnedAeron == null)
+            {
+                _spawnedAeron = GameObject.FindWithTag("Player");
+            }
 
-                // Initialize Prototype Power Lock on Aeron after leaving the glass chamber (decoupled via reflection/SendMessage)
+            if (_spawnedAeron != null)
+            {
+                // Initialize Prototype Power Lock on Aeron after leaving the glass chamber
                 var powerCtrlType = System.Type.GetType("LastGod.Player.PrototypePowerController, LastGod.Player");
                 if (powerCtrlType != null && _spawnedAeron.GetComponent(powerCtrlType) == null)
                 {
                     _spawnedAeron.AddComponent(powerCtrlType);
                 }
                 _spawnedAeron.SendMessage("SetPowerLockState", true, SendMessageOptions.DontRequireReceiver);
+
+                // Aeron awakens: cyan eye flare + Chronos Aura surges
+                _spawnedAeron.SendMessage("TriggerAwakening", 2.0f, SendMessageOptions.DontRequireReceiver);
 
                 if (cameraFollow != null)
                 {
@@ -196,12 +206,14 @@ namespace LastGod.Core
                 }
             }
 
+            yield return new WaitForSeconds(2.0f);
+
             // -------------------------------------------------------------
-            // STEP 5: 2-3 GUARDS RUSH IN, FIRE.
+            // STEP 5: 2 GUARDS RUSH IN, FIRE BULLETS (SLOWED BY CHRONOS AURA).
             // -------------------------------------------------------------
             yield return new WaitForSeconds(0.6f);
 
-            if (guardPrefab != null && guardSpawnPoints != null)
+            if (guardPrefab != null && guardSpawnPoints != null && guardSpawnPoints.Length > 0)
             {
                 foreach (var sp in guardSpawnPoints)
                 {
@@ -214,6 +226,21 @@ namespace LastGod.Core
                     if (gObj.TryGetComponent<IDamageable>(out var guardDmg))
                     {
                         _activeGuards.Add(guardDmg);
+                    }
+                }
+            }
+            else
+            {
+                // Look for existing guards placed in scene
+                var existingMonos = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
+                foreach (var mb in existingMonos)
+                {
+                    if (mb.GetType().Name == "EnemyAI")
+                    {
+                        if (_spawnedAeron != null)
+                            mb.SendMessage("SetTarget", _spawnedAeron.transform, SendMessageOptions.DontRequireReceiver);
+                        if (mb.TryGetComponent<IDamageable>(out var gDmg))
+                            _activeGuards.Add(gDmg);
                     }
                 }
             }
@@ -242,14 +269,13 @@ namespace LastGod.Core
             }
 
             // -------------------------------------------------------------
-            // STEP 6: AFTERMATH — FREEZE PLAYER, VOICE (V.O.): THEY WILL FEAR YOU.
+            // STEP 6: AFTERMATH — FREEZE PLAYER, CONCLUDING V.O.
             // -------------------------------------------------------------
             yield return new WaitForSeconds(1.0f);
 
             if (_spawnedAeron != null)
             {
-                var pc = _spawnedAeron.GetComponent("PlayerController") as MonoBehaviour;
-                if (pc != null) pc.enabled = false;
+                _spawnedAeron.SendMessage("LockControls", true, SendMessageOptions.DontRequireReceiver);
             }
 
             if (sfxSource != null && sfxSource.clip == alarmSFX)
@@ -273,6 +299,38 @@ namespace LastGod.Core
             }
 
             Debug.Log("[Act1Scene1] Opening sequence complete. Cut to Black.");
+        }
+
+        private void TriggerGlassParticles()
+        {
+            if (shatterParticles != null)
+            {
+                shatterParticles.Play();
+                return;
+            }
+
+            if (chamberRenderer != null)
+            {
+                GameObject psObj = new GameObject("GlassShatterBurst");
+                psObj.transform.position = chamberRenderer.transform.position;
+                ParticleSystem ps = psObj.AddComponent<ParticleSystem>();
+                var main = ps.main;
+                main.startLifetime = 0.8f;
+                main.startSpeed = 6f;
+                main.startSize = 0.15f;
+                main.startColor = new Color(0.6f, 0.9f, 1f, 0.9f);
+                main.stopAction = ParticleSystemStopAction.Destroy;
+
+                var emission = ps.emission;
+                emission.rateOverTime = 0;
+                emission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0f, 35) });
+
+                var shape = ps.shape;
+                shape.shapeType = ParticleSystemShapeType.Box;
+                shape.scale = new Vector3(1.5f, 2.5f, 0.2f);
+
+                ps.Play();
+            }
         }
     }
 }

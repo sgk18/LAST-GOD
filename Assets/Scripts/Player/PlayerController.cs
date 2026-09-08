@@ -16,7 +16,8 @@ namespace LastGod.Player
         Climb,
         Attack,
         Hurt,
-        Dead
+        Dead,
+        Awakening
     }
 
     // ─── PlayerController ─────────────────────────────────────────────────────
@@ -49,6 +50,12 @@ namespace LastGod.Player
             get => lockToWalkAndJumpOnly;
             set => lockToWalkAndJumpOnly = value;
         }
+
+        [Header("Awakening & Chronos Aura")]
+        [SerializeField] private GameObject chronosAuraVisual;
+        [SerializeField] private bool hasChronosAura = false;
+        private bool _controlsLocked = false;
+        private Coroutine _awakeningCoroutine;
 
         [Header("Jump & Double Jump")]
         [SerializeField] private float jumpForce = 13.5f;
@@ -122,6 +129,7 @@ namespace LastGod.Player
         private bool _isNearLadder;
         private bool _isClimbing;
         private bool _isWallSliding;
+        private static bool _ladderTagValid = true;
 
         // Attack Combo
         private int _currentAttack = 0;
@@ -185,6 +193,7 @@ namespace LastGod.Player
         private void Start()
         {
             EnsureCharacterVisibility();
+            EnsureChronosAuraVisual();
         }
 
         private void EnsureCharacterVisibility()
@@ -296,6 +305,11 @@ namespace LastGod.Player
             UpdateAnimationParameters();
             ProcessInput();
 
+            if (hasChronosAura && chronosAuraVisual != null)
+            {
+                chronosAuraVisual.transform.Rotate(0f, 0f, -45f * Time.deltaTime);
+            }
+
             // Clear single-frame flags
             _jumpPressed   = false;
             _attackPressed = false;
@@ -311,6 +325,13 @@ namespace LastGod.Player
         // ─── Input Reading (Dual Input: System + Legacy) ──────────────────────
         private void ReadInputs()
         {
+            if (_controlsLocked || _state == PlayerState.Awakening || _state == PlayerState.Dead)
+            {
+                _currentHorizontalInput = 0f;
+                _currentVerticalInput = 0f;
+                return;
+            }
+
             // Horizontal movement
             float h = _moveInput.x;
 #if ENABLE_INPUT_SYSTEM
@@ -558,8 +579,9 @@ namespace LastGod.Player
             foreach (var col in overlaps)
             {
                 if (col.gameObject == gameObject) continue;
-                bool isLadder = col.name.IndexOf("Ladder", StringComparison.OrdinalIgnoreCase) >= 0;
-                if (!isLadder)
+                bool isLadder = col.name.IndexOf("Ladder", StringComparison.OrdinalIgnoreCase) >= 0
+                    || (col.transform.parent != null && col.transform.parent.name.IndexOf("Ladder", StringComparison.OrdinalIgnoreCase) >= 0);
+                if (!isLadder && _ladderTagValid)
                 {
                     try
                     {
@@ -567,7 +589,8 @@ namespace LastGod.Player
                     }
                     catch
                     {
-                        // Tag "Ladder" not defined in project tags
+                        // Tag "Ladder" not defined in project tags; suppress future checks this session
+                        _ladderTagValid = false;
                     }
                 }
                 if (isLadder)
@@ -605,7 +628,7 @@ namespace LastGod.Player
         // ─── Input → State Transitions ────────────────────────────────────────
         private void ProcessInput()
         {
-            if (_state == PlayerState.Dead) return;
+            if (_state == PlayerState.Dead || _state == PlayerState.Awakening || _controlsLocked) return;
 
             if (_state == PlayerState.Hurt)
             {
@@ -737,7 +760,11 @@ namespace LastGod.Player
         // ─── Movement ─────────────────────────────────────────────────────────
         private void ApplyMovement()
         {
-            if (_state == PlayerState.Dead) return;
+            if (_state == PlayerState.Dead || _state == PlayerState.Awakening || _controlsLocked)
+            {
+                _rb.linearVelocity = new Vector2(0f, _rb.linearVelocity.y);
+                return;
+            }
 
             // Dash override
             if (_isDashing)
@@ -985,6 +1012,114 @@ namespace LastGod.Player
         public bool IsInvincible => _isDashInvincible;
         public bool IsBlocking => _isBlocking;
         public bool IsClimbing => _isClimbing;
+        public bool HasChronosAura => hasChronosAura;
+        public bool ControlsLocked => _controlsLocked;
+
+        /// <summary>
+        /// Locks or unlocks player control inputs while maintaining current state / animation cleanly.
+        /// </summary>
+        public void LockControls(bool locked)
+        {
+            _controlsLocked = locked;
+            if (locked)
+            {
+                _currentHorizontalInput = 0f;
+                _currentVerticalInput = 0f;
+                _moveInput = Vector2.zero;
+                _jumpPressed = false;
+                _attackPressed = false;
+                _dashPressed = false;
+                _attackBufferTimer = 0f;
+                _jumpBufferTimer = 0f;
+                if (_isGrounded && _state != PlayerState.Dead && _state != PlayerState.Awakening)
+                {
+                    SetState(PlayerState.Idle);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Unlocks full melee attack combat for Aeron.
+        /// </summary>
+        public void UnlockCombat()
+        {
+            lockToWalkAndJumpOnly = false;
+        }
+
+        /// <summary>
+        /// Triggers Aeron's cinematic awakening sequence post-stasis chamber rupture.
+        /// Enters PlayerState.Awakening, triggers cyan surge, activates Chronos Aura, and unlocks combat.
+        /// </summary>
+        public void TriggerAwakening(float duration = 2.5f, Action onComplete = null)
+        {
+            if (_awakeningCoroutine != null) StopCoroutine(_awakeningCoroutine);
+            _awakeningCoroutine = StartCoroutine(AwakeningRoutine(duration, onComplete));
+        }
+
+        private System.Collections.IEnumerator AwakeningRoutine(float duration, Action onComplete)
+        {
+            SetState(PlayerState.Awakening);
+            _controlsLocked = true;
+            _rb.linearVelocity = Vector2.zero;
+
+            EnsureChronosAuraVisual();
+            if (chronosAuraVisual != null) chronosAuraVisual.SetActive(true);
+
+            if (animator != null)
+            {
+                animator.SetTrigger("Hurt"); // Visual surge pulse
+            }
+
+            yield return new WaitForSeconds(duration);
+
+            hasChronosAura = true;
+            lockToWalkAndJumpOnly = false; // Melee combat unlocked!
+            _controlsLocked = false;
+            SetState(PlayerState.Idle);
+
+            if (TryGetComponent<PrototypePowerController>(out var powerCtrl))
+            {
+                powerCtrl.UnlockPower(PrototypePowerType.TimeSlow);
+            }
+
+            _awakeningCoroutine = null;
+            onComplete?.Invoke();
+        }
+
+        private void EnsureChronosAuraVisual()
+        {
+            if (chronosAuraVisual == null)
+            {
+                Transform auraT = transform.Find("ChronosAura");
+                if (auraT != null)
+                {
+                    chronosAuraVisual = auraT.gameObject;
+                }
+                else
+                {
+                    GameObject auraObj = new GameObject("ChronosAura");
+                    auraObj.transform.SetParent(transform, false);
+                    auraObj.transform.localPosition = new Vector3(0f, 1.2f, 0f);
+                    auraObj.transform.localScale = new Vector3(1.4f, 1.4f, 1f);
+
+                    SpriteRenderer sr = auraObj.AddComponent<SpriteRenderer>();
+                    sr.sortingLayerName = "Default";
+                    sr.sortingOrder = 11;
+                    sr.color = new Color(0f, 0.9f, 1.0f, 0.65f);
+
+#if UNITY_EDITOR
+                    Sprite auraSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Chronos_Aura_FX.png");
+                    if (auraSprite != null) sr.sprite = auraSprite;
+#endif
+                    chronosAuraVisual = auraObj;
+                }
+            }
+
+            if (chronosAuraVisual != null)
+            {
+                chronosAuraVisual.SetActive(hasChronosAura);
+            }
+        }
 
         // ─── Gizmos ───────────────────────────────────────────────────────────
         private void OnDrawGizmosSelected()

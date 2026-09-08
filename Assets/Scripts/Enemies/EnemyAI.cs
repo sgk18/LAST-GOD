@@ -62,6 +62,22 @@ namespace LastGod.Enemies
 
             _health.OnDamaged.AddListener(OnDamaged);
             _health.OnDeath.AddListener(OnDeath);
+
+            if (spriteRenderer == null) spriteRenderer = GetComponent<SpriteRenderer>();
+            if (spriteRenderer == null) spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
+            spriteRenderer.sortingLayerName = "Default";
+            spriteRenderer.sortingOrder = 9;
+
+#if UNITY_EDITOR
+            if (spriteRenderer.sprite == null)
+            {
+                spriteRenderer.sprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Guard_Spritesheet.png");
+            }
+            if (gunshotSFX == null)
+            {
+                gunshotSFX = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/AudioClips/gunshot.wav");
+            }
+#endif
         }
 
         public void SetTarget(Transform target)
@@ -139,16 +155,44 @@ namespace LastGod.Enemies
                 _audioSource.PlayOneShot(gunshotSFX);
             }
 
-            if (bulletPrefab != null && _targetPlayer != null)
+            if (_targetPlayer != null)
             {
-                Vector3 spawnPos = firePoint != null ? firePoint.position : transform.position;
-                GameObject bObj = Instantiate(bulletPrefab, spawnPos, Quaternion.identity);
-                if (bObj.TryGetComponent<Bullet>(out var bullet))
+                Vector3 spawnPos = firePoint != null ? firePoint.position : (transform.position + new Vector3(_facingRight ? 0.8f : -0.8f, 0.5f, 0f));
+                GameObject bObj = bulletPrefab != null ? Instantiate(bulletPrefab, spawnPos, Quaternion.identity) : CreateLaserBullet(spawnPos);
+
+                if (bObj != null && bObj.TryGetComponent<Bullet>(out var bullet))
                 {
                     Vector2 shootDir = (_targetPlayer.position - spawnPos).normalized;
                     bullet.Initialize(shootDir, _targetPlayer);
                 }
             }
+        }
+
+        private GameObject CreateLaserBullet(Vector3 pos)
+        {
+            GameObject bObj = new GameObject("LaserBullet");
+            bObj.transform.position = pos;
+
+            var sr = bObj.AddComponent<SpriteRenderer>();
+            sr.sortingLayerName = "Default";
+            sr.sortingOrder = 12;
+
+#if UNITY_EDITOR
+            Sprite laserSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Laser_Bullet_FX.png") ??
+                                 UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Bullet.png");
+            if (laserSprite != null) sr.sprite = laserSprite;
+#endif
+            bObj.transform.localScale = new Vector3(0.5f, 0.5f, 1f);
+
+            var col = bObj.AddComponent<CircleCollider2D>();
+            col.isTrigger = true;
+            col.radius = 0.25f;
+
+            var rb = bObj.AddComponent<Rigidbody2D>();
+            rb.bodyType = RigidbodyType2D.Kinematic;
+
+            bObj.AddComponent<Bullet>();
+            return bObj;
         }
 
         private void SetState(EnemyState next)
@@ -171,9 +215,17 @@ namespace LastGod.Enemies
             _rb.simulated = false; // Stop physics, bodies stay on ground
             if (_col != null) _col.enabled = false;
 
-            if (spriteRenderer != null && deadSprite != null)
+            if (spriteRenderer != null)
             {
-                spriteRenderer.sprite = deadSprite;
+                if (deadSprite != null)
+                {
+                    spriteRenderer.sprite = deadSprite;
+                }
+                else
+                {
+                    spriteRenderer.color = new Color(0.45f, 0.4f, 0.45f, 0.85f);
+                    transform.rotation = Quaternion.Euler(0f, 0f, _facingRight ? -90f : 90f);
+                }
             }
         }
 

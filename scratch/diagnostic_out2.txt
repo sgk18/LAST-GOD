@@ -1,0 +1,4 @@
+Time.timeScale: 1
+Time.realtimeSinceStartup: 99.74215
+EditorApplication.isPaused: False
+EditorApplication.isPlaying: False

@@ -15,7 +15,7 @@
     },
     "ai-game-developer": {
       "type": "http",
-      "url": "https://ai-game.dev/mcp/p/66f3c6b5"
+      "url": "http://localhost:24534/p/66f3c6b5"
     }
   }
 }

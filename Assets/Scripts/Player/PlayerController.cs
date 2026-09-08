@@ -54,8 +54,21 @@ namespace LastGod.Player
         [Header("Awakening & Chronos Aura")]
         [SerializeField] private GameObject chronosAuraVisual;
         [SerializeField] private bool hasChronosAura = false;
+        [SerializeField] private AudioClip awakeningVoiceClip;
         private bool _controlsLocked = false;
         private Coroutine _awakeningCoroutine;
+
+        [Header("Fireball Attack")]
+        [SerializeField] private bool hasFireballPower = false;
+        [SerializeField] private GameObject fireballPrefab;
+        [SerializeField] private Transform fireballSpawnPoint;
+        [SerializeField] private AudioClip fireballCastSFX;
+
+        public bool HasFireballPower
+        {
+            get => hasFireballPower;
+            set => hasFireballPower = value;
+        }
 
         [Header("Jump & Double Jump")]
         [SerializeField] private float jumpForce = 13.5f;
@@ -346,10 +359,11 @@ namespace LastGod.Player
             try
             {
                 float rawH = UnityEngine.Input.GetAxisRaw("Horizontal");
-                if (Mathf.Abs(rawH) > 0.01f) h = rawH;
+                if (Mathf.Abs(rawH) > 0.15f) h = rawH;
             }
             catch {}
 #endif
+            if (Mathf.Abs(h) < 0.15f) h = 0f;
             _currentHorizontalInput = h;
 
             // Vertical movement (for climbing ladders)
@@ -801,7 +815,7 @@ namespace LastGod.Player
             }
 
             // Normal Run / Air horizontal movement
-            float xVel = _currentHorizontalInput * moveSpeed;
+            float xVel = Mathf.Abs(_currentHorizontalInput) > 0.05f ? _currentHorizontalInput * moveSpeed : 0f;
             _rb.linearVelocity = new Vector2(xVel, _rb.linearVelocity.y);
 
             // Sprite facing flip
@@ -901,6 +915,11 @@ namespace LastGod.Player
             PlaySFX(slashClip);
 
             PerformMeleeHit(_currentAttack);
+
+            if (hasFireballPower)
+            {
+                CastFireball();
+            }
         }
 
         private void PerformMeleeHit(int comboStep)
@@ -1065,6 +1084,11 @@ namespace LastGod.Player
             EnsureChronosAuraVisual();
             if (chronosAuraVisual != null) chronosAuraVisual.SetActive(true);
 
+            if (awakeningVoiceClip != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(awakeningVoiceClip);
+            }
+
             if (animator != null)
             {
                 animator.SetTrigger("Hurt"); // Visual surge pulse
@@ -1073,7 +1097,8 @@ namespace LastGod.Player
             yield return new WaitForSeconds(duration);
 
             hasChronosAura = true;
-            lockToWalkAndJumpOnly = false; // Melee combat unlocked!
+            hasFireballPower = true;
+            lockToWalkAndJumpOnly = false; // Melee & Fireball combat unlocked!
             _controlsLocked = false;
             SetState(PlayerState.Idle);
 
@@ -1119,6 +1144,59 @@ namespace LastGod.Player
             {
                 chronosAuraVisual.SetActive(hasChronosAura);
             }
+        }
+
+        public void AwakenByGuardShot()
+        {
+            if (hasFireballPower || _state == PlayerState.Awakening) return;
+            TriggerAwakening(2.5f, () => {
+                Debug.Log("[PlayerController] Aeron's cyan/orange fireball power awakened!");
+            });
+        }
+
+        public void CastFireball()
+        {
+            Vector3 spawnPos = fireballSpawnPoint != null 
+                ? fireballSpawnPoint.position 
+                : transform.position + new Vector3(_facingRight ? 1.0f : -1.0f, 1.2f, 0f);
+
+            GameObject fb = null;
+            if (fireballPrefab != null)
+            {
+                fb = Instantiate(fireballPrefab, spawnPos, Quaternion.identity);
+            }
+            else
+            {
+                fb = CreateFireballFallback(spawnPos);
+            }
+
+            if (fb != null && fb.TryGetComponent<LastGod.Combat.FireballProjectile>(out var proj))
+            {
+                proj.Initialize(_facingRight ? Vector2.right : Vector2.left, 4);
+            }
+
+            if (fireballCastSFX != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(fireballCastSFX);
+            }
+        }
+
+        private GameObject CreateFireballFallback(Vector3 pos)
+        {
+            GameObject fb = new GameObject("Fireball_Fallback");
+            fb.transform.position = pos;
+            var sr = fb.AddComponent<SpriteRenderer>();
+            sr.sortingOrder = 15;
+#if UNITY_EDITOR
+            sr.sprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Combat/Aeron_Fireball_FX.png");
+#endif
+            var col = fb.AddComponent<CircleCollider2D>();
+            col.isTrigger = true;
+            col.radius = 0.45f;
+            var rb = fb.AddComponent<Rigidbody2D>();
+            rb.bodyType = RigidbodyType2D.Kinematic;
+            fb.AddComponent<LastGod.Combat.FireballProjectile>();
+            return fb;
         }
 
         // ─── Gizmos ───────────────────────────────────────────────────────────

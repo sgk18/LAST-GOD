@@ -33,7 +33,7 @@ namespace LastGod.Core
         /// </summary>
         public void InitializeParallaxLayers()
         {
-            if (gameObject.scene.name == "Act1_Scene1") return;
+            if (gameObject.scene.name == "Act1_Scene1" || gameObject.scene.name == "Act1_Origin") return;
 
             // Load sprites from Resources / Assets if unassigned
             if (farBackgroundSprite == null)

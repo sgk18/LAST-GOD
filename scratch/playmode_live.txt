@@ -1,0 +1,11 @@
+=== PLAY MODE LIVE DIAGNOSTIC ===
+Time.time: 0.02
+Aeron Pos: (0.0000, -2.2490, 0.0000)
+Aeron RB Vel: (0.0000, 0.0000)
+Camera Pos: (0.0000, -0.7990, -10.0000)
+Parallax FarBackground_Parallax Pos: (0.0000, 2.5000, 10.0000)
+Parallax Midground_Parallax Pos: (0.0000, 1.5000, 5.0000)
+Parallax Foreground_Parallax Pos: (0.0000, -0.5000, -2.0000)
+Guard Pos: (5.5000, -2.4412, 0.0000)
+Guard Vel: (0.0000, -1.3734)
+Guard State: Approach

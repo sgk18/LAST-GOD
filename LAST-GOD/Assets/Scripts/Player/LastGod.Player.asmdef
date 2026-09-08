@@ -3,7 +3,8 @@
     "rootNamespace": "LastGod.Player",
     "references": [
         "Unity.InputSystem",
-        "LastGod.Core"
+        "LastGod.Core",
+        "LastGod.Combat"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

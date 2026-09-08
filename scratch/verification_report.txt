@@ -1,0 +1,14 @@
+=== ACT1_ORIGIN VERIFICATION ===
+Aeron Found: true
+Aeron Pos: (0.0000, -2.2500, 0.0000)
+Dais Pos: (0.0000, -2.4000, 0.0000)
+Dais Col Size: (4.5000, 0.3000)
+Camera Pos: (0.0000, -0.8000, -10.0000)
+Camera SmoothSpeed: 0
+Parallax Layer FarBackground_Parallax enabled: False, factor: 0
+Parallax Layer Midground_Parallax enabled: False, factor: 0
+Parallax Layer Foreground_Parallax enabled: False, factor: 0
+Guard Found: true
+Guard Pos: (5.5000, -2.4000, 0.0000)
+Guard ShootOnly: True
+Guard Animator: Guard

@@ -25,18 +25,20 @@ namespace LastGod.Enemies
     public class EnemyAI : MonoBehaviour
     {
         [Header("Movement")]
+        [SerializeField] private bool shootOnly = true;
         [SerializeField] private float moveSpeed = 3.5f;
-        [SerializeField] private float attackRange = 5f;
+        [SerializeField] private float attackRange = 12f;
         [SerializeField] private float stopDistance = 2f;
 
         [Header("Attack")]
         [SerializeField] private GameObject bulletPrefab;
         [SerializeField] private Transform firePoint;
-        [SerializeField] private float attackCooldown = 1.5f;
+        [SerializeField] private float attackCooldown = 1.8f;
         [SerializeField] private AudioClip gunshotSFX;
 
         [Header("Sprite / Visuals")]
         [SerializeField] private SpriteRenderer spriteRenderer;
+        [SerializeField] private Animator animator;
         [SerializeField] private Sprite deadSprite;
 
         private Rigidbody2D _rb;
@@ -49,6 +51,7 @@ namespace LastGod.Enemies
         private float _attackTimer;
         private float _hurtTimer;
         private bool _facingRight = true;
+        private bool _hasAwakenedAeron = false;
 
         public EnemyState State => _state;
 
@@ -68,10 +71,13 @@ namespace LastGod.Enemies
             spriteRenderer.sortingLayerName = "Default";
             spriteRenderer.sortingOrder = 9;
 
+            if (animator == null) animator = GetComponent<Animator>();
+
 #if UNITY_EDITOR
             if (spriteRenderer.sprite == null)
             {
-                spriteRenderer.sprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Guard_Spritesheet.png");
+                spriteRenderer.sprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Guard/Guard_Idle_0.png") ??
+                                       UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Guard_Spritesheet.png");
             }
             if (gunshotSFX == null)
             {
@@ -83,7 +89,7 @@ namespace LastGod.Enemies
         public void SetTarget(Transform target)
         {
             _targetPlayer = target;
-            SetState(EnemyState.Approach);
+            SetState(shootOnly ? EnemyState.Idle : EnemyState.Approach);
         }
 
         private void Update()
@@ -95,7 +101,7 @@ namespace LastGod.Enemies
                 _hurtTimer -= Time.deltaTime;
                 if (_hurtTimer <= 0f && _state == EnemyState.Hurt)
                 {
-                    SetState(EnemyState.Approach);
+                    SetState(shootOnly ? EnemyState.Idle : EnemyState.Approach);
                 }
                 return;
             }
@@ -105,7 +111,12 @@ namespace LastGod.Enemies
                 _attackTimer -= Time.deltaTime;
             }
 
-            if (_targetPlayer == null) return;
+            if (_targetPlayer == null)
+            {
+                var pc = FindAnyObjectByType<LastGod.Player.PlayerController>();
+                if (pc != null) _targetPlayer = pc.transform;
+                if (_targetPlayer == null) return;
+            }
 
             float distToPlayer = Vector2.Distance(transform.position, _targetPlayer.position);
 
@@ -113,6 +124,24 @@ namespace LastGod.Enemies
             float dirX = _targetPlayer.position.x - transform.position.x;
             if (dirX > 0.1f && !_facingRight) Flip();
             else if (dirX < -0.1f && _facingRight) Flip();
+
+            if (shootOnly)
+            {
+                _rb.linearVelocity = new Vector2(0f, _rb.linearVelocity.y);
+                if (distToPlayer <= attackRange)
+                {
+                    if (_attackTimer <= 0f)
+                    {
+                        ExecuteAttack();
+                    }
+                    else
+                    {
+                        SetState(EnemyState.Idle);
+                        if (animator != null) animator.SetBool("IsWalking", false);
+                    }
+                }
+                return;
+            }
 
             if (distToPlayer <= attackRange)
             {
@@ -124,16 +153,24 @@ namespace LastGod.Enemies
                 {
                     SetState(EnemyState.Idle);
                     _rb.linearVelocity = new Vector2(0, _rb.linearVelocity.y);
+                    if (animator != null) animator.SetBool("IsWalking", false);
                 }
             }
             else
             {
                 SetState(EnemyState.Approach);
+                if (animator != null) animator.SetBool("IsWalking", true);
             }
         }
 
         private void FixedUpdate()
         {
+            if (shootOnly)
+            {
+                _rb.linearVelocity = new Vector2(0f, _rb.linearVelocity.y);
+                return;
+            }
+
             if (_state == EnemyState.Approach && _targetPlayer != null)
             {
                 float dir = (_targetPlayer.position.x > transform.position.x) ? 1f : -1f;
@@ -150,6 +187,11 @@ namespace LastGod.Enemies
             SetState(EnemyState.Attack);
             _attackTimer = attackCooldown;
 
+            if (animator != null)
+            {
+                animator.SetTrigger("Shoot");
+            }
+
             if (gunshotSFX != null && _audioSource != null)
             {
                 _audioSource.PlayOneShot(gunshotSFX);
@@ -164,6 +206,17 @@ namespace LastGod.Enemies
                 {
                     Vector2 shootDir = (_targetPlayer.position - spawnPos).normalized;
                     bullet.Initialize(shootDir, _targetPlayer);
+                }
+
+                // Awaken Aeron on first shot
+                if (!_hasAwakenedAeron)
+                {
+                    _hasAwakenedAeron = true;
+                    var pc = _targetPlayer.GetComponent<LastGod.Player.PlayerController>() ?? FindAnyObjectByType<LastGod.Player.PlayerController>();
+                    if (pc != null)
+                    {
+                        pc.AwakenByGuardShot();
+                    }
                 }
             }
         }

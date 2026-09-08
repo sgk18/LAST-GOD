@@ -28,9 +28,14 @@ namespace LastGod.Editor
 
         private static void AutoBuildIfNeeded()
         {
-            if (!File.Exists(ScenePath))
+            string flagPath = "Assets/Scripts/Editor/.rebuild_act1_scene1";
+            if (!File.Exists(ScenePath) || File.Exists(flagPath))
             {
-                Debug.Log("[Act1Scene1Builder] Act1_Scene1.unity missing. Triggering automatic build...");
+                if (File.Exists(flagPath))
+                {
+                    try { File.Delete(flagPath); } catch { }
+                }
+                Debug.Log("[Act1Scene1Builder] Rebuild requested. Generating updated Act1_Scene1.unity...");
                 BuildAct1Scene1();
             }
         }
@@ -91,11 +96,18 @@ namespace LastGod.Editor
             Rigidbody2D groundRb = groundRoot.AddComponent<Rigidbody2D>();
             groundRb.bodyType = RigidbodyType2D.Static;
 
-            // Main Catwalk Deck Collider (runs from x = -65.5 to +65.5, top edge at Y = -13.03)
-            // Height = 4.5 -> Center Y = -15.28f, covering Y = -17.53 to -13.03 (matching visual walkway slab)
+            // Main Catwalk Deck Collider (top edge at visual walkway floor Y = -17.10)
             BoxCollider2D groundBox = groundRoot.AddComponent<BoxCollider2D>();
-            groundBox.offset = new Vector2(0f, -15.28f);
-            groundBox.size = new Vector2(131.0f, 4.5f); // Top edge at Y = -13.03
+            groundBox.offset = new Vector2(0f, -19.35f);
+            groundBox.size = new Vector2(131.0f, 4.5f); // Top edge at Y = -17.10
+
+            // Raised Computer Console / Terminal Crate Platform (top edge at Y = -13.03)
+            GameObject consoleObj = new GameObject("Collider_ComputerConsole");
+            consoleObj.layer = groundLayer;
+            consoleObj.transform.SetParent(groundRoot.transform, false);
+            consoleObj.transform.position = new Vector3(-0.5f, -15.065f, 0f);
+            BoxCollider2D consoleBox = consoleObj.AddComponent<BoxCollider2D>();
+            consoleBox.size = new Vector2(5.5f, 4.07f);
 
             // Left Wall Barrier (x = -65.5)
             GameObject leftWall = new GameObject("Collider_LeftWall");
@@ -137,7 +149,7 @@ namespace LastGod.Editor
             // 5b. GLASS CHAMBER (STASIS POD AT PILLAR B-3)
             // -------------------------------------------------------------
             GameObject chamberObj = new GameObject("Glass_Chamber");
-            chamberObj.transform.position = new Vector3(-34.0f, -11.53f, 0f);
+            chamberObj.transform.position = new Vector3(-34.0f, -15.60f, 0f);
 
             SpriteRenderer chamberSR = chamberObj.AddComponent<SpriteRenderer>();
             chamberSR.sortingLayerName = "Default";
@@ -167,32 +179,16 @@ namespace LastGod.Editor
             GameObject playerObj = new GameObject("Player");
             playerObj.tag = "Player";
             playerObj.layer = playerLayer;
-            // Spawn standing squarely ON top of catwalk collider at Y = -13.03
-            // CapsuleCollider2D height = 1.4, offset Y = 0.7 -> bottom of collider at transform.Y
-            playerObj.transform.position = new Vector3(0f, -13.03f, 0f);
+            // Spawn standing cleanly ON the walkway deck floor at Y = -17.10 (not on the computer)
+            playerObj.transform.position = new Vector3(5.0f, -17.10f, 0f);
 
             SpriteRenderer playerSR = playerObj.AddComponent<SpriteRenderer>();
             playerSR.sortingLayerName = "Default";
             playerSR.sortingOrder = 10;
-            // Try loading post-chamber Aeron sprite (aeron onside idle/01.png)
-            Sprite playerSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/aeron onside idle/01.png");
+            Sprite playerSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Characters/Aeron/Sprites/Idle/Aeron_Idle_01.png");
+            if (playerSprite == null) playerSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/aeron onside idle/01.png");
             if (playerSprite == null) playerSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/aeron outside idle/01.png");
             if (playerSprite == null) playerSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Sprites/Aeron_Concept.png");
-            if (playerSprite == null)
-            {
-                var protoAssets = AssetDatabase.LoadAllAssetsAtPath("Assets/Art/Sprites/PrototypeCharacter/Weapon_1.png");
-                if (protoAssets != null)
-                {
-                    foreach (var a in protoAssets)
-                    {
-                        if (a is Sprite s)
-                        {
-                            playerSprite = s;
-                            break;
-                        }
-                    }
-                }
-            }
             if (playerSprite != null) playerSR.sprite = playerSprite;
 
             Rigidbody2D playerRb = playerObj.AddComponent<Rigidbody2D>();
@@ -203,35 +199,34 @@ namespace LastGod.Editor
             playerRb.constraints = RigidbodyConstraints2D.FreezeRotation;
 
             CapsuleCollider2D playerCol = playerObj.AddComponent<CapsuleCollider2D>();
-            playerCol.size = new Vector2(0.5f, 1.4f);
-            playerCol.offset = new Vector2(0f, 0.7f);
+            playerCol.size = new Vector2(1.8f, 5.5f);
+            playerCol.offset = new Vector2(0f, 2.75f);
+
+            Animator playerAnim = playerObj.AddComponent<Animator>();
+            RuntimeAnimatorController aCtrl = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>("Assets/Characters/Aeron/Animator/Aeron.controller");
+            if (aCtrl != null) playerAnim.runtimeAnimatorController = aCtrl;
 
             PlayerController pCtrl = playerObj.AddComponent<PlayerController>();
             Health pHealth = playerObj.AddComponent<Health>();
 
             // -------------------------------------------------------------
-            // 7. CAMERA SETUP
+            // 7. CAMERA SETUP (ZOOMED OUT FOR BALANCED METROIDVANIA FRAMING)
             // -------------------------------------------------------------
             GameObject mainCamObj = new GameObject("Main Camera");
             mainCamObj.tag = "MainCamera";
-            mainCamObj.transform.position = new Vector3(0f, -9.5f, -10f);
+            mainCamObj.transform.position = new Vector3(5.0f, -14.3f, -10f);
 
             Camera cam = mainCamObj.AddComponent<Camera>();
             cam.orthographic = true;
-            cam.orthographicSize = 5.0f;
-            cam.backgroundColor = Color.black;
+            cam.orthographicSize = 7.5f; // Zoomed out cleanly
+            cam.backgroundColor = new Color(0.08f, 0.10f, 0.14f, 1f);
             cam.clearFlags = CameraClearFlags.SolidColor;
-
-            PixelPerfectCamera ppCam = mainCamObj.AddComponent<PixelPerfectCamera>();
-            ppCam.assetsPPU = 16;
-            ppCam.refResolutionX = 240;
-            ppCam.refResolutionY = 160;
-            ppCam.gridSnapping = PixelPerfectCamera.GridSnapping.UpscaleRenderTexture;
 
             CameraFollow camFollow = mainCamObj.AddComponent<CameraFollow>();
             SerializedObject camSO = new SerializedObject(camFollow);
             camSO.FindProperty("target").objectReferenceValue = playerObj.transform;
-            camSO.FindProperty("offset").vector3Value = new Vector3(0f, 3.5f, -10f);
+            camSO.FindProperty("offsetY").floatValue = 2.8f;
+            camSO.FindProperty("cameraZ").floatValue = -10f;
             camSO.ApplyModifiedProperties();
 
             // Save Scene

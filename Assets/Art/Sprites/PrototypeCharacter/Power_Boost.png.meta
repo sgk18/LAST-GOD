@@ -80,6 +80,19 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -94,12 +107,17 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
       spriteID: feedede84d8a546bbf54aec99a59237b
-      internalID: 21300000
+      internalID: -2482873273282263645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: Power_Boost_1
       rect:
@@ -111,12 +129,17 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
       spriteID: f4cea3c3c51f579385dcc2a8387b8a0b
-      internalID: 21300002
+      internalID: -7317189149145463396
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: Power_Boost_2
       rect:
@@ -128,12 +151,17 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
       spriteID: 648ef3d3cc4e5fad852c154cb6028cb4
-      internalID: 21300004
+      internalID: -8710594962727534665
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: Power_Boost_3
       rect:
@@ -145,12 +173,17 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
       spriteID: 91d6ff4ebe0b53d6ac82a38d6000fbd5
-      internalID: 21300006
+      internalID: 1946606772235751230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: Power_Boost_4
       rect:
@@ -162,12 +195,17 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
       spriteID: bfd94d26e15b5640b05fc9fe53c39c22
-      internalID: 21300008
+      internalID: 3431378691864254632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: Power_Boost_5
       rect:
@@ -179,12 +217,17 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
       spriteID: 9eced8e47dd1588ebd4a337a7ee3e0b9
-      internalID: 21300010
+      internalID: -3549937031867663836
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: Power_Boost_6
       rect:
@@ -196,12 +239,17 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
       spriteID: de1e2e5b6f455e519fbf965fdf1bea6c
-      internalID: 21300012
+      internalID: 6116333976465320886
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: Power_Boost_7
       rect:
@@ -213,12 +261,17 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
       spriteID: 009438cc3eb55daaa0f71ae03044d8c3
-      internalID: 21300014
+      internalID: 8203437492177415070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: Power_Boost_8
       rect:
@@ -230,12 +283,17 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
       spriteID: 062f526a53965fc394bca9179c57ccdf
-      internalID: 21300016
+      internalID: -3915922742841242470
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: Power_Boost_9
       rect:
@@ -247,12 +305,17 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
       spriteID: 00cdd8b0671b5c29950f12f07754fef0
-      internalID: 21300018
+      internalID: -653950393648045503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -266,7 +329,17 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Power_Boost_0: -2482873273282263645
+      Power_Boost_1: -7317189149145463396
+      Power_Boost_2: -8710594962727534665
+      Power_Boost_3: 1946606772235751230
+      Power_Boost_4: 3431378691864254632
+      Power_Boost_5: -3549937031867663836
+      Power_Boost_6: 6116333976465320886
+      Power_Boost_7: 8203437492177415070
+      Power_Boost_8: -3915922742841242470
+      Power_Boost_9: -653950393648045503
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

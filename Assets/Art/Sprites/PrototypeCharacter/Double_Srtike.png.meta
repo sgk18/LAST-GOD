@@ -80,6 +80,19 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -94,12 +107,17 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
       spriteID: 94e716c68db25efa841d4bded70a64b4
-      internalID: 21300000
+      internalID: 4043003262526253281
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: Double_Srtike_1
       rect:
@@ -111,12 +129,17 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
       spriteID: b0479c0437295f5eba0f9d745a769182
-      internalID: 21300002
+      internalID: 6760525071122268546
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: Double_Srtike_2
       rect:
@@ -128,12 +151,17 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
       spriteID: f4e081149f6d591bafe590a8902a64ce
-      internalID: 21300004
+      internalID: 3850736864420430974
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: Double_Srtike_3
       rect:
@@ -145,12 +173,17 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
       spriteID: 8bfc24b41b36594298fd710e08012f3d
-      internalID: 21300006
+      internalID: 97337126753726017
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: Double_Srtike_4
       rect:
@@ -162,12 +195,17 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
       spriteID: 07c5de469e8a5c82b18838c82129de2b
-      internalID: 21300008
+      internalID: 6619625252055785352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: Double_Srtike_5
       rect:
@@ -179,12 +217,17 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
       spriteID: a5aae2a9e54759eb9f4e732d299b6452
-      internalID: 21300010
+      internalID: -4874865052513441199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     - serializedVersion: 2
       name: Double_Srtike_6
       rect:
@@ -196,12 +239,17 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
       spriteID: a574304801c15a1987d1f8e3bcd0b387
-      internalID: 21300012
+      internalID: -7435533274737767199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -215,7 +263,14 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Double_Srtike_0: 4043003262526253281
+      Double_Srtike_1: 6760525071122268546
+      Double_Srtike_2: 3850736864420430974
+      Double_Srtike_3: 97337126753726017
+      Double_Srtike_4: 6619625252055785352
+      Double_Srtike_5: -4874865052513441199
+      Double_Srtike_6: -7435533274737767199
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

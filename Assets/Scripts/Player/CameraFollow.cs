@@ -13,6 +13,10 @@ namespace LastGod.Player
         [SerializeField] private Transform target;
         [Tooltip("Z offset for 2D cameras (keep negative, e.g. -10).")]
         [SerializeField] private float cameraZ = -10f;
+        [Tooltip("Y offset to center camera on character's body instead of feet.")]
+        [SerializeField] private float offsetY = 2.8f;
+        [Tooltip("Smooth follow speed (0 = instant snap).")]
+        [SerializeField] private float smoothSpeed = 0f;
 
         private void Awake()
         {
@@ -27,9 +31,15 @@ namespace LastGod.Player
                 if (target == null) return;
             }
 
-            // Hard snap — every frame, no lerp.
-            // Pixel Perfect Camera will handle sub-pixel snapping.
-            transform.position = new Vector3(target.position.x, target.position.y, cameraZ);
+            Vector3 targetPos = new Vector3(target.position.x, target.position.y + offsetY, cameraZ);
+            if (smoothSpeed > 0f)
+            {
+                transform.position = Vector3.Lerp(transform.position, targetPos, smoothSpeed * Time.deltaTime);
+            }
+            else
+            {
+                transform.position = targetPos;
+            }
         }
 
         private void FindPlayerTarget()

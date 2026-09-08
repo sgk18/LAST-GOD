@@ -148,7 +148,7 @@ Transform:
   m_GameObject: {fileID: 1000001}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -9.5, z: -10}
+  m_LocalPosition: {x: 5, y: -14.0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -189,7 +189,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 7.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -405,6 +405,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3000002}
   - component: {fileID: 3000003}
+  - component: {fileID: 3000008}
   - component: {fileID: 3000004}
   - component: {fileID: 3000005}
   - component: {fileID: 3000006}
@@ -425,7 +426,7 @@ Transform:
   m_GameObject: {fileID: 3000001}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -13.03, z: 0}
+  m_LocalPosition: {x: 5, y: -17.10, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -480,7 +481,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 10
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: a071de01a1c54b2d8e3b123456780001, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d42314df21e915c4d02bcbcec172bbd0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -669,7 +670,7 @@ Transform:
   m_GameObject: {fileID: 4200001}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -15.28, z: 0}
+  m_LocalPosition: {x: 0, y: -19.35, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1278,3 +1279,15 @@ SceneRoots:
   - {fileID: 4000002}
   - {fileID: 3000002}
   - {fileID: 5000002}
+
+--- !u!95 &3000008
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3000001}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5cf7de8c63c5d78494648cab33915b53, type: 2}

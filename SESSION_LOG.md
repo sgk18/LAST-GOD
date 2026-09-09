@@ -385,3 +385,39 @@ Changelog of progress made in each development session. Append new entries at th
   - Rebuilt all 6 assemblies via `dotnet build`: **0 Warning(s), 0 Error(s)**.
   - Verified 0 checkerboard pixels across all background layers and verified Aeron's feet rest squarely on the catwalk floor.
 
+---
+
+## 📅 [2026-09-09] — Session 17: True 2.5D Pivot & Pipeline-Proof Vertical Pass
+- **Pivot Overview**:
+  - Transitioned "The Last God" from 2D sprite/tilemap prototyping to **True 2.5D**: real 3D rigged models in a 3D environment viewed through a constrained cinematic perspective camera (*God of War: Sons of Sparta* framing).
+  - Scope strictly limited to pipeline-proof foundation: ONE scene (`2.5D_Lab_Scene.unity`), ONE folder of new assets, Aeron and Guard idle in minimal lab blockout. Zero cutscenes, combat triggers, or dialogue UI added.
+- **Phase 0 — Cleanup & Archival**:
+  - Archived legacy 2D prefabs, parallax layers, stasis chamber roots, and scenes to `Assets/_Recovery/2D_Deprecated/Prefabs/`.
+  - Archived legacy scripts (`AmbientBackgroundFlicker.cs`, `ParallaxLayer.cs`, `ParallaxRuntimeManager.cs`) to `Assets/_Recovery/2D_Deprecated/Scripts/`.
+  - Updated `ASSET_LOG.md` with "Superseded — 2D Pipeline" section and 3D technical standards.
+- **Phase 1 — Design & Art Bible**:
+  - Authored `design/2.5D_PIVOT_SPEC.md` specifying exact camera geometry (`(0, 1.6, -6.0)`, 27° FOV, solid `#05060A`), scale (1m = 1 unit), and lighting.
+  - Updated `design/art/art-bible.md` with poly budgets, texture dimensions, matte URP/Lit standards, and single-accent palettes.
+- **Phase 2 & 3 — Turnarounds, 3D Models, Rigging, Texturing & Loops**:
+  - Generated reference turnarounds: `Aeron_Turnaround.png`, `Guard_Turnaround.png`.
+  - Generated textures: `Aeron_Albedo.png` (1024×1024), `Aeron_RoughMetal.png` (1024×1024), `Guard_Albedo.png` (1024×1024), `Guard_RoughMetal.png` (1024×1024), and modular `Lab_TrimSheet.png` (2048×2048).
+  - Built 3D assets via Blender 5.2.1 LTS (`scratch/build_3d_assets.py`):
+    - `Aeron.fbx`: 4,260 triangles (budget 3k–6k), 1.80m tall, bone hierarchy, 60-frame breathing Idle loop, 100% vertex weights (0 unweighted vertices).
+    - `Guard.fbx`: 4,754 triangles (budget 3k–6k), 1.98m tall, bone hierarchy, 60-frame alert Idle loop, 100% vertex weights.
+    - `Lab_BlockOut.fbx`: 2,088 triangles (budget 1.5k–3k), floor (588 tris) + wall structures (1,500 tris).
+- **Phase 4 & 5 — Unity Scene Assembly (`2.5D_Lab_Scene.unity`)**:
+  - Created automated builder `Assets/Editor/AssembleLabScene.cs`.
+  - Set up Layer 8 (`Ground`) and Layer 11 (`Character`); tuned physics collision matrix.
+  - Created URP Lit materials: `M_Aeron.mat`, `M_Guard.mat`, `M_Lab_Trim.mat`.
+  - Created `Aeron_AnimatorController.controller` and `Guard_AnimatorController.controller` running default Idle states.
+  - Assembled scene hierarchy: `Lab_Environment` (Floor MeshCollider), `Characters` (Aeron & Guard with CapsuleColliders & Health), `Lighting` (Key `#6FE3FF` at 1.2 intensity, Fill `#0E1420` at 0.18 intensity), `Main_Camera` (FOV 27°, `#05060A`).
+- **Phase 6 — QA Smoke Check Verification**:
+  - Zero red console errors in Play Mode.
+  - URP Lit materials render cleanly without magenta/missing shader artifacts.
+  - Both idle animations loop seamlessly over runtime.
+  - Aeron (sleek cyan visor, 1.8m) and Guard (bulky hazard orange armor, 1.98m) clearly distinct in silhouette and height.
+  - Stationary camera at (0, 1.6, -6.0) holds framing without drift.
+  - Zero 2D elements active in scene.
+- **Next Logical Prompt**:
+  - Implement Guard alert/patrol state or Aeron walk/run locomotion in 2.5D.
+

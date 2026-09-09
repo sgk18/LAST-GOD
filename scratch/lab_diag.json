@@ -1,0 +1,4 @@
+{
+  "csharpCode": "var sb = new System.Text.StringBuilder();\nforeach(var go in UnityEngine.Object.FindObjectsByType<UnityEngine.GameObject>(UnityEngine.FindObjectsInactive.Include, UnityEngine.FindObjectsSortMode.None))\n{\n    if (go.name.Contains(\"Lab\") || go.name.Contains(\"Floor\") || go.name.Contains(\"Wall\"))\n    {\n        sb.AppendLine($\"Lab obj: {go.name}, pos={go.transform.position}, rot={go.transform.rotation.eulerAngles}, scale={go.transform.lossyScale}\");\n        var mr = go.GetComponent<UnityEngine.MeshRenderer>();\n        if (mr != null)\n        {\n            sb.AppendLine($\"  MR: boundsCenter={mr.bounds.center}, boundsExtents={mr.bounds.extents}\");\n        }\n    }\n}\nSystem.IO.File.WriteAllText(\"c:/projects/LAST-GOD/scratch/lab_diag.txt\", sb.ToString());",
+  "isMethodBody": true
+}

@@ -40,3 +40,31 @@
 - **Chamber Pod**: Vertical glass stasis cylinder with heavy metallic hydraulic cap and base dais. Intact, fractured/cracked, and shattered glass states.
 - **Lab Catwalk**: Heavy industrial grating with yellow/black hazard trim, handrails, computer monitors with glowing terminal displays.
 - **Lighting**: 2D Point and Global lights casting moody chiaroscuro contrast.
+
+---
+
+## 4. 3D Asset Standards (True 2.5D Pipeline)
+
+### Poly Budgets
+- **Character Models**: `3,000 – 6,000` triangles per character model (stylized low-poly, clean silhouette-focused topology, not high-fidelity).
+- **Environment Block-Out**: `1,500 – 3,000` triangles for the minimal laboratory room block-out geometry.
+
+### Texture Resolution & Packing
+- **Characters**: `1024×1024` per character:
+  - `[Character]_Albedo.png`: Base color and accent highlights.
+  - `[Character]_RoughMetal.png`: Single packed map (Metallic / Occlusion / Detail / Smoothness).
+  - Normal maps: None required for this prototype pass.
+- **Environment**: `2048×2048` shared Trim Sheet texture (`Lab_TrimSheet.png`) covering wall panels, floor grating, and pillar fluting.
+
+### Material & Surface Language
+- **Shader Model**: Unity Universal Render Pipeline (URP) `Universal Render Pipeline/Lit`.
+- **Smoothness**: Kept low (`0.1 – 0.3`) across all materials — creating a tactile, matte, industrial, non-reflective surface language.
+- **Color Palette & Accents**:
+  - Cold desaturated base tones:
+    - Greys: `#3A3F47`
+    - Dark blues: `#1B2430`
+    - Near-black shadows: `#0A0C10`
+  - Exactly one distinctive accent color per character:
+    - **Aeron**: Pale cyan-white glow `#CFF4FF` at the eyes only.
+    - **Guard**: Dim amber/red accent `#C4502E` on a status light or chest marking to visually differentiate threat from hero at a glance.
+

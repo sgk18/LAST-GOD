@@ -1,0 +1,6 @@
+Lab obj: Wall_Structures, pos=(0.00, 0.00, 0.00), rot=(270.02, 0.00, 0.00), scale=(1.00, 1.00, 1.00)
+  MR: boundsCenter=(0.00, 2.75, -2.33), boundsExtents=(6.00, 2.75, 0.68)
+Lab obj: Lab_Environment, pos=(0.00, 0.00, 0.00), rot=(0.00, 0.00, 0.00), scale=(1.00, 1.00, 1.00)
+Lab obj: Floor, pos=(0.00, 0.00, 0.00), rot=(270.02, 0.00, 0.00), scale=(1.00, 1.00, 1.00)
+  MR: boundsCenter=(0.00, -0.10, 0.00), boundsExtents=(6.00, 0.10, 3.00)
+Lab obj: Lab_BlockOut, pos=(0.00, 0.00, 0.00), rot=(0.00, 0.00, 0.00), scale=(1.00, 1.00, 1.00)

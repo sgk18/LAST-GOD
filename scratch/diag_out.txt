@@ -1,0 +1,11 @@
+Cam: pos=(0.00, 1.60, -6.00), rot=(5.00, 0.00, 0.00), cullingMask=-1, fov=27
+Found: Guard_Instance, active=True, pos=(1.20, 0.00, 0.00), layer=11
+  SMR: mesh=Guard_Mesh, boundsCenter=(1.18, 0.95, 0.05), boundsExtents=(0.62, 1.01, 0.44), enabled=True, mat=M_Guard
+Found: Aeron_Mesh, active=True, pos=(-1.20, 0.00, 0.00), layer=11
+  SMR: mesh=Aeron_Mesh, boundsCenter=(-1.19, 0.88, 0.02), boundsExtents=(0.46, 0.93, 0.32), enabled=True, mat=M_Aeron
+Found: Aeron_Armature, active=True, pos=(-1.20, 0.00, 0.00), layer=11
+Found: Guard_Mesh, active=True, pos=(1.20, 0.00, 0.00), layer=11
+  SMR: mesh=Guard_Mesh, boundsCenter=(1.18, 0.95, 0.05), boundsExtents=(0.62, 1.01, 0.44), enabled=True, mat=M_Guard
+Found: Aeron_Instance, active=True, pos=(-1.20, 0.00, 0.00), layer=11
+  SMR: mesh=Aeron_Mesh, boundsCenter=(-1.19, 0.88, 0.02), boundsExtents=(0.46, 0.93, 0.32), enabled=True, mat=M_Aeron
+Found: Guard_Armature, active=True, pos=(1.20, 0.00, 0.00), layer=11

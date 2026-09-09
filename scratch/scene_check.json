@@ -1,0 +1,4 @@
+{
+  "csharpCode": "var sb = new System.Text.StringBuilder();\nvar scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();\nsb.AppendLine($\"Active scene: {scene.name}, isDirty={scene.isDirty}\");\nforeach(var root in scene.GetRootGameObjects())\n{\n    sb.AppendLine($\"Root: {root.name}\");\n}\nSystem.IO.File.WriteAllText(\"c:/projects/LAST-GOD/scratch/scene_check.txt\", sb.ToString());",
+  "isMethodBody": true
+}

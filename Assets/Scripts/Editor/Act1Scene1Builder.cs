@@ -83,15 +83,7 @@ namespace LastGod.Editor
             Sprite f2 = AssetDatabase.LoadAssetAtPath<Sprite>(Frame2Path);
             if (f1 != null) bgRenderer.sprite = f1;
 
-            AmbientBackgroundFlicker flicker = bgObj.AddComponent<AmbientBackgroundFlicker>();
-            SerializedObject flickerSO = new SerializedObject(flicker);
-            SerializedProperty framesProp = flickerSO.FindProperty("frameSprites");
-            framesProp.arraySize = 2;
-            framesProp.GetArrayElementAtIndex(0).objectReferenceValue = f1;
-            framesProp.GetArrayElementAtIndex(1).objectReferenceValue = f2;
-            flickerSO.FindProperty("minFlickerInterval").floatValue = 0.15f;
-            flickerSO.FindProperty("maxFlickerInterval").floatValue = 0.60f;
-            flickerSO.ApplyModifiedProperties();
+            // AmbientBackgroundFlicker superseded by 2.5D pivot and removed
 
             // -------------------------------------------------------------
             // 4. LIGHTING

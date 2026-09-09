@@ -1,12 +1,22 @@
-# CONTEXT — The Last God (Unity 6.5 Prototype)
+# CONTEXT — The Last God (Unity 6.5 True 2.5D Prototype)
 
 ## 1. Project Summary & Identity
-**The Last God** is a dark, atmospheric 2D URP pixel-art action-combat platformer built with an authentic Game Boy Advance (GBA) aesthetic.
-- **Reference Viewport**: 240 × 160 native resolution framed by Unity's **Pixel Perfect Camera**.
-- **Pixel Grid & PPU**: Strict **16 Pixels Per Unit (PPU)** (16px = 1.0 Unity world unit).
-- **Texture Sampling**: **Point (no filter)**, no texture compression, true pixel boundaries without bilinear blurring or sub-pixel shimmering.
-- **Tonal Identity**: Merges the haunting atmospheric world design and environmental storytelling of *Hollow Knight* / *Silksong* with the raw, visceral weight and kinetic combat of *God of War: Sons of Sparta*.
-- **Narrative Premise**: You are Aeron (Subject A-07), an ancient divine entity awakening from an industrial stasis chamber in a subterranean bio-mechanical research facility. Severed from memories and with divine powers suppressed by laboratory dampeners, Aeron must harness temporal distortion (Chronos Aura) and visceral melee strikes to breach containment.
+**The Last God** is a dark, atmospheric **True 2.5D** action-combat game built in Unity 6.5 (6000.5.8f1) using Universal Render Pipeline (URP).
+- **Core Visual Paradigm**: Real 3D character models and environments viewed through a constrained cinematic perspective camera (*God of War: Sons of Sparta* / modern 2.5D brawler framing).
+- **Constrained Camera Framing**:
+  - Position: `(0.0, 1.6, -6.0)`, Rotation: `(5.0, 0.0, 0.0)`, Field of View: **27°**.
+  - Solid Color Backdrop: `#05060A`.
+  - Character framing: ~40% vertical viewport height, stationary framing without jitter or parallax distortion.
+- **Active Working Scene**: `Assets/Scenes/2.5D_Lab_Scene.unity`.
+- **Standing 3D Technical Standards**:
+  - **Characters Budget**: 3,000 – 6,000 triangles per model (Aeron: 4,260 tris; Guard: 4,754 tris). Fully rigged and weighted with seamless idle loops.
+  - **Environment Budget**: 1,500 – 3,000 triangles per modular room blockout (Lab BlockOut: 2,088 tris).
+  - **Texture Standards**: 1024×1024 PNG per character (Albedo + Roughness/Metallic masks); 2048×2048 PNG modular trim sheets for environments.
+  - **Material Pipeline**: URP Lit matte shaders (`Universal Render Pipeline/Lit`), Smoothness 0.10–0.25, low metallic base with vivid accent emissions.
+  - **Lighting Rig**: Key light `#6FE3FF` (Cyan, 1.2 intensity), Fill light `#0E1420` (Dark Navy, 0.18 intensity), zero warm lights.
+  - **Physics & Layers**: Layer 8 (`Ground`), Layer 11 (`Character`), 3D physics colliders (`CapsuleCollider`, `MeshCollider`).
+- **Narrative Premise**: You are Aeron (Subject A-07), an ancient divine entity awakening in a subterranean bio-mechanical laboratory. Facing heavily armored corporate sentries, Aeron must break free using temporal manipulation (Chronos Aura) and kinetic combat.
+- **Legacy 2D Deprecation**: All legacy 2D pixel-art scenes and parallax components are archived under `Assets/_Recovery/2D_Deprecated/`.
 
 ---
 

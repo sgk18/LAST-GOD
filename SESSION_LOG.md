@@ -421,3 +421,51 @@ Changelog of progress made in each development session. Append new entries at th
 - **Next Logical Prompt**:
   - Implement Guard alert/patrol state or Aeron walk/run locomotion in 2.5D.
 
+---
+
+## 📅 [2026-09-10] — Session 18: Act 1 Laboratory 3D Production Environment Pass
+- **Objective & Strict Scope**:
+  - Build the complete 3D environment for the opening laboratory of *The Last God* in Unity 6.5 (6000.5.8f1) True 2.5D pipeline.
+  - **Environment ONLY**: Zero gameplay mechanics, combat, AI changes, dialogue, or timeline cutscenes.
+  - **Characters 100% Preserved**: Kept `Aeron_Instance` and `Guard_Instance` completely untouched with Animators, CapsuleColliders, and Health intact.
+- **Phase 1 — Art Direction & Technical Architecture**:
+  - Developed unified Trim Sheet (`Lab_TrimSheet.png`, 2048×2048) covering metal wall panels, grating, caution striping, console UI displays, and stasis containment accents.
+  - Authored comprehensive plan in `act1_lab_environment_plan.md`.
+- **Phase 2 — Modular 3D Kit Modeling & Assembly in Blender**:
+  - Built 21 production modular FBX pieces in Blender 5.2.1 LTS (`scratch/build_lab_environment.py`):
+    - Catwalk floors (solid & grating), modular stairs, support columns, framing pillars, wall panels, ceiling trusses.
+    - Central Stasis Pod (A-07) with internal illuminated core and transparent cylindrical glass, plus 2 background secondary pods.
+    - Heavy security blast door with chevron header trim and terminal pedestal.
+    - Centrifuge machine, power conduit boxes, server racks, holographic console terminals, canisters, fluid pipes, and deck cables.
+  - Fixed Blender-to-Unity coordinate conversion trap by utilizing `bake_space_transform=True` and `importer.bakeAxisConversion = true` to eliminate -90° X rotation offsets.
+  - Exported master assembled production scene: `Lab_Environment_Production.fbx` (~14k tris) and saved source `Lab_Production.blend`.
+- **Phase 3 — Unity Material & Prefab Pipeline**:
+  - Configured 10 URP Lit materials in `Assets/Materials/Environment/`:
+    - `MAT_Lab_Floor`, `MAT_Lab_Grating`, `MAT_Lab_Metal_Dark`, `MAT_Lab_Metal_Worn`, `MAT_Lab_Glass`, `MAT_Lab_CyanEmission`, `MAT_Lab_Console`, `MAT_Lab_Cable`, `MAT_Lab_Concrete`, `MAT_Lab_Warning`.
+  - Created 21 modular prefabs in `Assets/Prefabs/Environment/Lab/` with exact multi-submesh material slot mappings.
+- **Phase 4 — Automated Scene Assembly (`AssembleProductionLabScene.cs`)**:
+  - Replaced legacy blockouts with production modular kit in `Assets/Scenes/2.5D_Lab_Scene.unity`.
+  - Structured clean 9-group hierarchy under `Lab_Environment`: `Architecture`, `Platforms`, `Containment`, `Doors`, `Machinery`, `Props`, `PipesAndCables`, `Lighting`, `Collision`.
+  - Applied Layer 8 (`Ground`) 3D Box & Mesh colliders to all walkable decks, stairs, and boundaries.
+  - Configured 3-point lighting rig: Key Light (`#6FE3FF`, intensity 2.5), Fill Light (`#0E1420`, intensity 0.8), Stasis Pod Spotlight (intensity 3.5), Internal Core Point Light (intensity 3.0), Secondary Pods Ambient, and Security Door Orange Spotlight (`#C4502E`).
+  - Aligned 2.5D perspective camera: `Pos: (0.0, 2.0, -8.5)`, `Rot: (4.5, 0.0, 0.0)`, `FOV: 27°`, framing Aeron at ~35% viewport height with stasis chamber centered.
+- **Phase 5 — Verification & Validation**:
+  - Executed automated validation via `LastGod.EditorTools.ValidateProductionLabScene.ValidateAndCapture` in Unity batchmode.
+  - Rebuilt solution with `dotnet build LAST-GOD.slnx`: **0 Warning(s), 0 Error(s)**.
+  - Verification results:
+    - `Architecture`: 5 children verified.
+    - `Platforms`: 4 children verified.
+    - `Containment`: 5 children verified.
+    - `Doors`: 2 children verified.
+    - `Machinery`: 3 children verified.
+    - `Props`: 4 children verified.
+    - `PipesAndCables`: 2 children verified.
+    - `Lighting`: 8 children verified.
+    - `Collision`: 8 children verified.
+    - Characters verified: `Aeron_Instance` at `(-1.20, 0.00, 0.50)` (Animator: True, Collider: True); `Guard_Instance` at `(1.60, 0.00, 0.50)` (Animator: True, Collider: True).
+    - 52 MeshRenderers verified: **0 Missing Materials, 0 Error Shaders**.
+    - In-engine camera capture rendered to `scratch/unity_lab_camera_capture.png`.
+- **Next Logical Step**:
+  - Ready for gameplay locomotion pass: Aeron 2.5D walk/run/dodge movement and Guard patrol/alert AI.
+
+

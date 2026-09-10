@@ -26,6 +26,20 @@ This document maintains a running inventory of all external and prototype assets
 
 ---
 
+## 3D Environment Production Assets (Act 1 Laboratory)
+
+| Asset Name | Source / Tool | License | Description / Polycount | File Location |
+|---|---|---|---|---|
+| **Lab Trim Sheet** | Procedural Texture Generator | Project Asset | 2048×2048 master trim sheet (panels, grating, hazard stripes, UI) | `Assets/Environment/Lab/Lab_TrimSheet.png` |
+| **Lab Modular Kit (21 Modules)** | Blender 5.2.1 LTS | Project Asset | 21 modular structural FBX assets (floors, stairs, pillars, pods, consoles, doors, pipes) | `Assets/Environment/Lab/Modules/MOD_*.fbx` |
+| **Lab Production FBX** | Blender 5.2.1 LTS | Project Asset | Master assembled production environment mesh (~14k tris) | `Assets/Environment/Lab/Lab_Environment_Production.fbx` |
+| **Lab Production .blend** | Blender 5.2.1 LTS | Project Asset | Master source Blender scene with modular collections & UVs | `Assets/Environment/Lab/Lab_Production.blend` |
+| **Lab URP Lit Materials (10)** | Unity URP Shader Pipeline | Project Asset | Materials: Floor, Grating, MetalDark, MetalWorn, Glass, CyanEmission, Console, Cable, Concrete, Warning | `Assets/Materials/Environment/MAT_Lab_*.mat` |
+| **Lab Modular Prefabs (21)** | Unity Prefab Pipeline | Project Asset | Configured modular prefabs with exact multi-submesh material slot mappings | `Assets/Prefabs/Environment/Lab/PF_*.prefab` |
+
+
+---
+
 ## Superseded — 2D Pipeline (retained in _Recovery)
 
 | Asset Name | Source / Original Location | Status & Archival Reason | Backup Location |

@@ -1,51 +1,26 @@
-import json
+import re
 
-code = """using UnityEngine;
-using UnityEngine.Tilemaps;
+with open('Assets/Scenes/2.5D_Lab_Scene.unity', 'r', encoding='utf-8') as f:
+    text = f.read()
 
-public class CheckSceneTilemaps
-{
-    public static string Execute()
-    {
-        var grid = GameObject.Find("Grid_CatwalkFloor");
-        if (grid == null) return "Grid_CatwalkFloor NOT found";
-        
-        var sb = new System.Text.StringBuilder();
-        sb.AppendLine("Found Grid_CatwalkFloor:");
-        foreach (Transform child in grid.transform)
-        {
-            var tm = child.GetComponent<Tilemap>();
-            var col = child.GetComponent<TilemapCollider2D>();
-            var eff = child.GetComponent<PlatformEffector2D>();
-            int count = tm != null ? tm.GetUsedTilesCount() : 0;
-            sb.AppendLine("- " + child.name + ": Tilemap=" + (tm != null) + ", Tiles=" + count + ", Collider=" + (col != null) + ", Effector=" + (eff != null) + ", Layer=" + LayerMask.LayerToName(child.gameObject.layer) + " (" + child.gameObject.layer + ")");
-        }
+docs = text.split('--- !u!')
+print(f"Total YAML documents: {len(docs)}")
 
-        var aeron = GameObject.Find("Aeron_Protagonist");
-        if (aeron != null)
-        {
-            sb.AppendLine("Aeron Pos: " + aeron.transform.position.ToString());
-        }
+type_counts = {}
+for doc in docs[1:]:
+    header, _, body = doc.partition('\n')
+    m = re.match(r'(\d+) &(\d+)', header.strip())
+    if m:
+        t, fid = m.groups()
+        type_counts[t] = type_counts.get(t, 0) + 1
 
-        var guard = GameObject.Find("CyberGuard_Catwalk");
-        if (guard != null)
-        {
-            sb.AppendLine("Guard Pos: " + guard.transform.position.ToString());
-            var ai = guard.GetComponent<LastGod.Enemies.EnemyAI>();
-            sb.AppendLine("Guard AI: " + (ai != null));
-        }
+print("Document types:", type_counts)
 
-        return sb.ToString();
-    }
-}"""
-
-payload = {
-    "className": "CheckSceneTilemaps",
-    "methodName": "Execute",
-    "isMethodBody": False,
-    "csharpCode": code
-}
-
-with open("scratch/check_scene_tilemaps.json", "w", encoding="utf-8") as f:
-    json.dump(payload, f, indent=2)
-print("Created check_scene_tilemaps.json")
+# Print PrefabInstances
+for doc in docs[1:]:
+    if doc.startswith('1001 '):
+        lines = doc.strip().split('\n')
+        print("PrefabInstance header:", lines[0])
+        for l in lines[:25]:
+            if 'm_SourcePrefab' in l or 'm_RootGameObject' in l or 'm_Name' in l:
+                print("  ", l)

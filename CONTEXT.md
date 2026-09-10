@@ -115,6 +115,7 @@ The project environment is equipped with a wide array of specialized agent skill
 - [`grilling`](file:///C:/Users/Surya%20VM/.gemini/config/skills/grilling/SKILL.md): Rigorous design challenge and edge-case stress testing.
 - [`git-guardrails-claude-code`](file:///C:/Users/Surya%20VM/.gemini/config/skills/git-guardrails-claude-code/SKILL.md): Destructive git operation prevention.
 - [`setup-pre-commit`](file:///C:/Users/Surya%20VM/.gemini/config/skills/setup-pre-commit/SKILL.md): Automated quality gates and linting hooks.
+- [`dream-loop`](file:///C:/Users/Surya%20VM/.gemini/config/skills/dream-loop/SKILL.md): Visual iteration loop to build games, 3D scenes, or apps matching a generated high-fidelity dream screenshot with autonomous critic feedback loops.
 - [`scaffold-exercises`](file:///C:/Users/Surya%20VM/.gemini/config/skills/scaffold-exercises/SKILL.md), [`migrate-to-shoehorn`](file:///C:/Users/Surya%20VM/.gemini/config/skills/migrate-to-shoehorn/SKILL.md), [`wizard`](file:///C:/Users/Surya%20VM/.gemini/config/skills/wizard/SKILL.md), [`writing-for-agents`](file:///C:/Users/Surya%20VM/.gemini/config/skills/writing-for-agents/SKILL.md).
 - [`antigravity-guide`](file:///C:/Users/Surya%20VM/.gemini/antigravity-cli/builtin/skills/antigravity_guide/SKILL.md), [`agy-customizations`](file:///C:/Users/Surya%20VM/.gemini/antigravity-cli/builtin/skills/agy-customizations/SKILL.md).
 
@@ -291,3 +292,47 @@ Assets/
 3. **Particle Hygiene**: Particle bursts during one-shot events must set `main.stopAction = ParticleSystemStopAction.Destroy` or reuse pooled emitters.
 4. **Cinemachine First**: Camera tracking and screen shakes must leverage Cinemachine 3.x and Pixel Perfect Camera framing.
 5. **PPU Integrity**: All art imports must remain 16 PPU, Point filter, No compression.
+
+---
+
+## 10. Visual Fidelity & Dream Loop Protocol
+
+For tasks requiring top-tier graphical fidelity, 3D modeling, lighting rigs, or visual overhauls:
+- **Skill Reference**: [`dream-loop`](file:///C:/Users/Surya%20VM/.gemini/config/skills/dream-loop/SKILL.md).
+- **Core Loop**:
+  1. **Dream Target Capture/Generation**: Store the reference in `.dream-loop/target.png` (using `generate_image` or artist reference). Target images should depict real in-engine renders (lighting, specular highlights, textures) rather than loose concept art.
+  2. **Scene & Asset Implementation**: Build or tweak 3D meshes (via Blender MCP or Unity primitives), materials (`Universal Render Pipeline/Lit`), lighting, and Cinemachine cameras.
+  3. **Live Screenshot Verification**: Capture live framebuffer views using `screenshot-camera` or `screenshot-game-view`.
+  4. **Multi-Round Critique Loop**: Inspect rendering diffs, analyze lighting/proportions/reflections, and iterate until the in-engine result matches the benchmark target.
+
+---
+
+## 11. Act 1 Laboratory Production 3D Environment Architecture
+
+Built in Session 18 to elevate the Act 1 Origin Laboratory from initial blockout to full production fidelity while strictly preserving Aeron and Guard characters untouched.
+
+### A. Environment Hierarchy (`Lab_Environment` in `2.5D_Lab_Scene.unity`)
+- **`Architecture`**: Structural boundary pillars, solid back wall panels, ceiling trusses, and framing columns.
+- **`Platforms`**: Modular grated floor slabs, reinforced raised catwalks, industrial access stairs with handrails.
+- **`Containment`**: Primary cylindrical stasis chamber (Subject A-07) with internal illuminated core and transparent cyan glass, flanked by secondary background stasis pods.
+- **`Doors`**: Heavy hydraulic blast door with warning chevron header trims and security access terminal.
+- **`Machinery`**: Fluid circulation centrifuge, high-voltage power conduits, and filtration tanks.
+- **`Props`**: Banked terminal workstations with cyan holographic readouts, specimen containment lockers, industrial gas canisters, and scattered debris.
+- **`PipesAndCables`**: Overhead conduit clusters, dripping fluid transfer lines, and heavy deck cables.
+- **`Lighting`**: 3-point cold cyan key illumination (`#6FE3FF`), ambient navy fill (`#0E1420`), Stasis Chamber interior core light, and restricted emergency orange accent spotlights (`#C4502E`).
+- **`Collision`**: Layer 8 (`Ground`) 3D Box/Mesh colliders mapped to all walkable catwalk surfaces and lateral room boundaries.
+
+### B. Modular Assets & Materials
+- **Trim Sheet**: `Assets/Environment/Lab/Lab_TrimSheet.png` (2048×2048) mapping metal wall panels, grating, caution striping, console UI displays, and stasis accents.
+- **FBX Library**: 21 modular meshes located at `Assets/Environment/Lab/Modules/` exported with `bake_space_transform=True` to preserve exact axis alignment.
+- **URP Lit Materials** (`Assets/Materials/Environment/`):
+  - `MAT_Lab_Floor`: Dark brushed non-slip metal plate.
+  - `MAT_Lab_Grating`: Industrial grated walkway with cutout transparency.
+  - `MAT_Lab_Metal_Dark`: Deep navy structural steel (`#151C24`).
+  - `MAT_Lab_Metal_Worn`: Scuffed containment frame metal.
+  - `MAT_Lab_Glass`: Transparent cyan tinted stasis enclosure (`#6FE3FF`, alpha 0.28).
+  - `MAT_Lab_CyanEmission`: High-luminance stasis core and interface glow (`#6FE3FF`, intensity 2.8).
+  - `MAT_Lab_Console`: Active multi-monitor interface display.
+  - `MAT_Lab_Cable`: Matte rubberized conduit cabling (`#0A0C10`).
+  - `MAT_Lab_Concrete`: Heavy foundation wall concrete.
+  - `MAT_Lab_Warning`: Hazard chevrons and emergency stripes (`#C4502E`).

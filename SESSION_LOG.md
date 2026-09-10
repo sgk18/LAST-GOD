@@ -506,5 +506,103 @@ Changelog of progress made in each development session. Append new entries at th
 - **Next Logical Step**:
   - Ready for 2.5D locomotion & player movement tuning (walk/run, jump, dash) with `PlayerController` and camera follow.
 
+---
 
+## 📅 [2026-09-10] — Session 20: Full 3D First-Person Aeron Character Pipeline
+- **Architectural Paradigm Shift**:
+  - Transitioned *The Last God* from legacy 2.5D sprite-card hybrid to **Full 3D First-Person Game**.
+  - Strict scope boundaries strictly honored: Zero 2D/2.5D billboard sprite cards for Aeron; Aeron is a fully modeled, rigged, and textured 3D character; First-Person experience with 80° FOV and 1.70m eye height; anti-clipping head culling + full body grounding when looking down; modular 3D laboratory and guard instance preserved intact; zero weapons/combat/AI in this foundation pass.
+- **Phase 1 — Reference Turnaround Generation**:
+  - Generated all 7 required turnaround and detail views via `generate_image` and saved to `Assets/Art/Reference/Characters/3D_Aeron/`:
+    1. `Aeron_3D_Front.png`: Front full-body A-pose reference.
+    2. `Aeron_3D_Side.png`: Full-body side profile.
+    3. `Aeron_3D_ThreeQuarter.png`: 3/4 dynamic perspective.
+    4. `Aeron_3D_Back.png`: Back view with spine ports and harness cabling.
+    5. `Aeron_3D_Face_Closeup.png`: Cinematic face portrait (gaunt jaw, tired eyes, cyan left eye glow `#6FE3FF`).
+    6. `Aeron_3D_Clothing_Detail.png`: Fabric weave, A-07 barcode, forearm gauze, tactical boots.
+    7. `Aeron_3D_Hands_FirstPerson.png`: First-person perspective of hands, fingers, and veins.
+- **Phase 2 & 3 — PBR Textures & URP Lit Materials**:
+  - Generated 2048×2048 PBR maps into `Assets/Characters/Aeron/Textures/`:
+    - `Aeron_3D_Albedo.png`: sRGB color map with skin tones, suit weave, boots, and bandages.
+    - `Aeron_3D_Masks.png`: Linear metallic (R) / ambient occlusion (G) / smoothness (A) map.
+    - `Aeron_3D_Normal.png`: Tangent-space normal map.
+    - `Aeron_3D_Emission.png`: Isolated cyan eye glow (`#6FE3FF`) and spine ports.
+  - Configured 4 URP Lit materials in `Assets/Characters/Aeron/Materials/`:
+    - `MAT_Aeron_3D_Head.mat` (Smoothness 0.30)
+    - `MAT_Aeron_3D_Suit.mat` (Smoothness 0.15)
+    - `MAT_Aeron_3D_FPArms.mat` (Smoothness 0.25)
+    - `MAT_Aeron_3D_Eyes.mat` (Smoothness 0.95, cyan emission `#6FE3FF` at 1.5 intensity)
+- **Phase 4 — Blender 3D Modeling, Rigging & Animation**:
+  - Authored `scratch/build_aeron_3d_production.py` and executed via Blender 5.2.1 LTS batchmode:
+    - `Aeron_FullBody_3D.fbx`: 1.80m tall humanoid, 50+ bone skeleton (Spine, Pelvis, Chest, Neck, Head, Limbs, 5 articulated fingers per hand with 3 phalanxes each). Separated into `Aeron_Head_Mesh` (for `ShadowsOnly` culling) and `Aeron_Body_Mesh` (visible torso/legs/boots). Actions baked: Idle, Walk, Run.
+    - `Aeron_FirstPerson_Arms.fbx`: Camera-local arms and hands with articulated fingers and left medical bandage wrap. Action: `Aeron_FP_Arms_Idle`.
+    - Saved `Assets/Characters/Aeron/Aeron_3D_Production.blend`.
+- **Phase 5 — First-Person C# Controllers & Scene Assembly**:
+  - Created `FirstPersonPlayerController.cs`: CharacterController locomotion (walk 4.0m/s, sprint 7.0m/s, crouch 2.0m/s, gravity -18.0m/s², slope handling).
+  - Created `FirstPersonCameraController.cs`: Smooth mouse look, vertical pitch clamp (-85° to +85°), anti-clipping head culling.
+  - Created `AssembleFirstPersonAeronPass.cs` and assembled `Assets/Prefabs/Player/Aeron_FirstPerson_Player.prefab`.
+  - Replaced legacy 2.5D sprite card in `Assets/Scenes/2.5D_Lab_Scene.unity` with `Aeron_Player_FirstPerson` at `(-1.20, 0.00, 0.50)` facing `(0, 20, 0)`.
+  - `Guard_Instance` preserved intact at `(1.60, 0.00, 0.50)`.
+- **Phase 6 — Validation & Verification**:
+  - Solution built cleanly: `dotnet build LAST-GOD.slnx` (**0 Error(s)**).
+  - Executed automated validation via `LastGod.EditorTools.ValidateFirstPersonAeronPass.ValidateAndCapture` in Unity 6.5 batchmode:
+    - FirstPersonPlayer root: CharacterController verified (height 1.80, radius 0.35).
+    - CameraHolder: Eye height verified at 1.70m.
+    - FirstPersonCamera: Verified FOV = 80°, NearClip = 0.05m.
+    - FirstPersonArms: 1 renderer verified.
+    - FullBodyModel: 2 renderers verified (`Aeron_Head_Mesh` [ShadowsOnly], `Aeron_Body_Mesh` [Shadows On]).
+    - Guard_Instance: Verified intact at `(1.60, 0.00, 0.50)`.
+    - Lab_Environment: All 9 hierarchical subsystems verified.
+    - 59 MeshRenderers verified: **0 Missing Materials, 0 Error Shaders**.
+  - Captured verification frames: `scratch/fp_view_forward.png`, `scratch/fp_view_down.png`, `scratch/fp_view_hands.png`.
+- **Next Logical Step**:
+  - Implement First-Person interaction raycasting (interact with stasis pod and terminals) and footsteps audio driver.
+
+---
+
+## 📅 [2026-09-10] — Session 21: Character Art Approval Gate & High-Fidelity 3D Anatomical Rebuild
+- **Quality Correction & Production Halt**:
+  - User strictly mandated immediate halt of all animations, walking scripts, textures, and Unity character systems to rectify Aeron's 3D anatomy and achieve true believable humanoid quality.
+  - Returned to **Character Art Approval Gate** requiring 6 multi-angle neutral clay renders (`clay_aeron_front.png`, `clay_aeron_side.png`, `clay_aeron_threequarter.png`, `clay_aeron_back.png`, `clay_aeron_face.png`, `clay_aeron_fp_hands.png`) in Blender 5.2.1 LTS.
+- **Anatomical Base & Flaw Eradication**:
+  - **Base Mesh**: Adopted `R_Male_04` (natural rest pose with arms relaxed at ~40° and articulated 5-finger hands). Deltoids broadened by +12%, pectoral fullness defined, athletic waist V-taper sculpted (-6%).
+  - **Head & Neck Graft**: Sourced `Head05` from `scratch/human_primitive/Assets/Head.blend`, scaled (`scale_fac = 0.12585`) and morphed for athletic 20yo male. Seamlessly bridged neck edge loop (44 edges) to body neck (40 edges) with BMesh `bridge_loops`, vertex welding (dist 0.010), and 3-iteration Laplacian smoothing. Zero seams, zero holes.
+  - **Eyeball Alignment & Catchlights**: Fixed prior eyelid protrusion bug by calculating true orbital aperture center (`X = +/-0.0256m, Y = -0.0675m, Z = 1.5960m`) with 10.5mm spherical eyeballs and high-gloss specular cornea material (`roughness = 0.04, spec = 0.95`). Catches crisp studio lighting reflections without piercing eyelids.
+  - **3D Hair Volume & Natural Bangs**: Sourced cranium cap directly from upper skull faces down to the forehead hairline, extruded with smooth volume displacement (4.5–7.0mm) and layered swept diagonal bangs framing the forehead without ear deformation.
+  - **Tactical Combat Boots**: Eliminated hollow floating cylinder defect by aligning boot shaft and foot directly with anatomical leg centers (`cx = +/-0.076m`). Padded collar rim at `Z = 0.235m` snugly encloses the intact lower leg (extending down to `Z = 0.07m` inside the collar, guaranteeing zero visual gaps). Modeled solid rounded steel-toe box (`Y = -0.254m`) and flat grounded lugged outsole at `Z = 0.000m`.
+  - **Medical Forearm Bandage Wrap**: Form-fitting gauze wrap on left forearm (`1.14 <= Z <= 1.27m, X < -0.36m`) with 2.8mm Solidify, subtle cloth ribbing displacement, and smoothed hem borders. Leaves wrist and all 5 fingers completely bare and articulated.
+  - **Scale & Grounding**: Scaled total model to verified 1.80m height (`Z = 0.0000m` at soles to `Z = 1.7922m` at hair apex). Applied all object transforms.
+- **Export & Production Deliverables**:
+  - `Aeron_3D_Production.blend`: Master Blender scene file with neutral clay materials and 5-point studio lighting rig (`Key`, `Fill`, `FrontLight`, `Rim`, `BackKey`).
+  - `Aeron_FullBody_3D.fbx`: Exported clean watertight full-body geometry.
+  - `Aeron_FirstPerson_Arms.fbx`: Exported first-person arms mesh with medical bandage wrap.
+  - Launched Blender 5.2.1 LTS GUI with `Aeron_3D_Production.blend` on desktop for user inspection.
+- **Next Logical Step**:
+  - Present Character Art Approval Gate to user for review and sign-off before proceeding to PBR texturing or rigging.
+
+---
+
+## 📅 [2026-09-10] — Session 22: Comprehensive Project Cleanup & Scratch Purge
+- **Objective & Mandate**:
+  - User requested complete deletion of all unnecessary, temporary, scratch, and redundant files across the repository and development workspace.
+- **Audited & Purged Assets**:
+  1. **Redundant 6.18 GB Unity Project**:
+     - Purged abandoned template project `C:\projects\LAST-GOD\My project` (6,183 MB), reclaiming ~6.2 GB of disk space.
+  2. **Entire Project Scratch Directory**:
+     - Completely deleted `C:\projects\LAST-GOD\scratch` containing 347 files (~135 MB):
+       - Removed `scratch/human_primitive/` (~70 MB of extraction blends).
+       - Removed legacy 2D/2.5D animation test crops, debug logs, walk tests, and temporary python scripts.
+       - Removed all tracked scratch files from git index (`git rm -rf scratch`).
+  3. **Blender Backup Artifacts**:
+     - Purged `Assets/Characters/Aeron/Aeron_3D_Production.blend1` and its `.meta` file.
+     - Removed legacy `Assets/Environment/Lab/Lab_Production.blend1` and its `.meta` file from git tracking and disk.
+     - Updated `.gitignore` to permanently ignore `*.blend1`, `*.blend1.meta`, and `scratch/`.
+  4. **Empty Directories**:
+     - Removed empty `C:\projects\LAST-GOD\production/`.
+  5. **Agent Brain Workspace Cleanup**:
+     - Purged 205 temporary test/diagnostic scripts and intermediate renders from `<brain>\scratch\`, preserving only the canonical 1-click procedural rebuild script `build_definitive_aeron_gate.py`.
+     - Purged intermediate test renders from artifacts directory, preserving strictly the 6 official approval clay renders (`clay_aeron_front.png`, `clay_aeron_side.png`, `clay_aeron_threequarter.png`, `clay_aeron_back.png`, `clay_aeron_face.png`, `clay_aeron_fp_hands.png`) and architectural plans.
+- **Verification**:
+  - Built solution via `dotnet build LAST-GOD.slnx`: Clean compilation with **0 Errors**.
+  - Verified git status shows clean working tree with only genuine production assets staged or tracked.
 

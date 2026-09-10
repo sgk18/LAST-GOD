@@ -56,6 +56,32 @@ This document maintains a running inventory of all external and prototype assets
 
 ---
 
+## Full 3D First-Person Aeron Character Assets (Current Production)
+
+| Asset Name | Source / Tool | License | Description / Specs | File Location |
+|---|---|---|---|---|
+| **Aeron 3D Front View** | Image Generation Model | Project Asset | Front full-body A-pose turnaround reference | `Assets/Art/Reference/Characters/3D_Aeron/Aeron_3D_Front.png` |
+| **Aeron 3D Side View** | Image Generation Model | Project Asset | Side profile turnaround reference | `Assets/Art/Reference/Characters/3D_Aeron/Aeron_3D_Side.png` |
+| **Aeron 3D Three-Quarter View** | Image Generation Model | Project Asset | 3/4 dynamic perspective reference | `Assets/Art/Reference/Characters/3D_Aeron/Aeron_3D_ThreeQuarter.png` |
+| **Aeron 3D Back View** | Image Generation Model | Project Asset | Back view reference with cybernetic spine ports | `Assets/Art/Reference/Characters/3D_Aeron/Aeron_3D_Back.png` |
+| **Aeron 3D Face Portrait** | Image Generation Model | Project Asset | Cinematic face close-up (gaunt jaw, cyan left eye `#6FE3FF`) | `Assets/Art/Reference/Characters/3D_Aeron/Aeron_3D_Face_Closeup.png` |
+| **Aeron 3D Clothing Detail** | Image Generation Model | Project Asset | Dark fabric weave, A-07 barcode, forearm gauze, boots | `Assets/Art/Reference/Characters/3D_Aeron/Aeron_3D_Clothing_Detail.png` |
+| **Aeron 3D First-Person Hands** | Image Generation Model | Project Asset | First-person view of hands, fingers, and veins | `Assets/Art/Reference/Characters/3D_Aeron/Aeron_3D_Hands_FirstPerson.png` |
+| **Aeron 3D Albedo Map** | Texture Synthesis Pipeline | Project Asset | 2048×2048 sRGB albedo map with skin tones, suit weave, boots | `Assets/Characters/Aeron/Textures/Aeron_3D_Albedo.png` |
+| **Aeron 3D Masks Map** | Texture Synthesis Pipeline | Project Asset | 2048×2048 Linear map: R=Metallic, G=Occlusion, A=Smoothness | `Assets/Characters/Aeron/Textures/Aeron_3D_Masks.png` |
+| **Aeron 3D Normal Map** | Texture Synthesis Pipeline | Project Asset | 2048×2048 tangent space normal map for folds, seams, and muscles | `Assets/Characters/Aeron/Textures/Aeron_3D_Normal.png` |
+| **Aeron 3D Emission Map** | Texture Synthesis Pipeline | Project Asset | 2048×2048 cyan emission map (`#6FE3FF`) for left eye & spine | `Assets/Characters/Aeron/Textures/Aeron_3D_Emission.png` |
+| **Aeron Full Body 3D FBX** | Blender 5.2.1 LTS | Project Asset | 1.80m tall humanoid, 50+ bone rig, 5 fingers/hand, Idle/Walk/Run | `Assets/Characters/Aeron/Meshes/Aeron_FullBody_3D.fbx` |
+| **Aeron First-Person Arms FBX**| Blender 5.2.1 LTS | Project Asset | Camera-local arms mesh with articulated fingers & gauze wraps | `Assets/Characters/Aeron/Meshes/Aeron_FirstPerson_Arms.fbx` |
+| **Aeron 3D Production .blend** | Blender 5.2.1 LTS | Project Asset | Master Blender source file with complete rig and animation actions | `Assets/Characters/Aeron/Aeron_3D_Production.blend` |
+| **Aeron 3D Head Material** | Unity URP Shader Pipeline | Project Asset | URP Lit matte skin/hair material (Smoothness 0.30) | `Assets/Characters/Aeron/Materials/MAT_Aeron_3D_Head.mat` |
+| **Aeron 3D Suit Material** | Unity URP Shader Pipeline | Project Asset | URP Lit matte tactical suit material (Smoothness 0.15) | `Assets/Characters/Aeron/Materials/MAT_Aeron_3D_Suit.mat` |
+| **Aeron 3D FP Arms Material** | Unity URP Shader Pipeline | Project Asset | URP Lit first-person arms material (Smoothness 0.25) | `Assets/Characters/Aeron/Materials/MAT_Aeron_3D_FPArms.mat` |
+| **Aeron 3D Eyes Material** | Unity URP Shader Pipeline | Project Asset | URP Lit glowing eye material (`#6FE3FF`, intensity 1.5) | `Assets/Characters/Aeron/Materials/MAT_Aeron_3D_Eyes.mat` |
+| **Aeron First-Person Prefab** | Unity Prefab Pipeline | Project Asset | Complete First-Person player prefab (CharacterController, Camera, Arms, Body) | `Assets/Prefabs/Player/Aeron_FirstPerson_Player.prefab` |
+
+---
+
 ## Superseded — 2D Pipeline (retained in _Recovery)
 
 | Asset Name | Source / Original Location | Status & Archival Reason | Backup Location |

@@ -1,22 +1,28 @@
-# CONTEXT — The Last God (Unity 6.5 True 2.5D Prototype)
+# CONTEXT — The Last God (Unity 6.5 Full 3D First-Person)
 
 ## 1. Project Summary & Identity
-**The Last God** is a dark, atmospheric **True 2.5D** action-combat game built in Unity 6.5 (6000.5.8f1) using Universal Render Pipeline (URP).
-- **Core Visual Paradigm**: Real 3D character models and environments viewed through a constrained cinematic perspective camera (*God of War: Sons of Sparta* / modern 2.5D brawler framing).
-- **Constrained Camera Framing**:
-  - Position: `(0.0, 1.6, -6.0)`, Rotation: `(5.0, 0.0, 0.0)`, Field of View: **27°**.
-  - Solid Color Backdrop: `#05060A`.
-  - Character framing: ~40% vertical viewport height, stationary framing without jitter or parallax distortion.
-- **Active Working Scene**: `Assets/Scenes/2.5D_Lab_Scene.unity`.
+**The Last God** is a dark, atmospheric **Full 3D First-Person** action game built in Unity 6.5 (6000.5.8f1) using Universal Render Pipeline (URP).
+- **Core Architectural Paradigm**: **Full 3D First-Person Experience**.
+  - All 2D/2.5D sprites, billboard cards, and flat representations for Aeron are strictly deprecated and replaced by a fully modeled, rigged, and textured 3D humanoid character.
+- **First-Person Camera Architecture**:
+  - Attached to `CameraHolder` under player root at human eye height: **1.70m** (`Y = 1.70`).
+  - Field of View: **80°** (Section 28 standard; 75–85° range).
+  - Near Clip Plane: **0.05m** to prevent near-geometry camera clipping.
+  - Dark atmosphere background: `#05060A` / `(0.02, 0.024, 0.039)`.
+- **Anti-Clipping & Body Grounding**:
+  - **Head Mesh Isolation**: Aeron's head geometry (`Aeron_Head_Mesh`) is separated from the body and assigned `ShadowCastingMode.ShadowsOnly`. This completely eliminates camera clipping inside Aeron's cranium, jaw, or teeth while still casting realistic head and hair shadows into the environment.
+  - **Full Body Grounding**: Looking down renders the full torso, legs, and combat boots (`Aeron_Body_Mesh`), providing true physical embodiment rather than floating hands.
+  - **First-Person Arms**: Dedicated camera-local first-person arms and hands (`Aeron_FirstPerson_Arms.fbx`) with articulated 5-finger skeletal phalanxes, left forearm medical bandage wraps, and URP Lit shading.
+- **Active Working Scene**: `Assets/Scenes/2.5D_Lab_Scene.unity` (adapted for full 3D first-person navigation).
 - **Standing 3D Technical Standards**:
-  - **Characters Budget**: 3,000 – 6,000 triangles per model (Aeron: 4,260 tris; Guard: 4,754 tris). Fully rigged and weighted with seamless idle loops.
-  - **Environment Budget**: 1,500 – 3,000 triangles per modular room blockout (Lab BlockOut: 2,088 tris).
-  - **Texture Standards**: 1024×1024 PNG per character (Albedo + Roughness/Metallic masks); 2048×2048 PNG modular trim sheets for environments.
-  - **Material Pipeline**: URP Lit matte shaders (`Universal Render Pipeline/Lit`), Smoothness 0.10–0.25, low metallic base with vivid accent emissions.
-  - **Lighting Rig**: Key light `#6FE3FF` (Cyan, 1.2 intensity), Fill light `#0E1420` (Dark Navy, 0.18 intensity), zero warm lights.
-  - **Physics & Layers**: Layer 8 (`Ground`), Layer 11 (`Character`), 3D physics colliders (`CapsuleCollider`, `MeshCollider`).
-- **Narrative Premise**: You are Aeron (Subject A-07), an ancient divine entity awakening in a subterranean bio-mechanical laboratory. Facing heavily armored corporate sentries, Aeron must break free using temporal manipulation (Chronos Aura) and kinetic combat.
-- **Legacy 2D Deprecation**: All legacy 2D pixel-art scenes and parallax components are archived under `Assets/_Recovery/2D_Deprecated/`.
+  - **Characters Budget**: 3,000 – 6,000 triangles per character model. Fully rigged 50+ bone humanoid skeleton with idle, walk, and run motion cycles.
+  - **Environment Budget**: Modular 3D laboratory environment (`Lab_Production.blend`, `Lab_Environment_Production.fbx`, ~14k tris across 21 modular prefabs).
+  - **Texture Standards**: 2048×2048 PBR maps (Albedo, Linear Roughness/Metallic masks, Normal map, Cyan Emission map).
+  - **Material Pipeline**: URP Lit shaders (`Universal Render Pipeline/Lit`), Smoothness 0.15–0.30, cyan emission `#6FE3FF` (eye glow and spine ports).
+  - **Lighting Rig**: Multi-zone laboratory lighting with key light `#6FE3FF`, fill `#0E1420`, stasis pod amber/cyan highlights, and point light accents.
+  - **Physics & Layers**: Layer 8 (`Ground`), Layer 11 (`Character`), `CharacterController` (height 1.80m, radius 0.35m, center Y=0.90m, step offset 0.30m, slope limit 45°).
+- **Narrative Premise**: You are Aeron (Subject A-07), an ancient divine entity awakening in a subterranean bio-mechanical laboratory. Facing heavily armored corporate sentries, Aeron must navigate the facility and break free.
+- **Legacy Deprecations**: All legacy 2D pixel-art assets and 2.5D billboard sprite cards are deprecated and archived under `Assets/_Recovery/`.
 
 ---
 
@@ -386,4 +392,80 @@ Implemented in Session 19 to establish Aeron (Subject A-07) as the primary playa
     - `ContactShadow` (Quad mesh rotated 90° X at Y=0.012, `MeshRenderer` = `MAT_Aeron_Shadow`).
     - `EyeGlowLight` (Point Light `#6FE3FF`, intensity 0.8, range 1.2m at Y=1.55m).
 - **Scene Placement**: `Aeron_Instance` placed at `(-1.20, 0.00, 0.50)` in `2.5D_Lab_Scene.unity`, standing squarely in front of the central stasis containment pod opposite `Guard_Instance` at `(1.60, 0.00, 0.50)`.
+
+---
+
+## 13. Full 3D First-Person Aeron Character Pipeline (Session 20)
+
+### A. Architectural Evolution to Full 3D First-Person
+- **Zero 2D/Billboard Cards**: Complete deprecation of 2D/2.5D billboard sprite cards for Aeron. Aeron is now an authentic, fully modeled, rigged, and textured 3D character.
+- **First-Person Experience**: Camera positioned at human eye level (`Y = 1.70m`), 80° Field of View (Section 28 standard), near clipping plane `0.05m`.
+- **Physical Grounding & Anti-Clipping**:
+  - `Aeron_Head_Mesh` is rendered with `ShadowCastingMode.ShadowsOnly`, eliminating internal cranium/teeth/face camera clipping while casting complete dynamic head shadows.
+  - `Aeron_Body_Mesh` renders the chest, waist, legs, and combat boots when the player looks downward.
+  - `Aeron_FirstPerson_Arms.fbx` is attached locally to `CameraHolder` with articulated 5-finger bones, medical bandages on the left forearm, and responsive idle/bob motions.
+
+### B. Asset Manifest & Directory Map
+- **Concept References** (`Assets/Art/Reference/Characters/3D_Aeron/`):
+  - `Aeron_3D_Front.png`: Front full-body A-pose reference.
+  - `Aeron_3D_Side.png`: Profile silhouette and posture.
+  - `Aeron_3D_ThreeQuarter.png`: 3/4 perspective view.
+  - `Aeron_3D_Back.png`: Back view with spine ports and harness cabling.
+  - `Aeron_3D_Face_Closeup.png`: Gaunt facial portrait with cyan left eye flare (`#6FE3FF`).
+  - `Aeron_3D_Clothing_Detail.png`: Fabric weave, A-07 barcode, forearm gauze, boots.
+  - `Aeron_3D_Hands_FirstPerson.png`: First-person perspective of hands, fingers, and veins.
+- **PBR Textures (2048×2048)** (`Assets/Characters/Aeron/Textures/`):
+  - `Aeron_3D_Albedo.png`: High-resolution sRGB albedo map.
+  - `Aeron_3D_Masks.png`: Linear metallic (R) / occlusion (G) / smoothness (A) mask.
+  - `Aeron_3D_Normal.png`: Tangent-space normal map.
+  - `Aeron_3D_Emission.png`: Isolated cyan eye glow (`#6FE3FF`) and spine ports.
+- **URP Lit Materials** (`Assets/Characters/Aeron/Materials/`):
+  - `MAT_Aeron_3D_Head.mat`: Matte head/skin/hair material (Smoothness 0.30).
+  - `MAT_Aeron_3D_Suit.mat`: Matte carbon weave suit material (Smoothness 0.15).
+  - `MAT_Aeron_3D_FPArms.mat`: First-person arms/bandage material (Smoothness 0.25).
+  - `MAT_Aeron_3D_Eyes.mat`: Emission-enabled cyan eye material (`#6FE3FF`, intensity 1.5).
+- **Blender 3D Models & Rigging** (`Assets/Characters/Aeron/Meshes/`):
+  - `Aeron_FullBody_3D.fbx`: 1.80m tall humanoid mesh, 50+ bone skeleton (Spine, Pelvis, Chest, Neck, Head, Limbs, 5 articulated fingers per hand). Includes Idle, Walk, and Run animation clips.
+  - `Aeron_FirstPerson_Arms.fbx`: Camera-space arms mesh with articulated fingers and bandage wraps. Includes `Aeron_FP_Arms_Idle`.
+- **Blender 3D Models & Rigging** (`Assets/Characters/Aeron/Meshes/`):
+  - `Aeron_FullBody_3D.fbx`: 1.80m tall humanoid mesh, 50+ bone skeleton (Spine, Pelvis, Chest, Neck, Head, Limbs, 5 articulated fingers per hand). Includes Idle, Walk, and Run animation clips.
+  - `Aeron_FirstPerson_Arms.fbx`: Camera-space arms mesh with articulated fingers and bandage wraps. Includes `Aeron_FP_Arms_Idle`.
+  - `Aeron_3D_Production.blend`: Blender source file with production rig and meshes.
+- **C# Controllers & Automation** (`Assets/Scripts/FirstPerson/Player/`, `Assets/Editor/`):
+  - `FirstPersonPlayerController.cs`: CharacterController locomotion (walk 4.0m/s, sprint 7.0m/s, crouch 2.0m/s, gravity -18.0m/s², slope handling).
+  - `FirstPersonCameraController.cs`: Smooth mouse look, vertical pitch clamp (-85° to +85°), head culling management.
+  - `AssembleFirstPersonAeronPass.cs`: Automated production pipeline assembler.
+  - `ValidateFirstPersonAeronPass.cs`: Automated verification runner (59 renderers, 0 missing materials, 0 error shaders, 80° FOV, 1.70m eye height).
+- **Player Prefab** (`Assets/Prefabs/Player/Aeron_FirstPerson_Player.prefab`):
+  - Root: `CharacterController` (height 1.80m, radius 0.35m), `FirstPersonPlayerController`, `Health`.
+  - `CameraHolder`: Eye height `1.70m`, `FirstPersonCameraController`, `FirstPersonCamera` (FOV 80°, Near 0.05m), `FirstPersonArms` (mesh), `VisualEffects` (subtle cyan point light).
+  - `CharacterBody`: `FullBodyModel` (`Aeron_Head_Mesh` [ShadowsOnly], `Aeron_Body_Mesh` [Shadows On]).
+- **Active Scene Integration**: `Assets/Scenes/2.5D_Lab_Scene.unity` updated with `Aeron_Player_FirstPerson` at `(-1.20, 0.00, 0.50)` facing `(0, 20, 0)`, with `Guard_Instance` preserved intact at `(1.60, 0.00, 0.50)`.
+
+---
+
+## 14. Aeron 3D Character Art Approval Gate (Session 21)
+
+### A. Strict Scope Boundary
+- **Zero Texture / Zero Animation Mandate**: All character textures, rigs, walk cycles, and gameplay scripts suspended until anatomical geometry passes official Character Art Approval Gate.
+- **Evaluation Standard**: 6 multi-angle neutral clay renders (`Base Color: RGB 0.65, 0.63, 0.60`, `Roughness: 0.48`) rendered under 5-point studio lighting rig (`Key`, `Fill`, `FrontLight`, `Rim`, `BackKey`).
+
+### B. Anatomical Specifications
+- **Demographics & Silhouette**: 20-year-old male, lean athletic test-subject build (neither anime caricature nor superhero bodybuilder).
+- **Height & Grounding**: Exactly 1.8000m tall (`Z = 0.0000m` at boot soles to `Z = 1.7922m` at hair apex).
+- **Facial Planes**: High cheekbones, chiseled athletic jawline, naturally modeled lips, nose bridge/cartilage, and anatomically sculpted ears.
+- **Orbital Sockets & Eyeballs**: Spherical 10.5mm eyeballs seated inside orbital apertures at `X = +/-0.0256m, Y = -0.0675m, Z = 1.5960m` with high-gloss specular finish (`spec = 0.95, roughness = 0.04`), catching bright specular catchlights without intersecting eyelids.
+- **3D Layered Hair**: Snug cranium cap with layered diagonal bangs curving naturally across the forehead and temple strands framing cheeks.
+- **Tactical Combat Boots**: Anatomically centered at `cx = +/-0.076m`, padded collar rim at `Z = 0.235m` snugly wrapping the intact lower legs (extending down to `Z = 0.07m` inside collar to ensure zero seams/gaps), reinforced steel-toe box (`Y = -0.254m`), and flat lugged combat sole at `Z = 0.000m`.
+- **Left Forearm Medical Bandage**: Form-fitting gauze wrap on left forearm (`1.14 <= Z <= 1.27m, X < -0.36m`) with 2.8mm Solidify, subtle spiral ribbing displacement, and smoothed hem borders. Leaves wrist and 5 articulated fingers completely bare.
+- **Hands**: Natural human 5-finger rest pose with thumb, index, middle, ring, and pinky finger curves.
+
+### C. Gate Renders
+- `clay_aeron_front.png`: Full-body front orthographic/perspective.
+- `clay_aeron_side.png`: Full-body side profile.
+- `clay_aeron_threequarter.png`: Full-body 3/4 perspective.
+- `clay_aeron_back.png`: Full-body back view.
+- `clay_aeron_face.png`: 85mm portrait closeup.
+- `clay_aeron_fp_hands.png`: 45mm first-person view of left forearm bandage and articulated 5-finger hand.
+
 

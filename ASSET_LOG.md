@@ -37,6 +37,22 @@ This document maintains a running inventory of all external and prototype assets
 | **Lab URP Lit Materials (10)** | Unity URP Shader Pipeline | Project Asset | Materials: Floor, Grating, MetalDark, MetalWorn, Glass, CyanEmission, Console, Cable, Concrete, Warning | `Assets/Materials/Environment/MAT_Lab_*.mat` |
 | **Lab Modular Prefabs (21)** | Unity Prefab Pipeline | Project Asset | Configured modular prefabs with exact multi-submesh material slot mappings | `Assets/Prefabs/Environment/Lab/PF_*.prefab` |
 
+---
+
+## Aeron Character 2.5D Production Assets (True 2.5D Hybrid)
+
+| Asset Name | Source / Tool | License | Description / Specs | File Location |
+|---|---|---|---|---|
+| **Aeron Turnaround Sheet** | Image Generation Model | Project Asset | Full-body turnaround reference (Front, Side, 3/4) | `Assets/Art/Reference/Characters/Aeron_Turnaround_Production.png` |
+| **Aeron Portrait Reference** | Image Generation Model | Project Asset | Close-up face portrait (tired expression, cyan eye glow) | `Assets/Art/Reference/Characters/Aeron_Face_Portrait.png` |
+| **Aeron Idle Sprite (Quantized)** | Aseprite CLI / Python Pipeline | Project Asset | 256×512 master sprite, palette-quantized, grounded at Y=492 | `Assets/Characters/Aeron/Sprites/Aeron_Idle_0.png` |
+| **Aeron Base Sprite** | Python Sprite Processor | Project Asset | 256×512 segmented front-view idle sprite | `Assets/Characters/Aeron/Sprites/Aeron_Base_256.png` |
+| **Aeron Emission Mask** | Python Sprite Processor | Project Asset | 256×512 isolated cyan eye and neck glow emission texture | `Assets/Characters/Aeron/Sprites/Aeron_Emission_256.png` |
+| **Aeron Contact Shadow** | Python Texture Generator | Project Asset | 128×128 soft elliptical foot ambient shadow texture | `Assets/Characters/Aeron/Sprites/Aeron_ContactShadow.png` |
+| **Aeron 2.5D Card Mesh** | Blender 5.2.1 LTS | Project Asset | 0.9m × 1.8m quad card mesh, bottom pivot, 12 tris, cylindrical curve | `Assets/Characters/Aeron/Meshes/Aeron_Card.fbx` |
+| **Aeron Sprite Material** | Unity URP Shader Pipeline | Project Asset | URP Lit alpha-clipped double-sided material with cyan emission | `Assets/Characters/Aeron/Materials/MAT_Aeron_Sprite.mat` |
+| **Aeron Shadow Material** | Unity URP Shader Pipeline | Project Asset | URP Lit transparent contact shadow material | `Assets/Characters/Aeron/Materials/MAT_Aeron_Shadow.mat` |
+| **Aeron Player Prefab** | Unity Prefab Pipeline | Project Asset | Complete 2.5D player prefab (Mesh, Billboard, Collider, Health, Light) | `Assets/Characters/Aeron/Prefabs/Aeron_Player.prefab` |
 
 ---
 

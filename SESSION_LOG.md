@@ -468,4 +468,43 @@ Changelog of progress made in each development session. Append new entries at th
 - **Next Logical Step**:
   - Ready for gameplay locomotion pass: Aeron 2.5D walk/run/dodge movement and Guard patrol/alert AI.
 
+---
+
+## 📅 [2026-09-10] — Session 19: Aeron Main Character Production Pass (True 2.5D Hybrid)
+- **Objective & Scope**:
+  - Build and integrate **Aeron (Subject A-07)** as the primary playable hero in *The Last God* using the True 2.5D hybrid pipeline.
+  - **Visual Paradigm**: Stylized 2D/2.5D sprite card grounded within the 3D modular lab environment, responding to real 3D lighting, contact shadows, and depth occlusion.
+  - **Zero Combat/Scripting Scope**: Character visual foundation and grounding ONLY. Guard character (`Guard_Instance`) preserved intact.
+- **Phase 1 — Concept Generation & Style Lock**:
+  - Generated full-body turnaround model sheet (Front, Side, 3/4) matching the dark sci-fi aesthetic: lean build, gaunt jawline, tired observant expression, minimal dark suit (`#080B0F`–`#303841`), A-07 barcode, left forearm arm bandage, piercing cyan left eye glow (`#6FE3FF`). Saved to `Assets/Art/Reference/Characters/Aeron_Turnaround_Production.png`.
+  - Generated cinematic face close-up portrait: `Assets/Art/Reference/Characters/Aeron_Face_Portrait.png`.
+- **Phase 2 — Sprite Cleanup, Palettization & Masks**:
+  - Segmented front-view idle sprite and standardized onto a 256×512 canvas with feet grounded at Y = 492 (`scratch/process_aeron_sprite.py`).
+  - Isolated cyan cybernetic eye and neck emissions into dedicated texture `Aeron_Emission_256.png`.
+  - Generated soft elliptical ambient occlusion contact shadow `Aeron_ContactShadow.png`.
+  - Quantized and processed sprite through Aseprite CLI (`C:\projects\aseprite\build\bin\aseprite.exe -b`), producing `Assets/Characters/Aeron/Sprites/Aeron_Idle_0.png`.
+- **Phase 3 — 2.5D Card Geometry in Blender**:
+  - Created 0.90m × 1.80m quad mesh in Blender 5.2.1 LTS via `blender-mcp` (`scratch/build_aeron_card.py`).
+  - Set pivot origin `(0, 0, 0)` precisely at bottom center (feet) to eliminate floor clipping/floating.
+  - Subdivided 2×3 with subtle cylindrical curvature along X to smoothly catch directional lighting across the 2.5D plane.
+  - Exported with `bake_space_transform=True` to `Assets/Characters/Aeron/Meshes/Aeron_Card.fbx`.
+- **Phase 4 — Materials, Scripts & Prefab Assembly**:
+  - Modified `Assets/Characters/Aeron/Scripts/AeronBillboard.cs` to decouple from `SpriteRenderer`, supporting both `SpriteRenderer` and `MeshRenderer` with camera-facing billboarding and horizontal facing flips.
+  - Created `MAT_Aeron_Sprite.mat`: URP Lit, Opaque with Alpha Clip (`_AlphaClip = 1`, `_Cutoff = 0.20`), Double-Sided (`_Cull = 0`), Smoothness 0.15, and cyan eye glow emission map (`#6FE3FF`, intensity 2.2).
+  - Created `MAT_Aeron_Shadow.mat`: URP Lit transparent contact shadow.
+  - Assembled `Aeron_Player.prefab` (`CapsuleCollider` 1.8m height, `Health` 100 HP, `AeronBillboard`, Visual Card mesh, contact shadow quad at Y=0.012, subtle cyan accent point light).
+  - Replaced scene placeholder with `Aeron_Instance` at `(-1.20, 0.00, 0.50)` in `Assets/Scenes/2.5D_Lab_Scene.unity`.
+- **Phase 5 — Automated Validation & In-Engine Capture**:
+  - Executed automated validation via `LastGod.EditorTools.ValidateProductionLabScene.ValidateAndCapture` in Unity batchmode.
+  - Rebuilt solution with `dotnet build LAST-GOD.slnx`: **0 Warning(s), 0 Error(s)**.
+  - Verification results:
+    - `Lab_Environment`: All 9 hierarchical subsystems verified (Architecture: 5, Platforms: 4, Containment: 5, Doors: 2, Machinery: 3, Props: 4, PipesAndCables: 2, Lighting: 8, Collision: 8).
+    - `Characters`: `Aeron_Instance` verified at `(-1.20, 0.00, 0.50)` (Collider: True, Animator/Controller: True); `Guard_Instance` verified at `(1.60, 0.00, 0.50)` (Collider: True, Animator: True).
+    - 52 MeshRenderers verified: **0 Missing Materials, 0 Error Shaders**.
+    - Main Camera verified at `(0.00, 2.00, -8.50)`, rotation `(4.50, 0.00, 0.00)`, FOV 27°.
+    - Verification frame rendered to `scratch/unity_lab_camera_capture.png`.
+- **Next Logical Step**:
+  - Ready for 2.5D locomotion & player movement tuning (walk/run, jump, dash) with `PlayerController` and camera follow.
+
+
 

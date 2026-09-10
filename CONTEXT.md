@@ -336,3 +336,54 @@ Built in Session 18 to elevate the Act 1 Origin Laboratory from initial blockout
   - `MAT_Lab_Cable`: Matte rubberized conduit cabling (`#0A0C10`).
   - `MAT_Lab_Concrete`: Heavy foundation wall concrete.
   - `MAT_Lab_Warning`: Hazard chevrons and emergency stripes (`#C4502E`).
+
+---
+
+## 12. Aeron Main Character Production Pass (True 2.5D Sprite Card Pipeline)
+
+Implemented in Session 19 to establish Aeron (Subject A-07) as the primary playable protagonist in the True 2.5D hybrid architecture.
+
+### A. True 2.5D Hybrid Architecture
+- **Real 3D World**: Modular 3D laboratory environment with physical geometry, real depth, dynamic lighting, and occlusions.
+- **2.5D Sprite Card Character**: Aeron is rendered as a high-fidelity stylized 2D sprite card grounded on an upright quad plane facing the 2.5D perspective camera (27° FOV).
+- **Physical Grounding**: Contact shadow projection, CapsuleCollider 3D physics, real 3D depth sorting, and URP Lit surface shader response with dedicated cyan emission for his cybernetic left eye.
+
+### B. Character Visual Design & Identity
+- **Design Spec**: ~20 years old, lean, gaunt jawline, tired observant expression, dark messy hair, minimal form-fitting dark lab suit (`#080B0F`, `#11161C`, `#1B2430`, `#303841`), `A-07` chest barcode, white medical bandage on left forearm.
+- **Left Eye Glow**: Piercing luminous cyan flare (`#CFF4FF` / `#6FE3FF`) radiating from his cybernetic left eye and faint neck port traces.
+- **Visual References**:
+  - `Assets/Art/Reference/Characters/Aeron_Turnaround_Production.png`: Full-body turnaround model sheet (front, side, 3/4).
+  - `Assets/Art/Reference/Characters/Aeron_Face_Portrait.png`: Cinematic close-up facial portrait.
+
+### C. Sprite Assets & Quantization
+- **Sprite Dimensions**: 256×512 canvas (1:2 aspect ratio matching 0.90m × 1.80m character proportions). Feet grounded at Y = 492 (bottom-aligned).
+- **Base Sprite**: `Assets/Characters/Aeron/Sprites/Aeron_Idle_0.png` (quantized via Aseprite CLI).
+- **Emission Mask**: `Assets/Characters/Aeron/Sprites/Aeron_Emission_256.png` (isolated cyan eye and neck glow).
+- **Contact Shadow**: `Assets/Characters/Aeron/Sprites/Aeron_ContactShadow.png` (soft elliptical ambient occlusion shadow at feet).
+
+### D. 3D Card Geometry (`Aeron_Card.fbx`)
+- **Mesh Specifications**: 0.90m width × 1.80m height quad mesh with 2×3 subdivisions and subtle cylindrical curvature along the X axis to catch directional light smoothly.
+- **Pivot Alignment**: Origin `(0, 0, 0)` placed precisely at the bottom center (feet), ensuring perfect contact with floor slabs at `Y = 0.00` with zero floating or sinking.
+- **Export**: Exported from Blender 5.2.1 LTS via `bpy.ops.export_scene.fbx` with `bake_space_transform=True`.
+
+### E. Material & Lighting Integration
+- **`MAT_Aeron_Sprite.mat`**:
+  - Shader: `Universal Render Pipeline/Lit`.
+  - Surface: Opaque with `_AlphaClip = 1` and `_Cutoff = 0.20`.
+  - Culling: `_Cull = 0` (Double Sided).
+  - Smoothness: 0.15 (matte fabric/suit response).
+  - Emission: `_EmissionMap` assigned to `Aeron_Emission_256.png`, `_EmissionColor = #6FE3FF` at intensity 2.2.
+- **`MAT_Aeron_Shadow.mat`**:
+  - Shader: `Universal Render Pipeline/Lit` (Transparent blend mode).
+  - Surface: Multiplied soft dark contact shadow lying horizontally at `Y = 0.012`.
+- **Accent Point Light**: 0.8m radius subtle cyan fill (`#6FE3FF`, intensity 0.8) positioned near Aeron's head to project subtle illumination onto nearby containment glass and floor.
+
+### F. Scripts & Prefab Hierarchy (`Aeron_Player.prefab`)
+- **`AeronBillboard.cs`**: Decoupled billboard controller supporting both `SpriteRenderer` and `MeshRenderer`. Constrains rotation to camera facing angle while dynamically flipping `transform.localScale.x` based on movement direction.
+- **Prefab Structure**:
+  - `Aeron_Player` (Root: `CapsuleCollider` radius 0.35m, height 1.80m, center Y=0.90m; `Health` 100 HP; `AeronBillboard`).
+    - `VisualCard` (`MeshFilter` = `Aeron_Card`, `MeshRenderer` = `MAT_Aeron_Sprite`).
+    - `ContactShadow` (Quad mesh rotated 90° X at Y=0.012, `MeshRenderer` = `MAT_Aeron_Shadow`).
+    - `EyeGlowLight` (Point Light `#6FE3FF`, intensity 0.8, range 1.2m at Y=1.55m).
+- **Scene Placement**: `Aeron_Instance` placed at `(-1.20, 0.00, 0.50)` in `2.5D_Lab_Scene.unity`, standing squarely in front of the central stasis containment pod opposite `Guard_Instance` at `(1.60, 0.00, 0.50)`.
+

@@ -4,9 +4,9 @@ namespace LastGod.Characters.Aeron
 {
     /// <summary>
     /// Smoothly billboards Aeron's 2D sprite visual rig to face the active camera,
-    /// while dynamically flipping the sprite according to sideways movement.
+    /// while dynamically flipping the visual according to sideways movement.
+    /// Supports both SpriteRenderer and MeshRenderer (2.5D character card).
     /// </summary>
-    [RequireComponent(typeof(SpriteRenderer))]
     public class AeronBillboard : MonoBehaviour
     {
         [Header("Camera Alignment")]
@@ -60,18 +60,28 @@ namespace LastGod.Characters.Aeron
                 }
             }
 
-            // Flip sprite when moving sideways relative to camera view
-            if (autoFlipWithMovement && _sr != null && _parentCC != null)
+            // Flip sprite or card when moving sideways relative to camera view
+            if (autoFlipWithMovement && _parentCC != null)
             {
                 Vector3 vel = _parentCC.velocity;
                 float dotRight = Vector3.Dot(_cam.transform.right, vel);
                 if (dotRight > flipDeadzone)
                 {
-                    _sr.flipX = false;
+                    if (_sr != null) _sr.flipX = false;
+                    else
+                    {
+                        var s = transform.localScale;
+                        transform.localScale = new Vector3(Mathf.Abs(s.x), s.y, s.z);
+                    }
                 }
                 else if (dotRight < -flipDeadzone)
                 {
-                    _sr.flipX = true;
+                    if (_sr != null) _sr.flipX = true;
+                    else
+                    {
+                        var s = transform.localScale;
+                        transform.localScale = new Vector3(-Mathf.Abs(s.x), s.y, s.z);
+                    }
                 }
             }
         }

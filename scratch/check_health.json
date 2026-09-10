@@ -1,6 +1,0 @@
-{
-  "className": "CheckGuardHealth",
-  "methodName": "Execute",
-  "isMethodBody": false,
-  "csharpCode": "using UnityEngine;\nusing LastGod.Core;\n\npublic class CheckGuardHealth\n{\n    public static string Execute()\n    {\n        var guard = GameObject.Find(\"CyberGuard_Catwalk\");\n        if (guard == null) return \"Guard not found\";\n        var h = guard.GetComponent<Health>();\n        if (h == null) return \"Health not found\";\n\n        return $\"Guard HP: {h.CurrentHP} / {h.MaxHP}, IsDead: {h.IsDead}\";\n    }\n}"
-}

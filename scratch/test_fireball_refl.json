@@ -1,6 +1,0 @@
-{
-  "className": "TestFireballReflection",
-  "methodName": "Execute",
-  "isMethodBody": false,
-  "csharpCode": "using UnityEngine;\nusing System.Reflection;\n\npublic class TestFireballReflection\n{\n    public static string Execute()\n    {\n        var aeron = GameObject.Find(\"Aeron_Protagonist\");\n        if (aeron == null) return \"Aeron not found\";\n\n        Component pc = null;\n        foreach (var c in aeron.GetComponents<Component>())\n        {\n            if (c.GetType().Name == \"PlayerController\")\n            {\n                pc = c;\n                break;\n            }\n        }\n        if (pc == null) return \"PlayerController not found\";\n\n        // Unlock fireball power field\n        var fPower = pc.GetType().GetField(\"hasFireballPower\", BindingFlags.NonPublic | BindingFlags.Instance);\n        if (fPower != null) fPower.SetValue(pc, true);\n\n        var mCast = pc.GetType().GetMethod(\"CastFireball\", BindingFlags.Public | BindingFlags.Instance);\n        if (mCast == null) return \"CastFireball method not found\";\n\n        mCast.Invoke(pc, null);\n        return \"Invoked CastFireball successfully via reflection!\";\n    }\n}"
-}

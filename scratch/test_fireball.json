@@ -1,6 +1,0 @@
-{
-  "className": "TestFireballCombat",
-  "methodName": "Execute",
-  "isMethodBody": false,
-  "csharpCode": "using UnityEngine;\n\npublic class TestFireballCombat\n{\n    public static string Execute()\n    {\n        var aeron = GameObject.Find(\"Aeron_Protagonist\");\n        if (aeron == null) return \"Aeron not found\";\n\n        aeron.SendMessage(\"CastFireball\", SendMessageOptions.DontRequireReceiver);\n        return \"Fireball cast SendMessage triggered!\";\n    }\n}"
-}

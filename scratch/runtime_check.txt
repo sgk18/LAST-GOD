@@ -1,5 +1,0 @@
-Aeron: FOUND, pos=(-1.20, 0.00, 0.00)
-Guard: FOUND, pos=(1.20, 0.00, 0.00)
-Camera: FOUND, pos=(0.00, 1.60, -6.00)
-Aeron Animator: isInitialized=True, currentClip=Scene
-Guard Animator: isInitialized=True, currentClip=Scene

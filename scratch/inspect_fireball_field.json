@@ -1,6 +1,0 @@
-{
-  "className": "InspectFireballField",
-  "methodName": "Execute",
-  "isMethodBody": false,
-  "csharpCode": "using UnityEngine;\nusing System.Reflection;\n\npublic class InspectFireballField\n{\n    public static string Execute()\n    {\n        var aeron = GameObject.Find(\"Aeron_Protagonist\");\n        if (aeron == null) return \"Aeron not found\";\n\n        Component pc = null;\n        foreach (var c in aeron.GetComponents<Component>())\n        {\n            if (c.GetType().Name == \"PlayerController\") { pc = c; break; }\n        }\n        if (pc == null) return \"PlayerController not found\";\n\n        var fPrefab = pc.GetType().GetField(\"fireballPrefab\", BindingFlags.NonPublic | BindingFlags.Instance);\n        var fSpawn = pc.GetType().GetField(\"fireballSpawnPoint\", BindingFlags.NonPublic | BindingFlags.Instance);\n        var fPower = pc.GetType().GetField(\"hasFireballPower\", BindingFlags.NonPublic | BindingFlags.Instance);\n\n        var valPrefab = fPrefab != null ? fPrefab.GetValue(pc) : null;\n        var valSpawn = fSpawn != null ? fSpawn.GetValue(pc) : null;\n        var valPower = fPower != null ? fPower.GetValue(pc) : null;\n\n        return $\"fireballPrefab: {valPrefab} | fireballSpawnPoint: {valSpawn} | hasFireballPower: {valPower}\";\n    }\n}"
-}

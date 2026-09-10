@@ -1,6 +1,0 @@
-{
-  "className": "InspectGuard",
-  "methodName": "Execute",
-  "isMethodBody": false,
-  "csharpCode": "using UnityEngine;\n\npublic class InspectGuard\n{\n    public static string Execute()\n    {\n        var guard = GameObject.Find(\"CyberGuard_Catwalk\");\n        if (guard == null) return \"Guard not found\";\n\n        var sb = new System.Text.StringBuilder();\n        sb.AppendLine(\"Guard Position: \" + guard.transform.position.ToString());\n        sb.AppendLine(\"Guard Scale: \" + guard.transform.localScale.ToString());\n        foreach (Transform t in guard.transform)\n        {\n            sb.AppendLine(\"- Child: \" + t.name + \", LocalPos: \" + t.localPosition.ToString());\n        }\n        var ai = guard.GetComponent<LastGod.Enemies.EnemyAI>();\n        if (ai != null)\n        {\n            sb.AppendLine(\"AI State: \" + ai.State.ToString());\n        }\n        return sb.ToString();\n    }\n}"
-}

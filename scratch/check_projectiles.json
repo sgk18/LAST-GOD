@@ -1,6 +1,0 @@
-{
-  "className": "CheckFireballSpawn",
-  "methodName": "Execute",
-  "isMethodBody": false,
-  "csharpCode": "using UnityEngine;\nusing LastGod.Combat;\n\npublic class CheckFireballSpawn\n{\n    public static string Execute()\n    {\n        var projectiles = Object.FindObjectsByType<FireballProjectile>(FindObjectsSortMode.None);\n        var bullets = Object.FindObjectsByType<Bullet>(FindObjectsSortMode.None);\n\n        string s = $\"Fireballs count: {projectiles.Length}, Bullets count: {bullets.Length}\";\n        foreach (var p in projectiles)\n        {\n            s += $\" | FB Pos: {p.transform.position}\";\n        }\n        foreach (var b in bullets)\n        {\n            s += $\" | Bullet Pos: {b.transform.position}\";\n        }\n        return s;\n    }\n}"
-}

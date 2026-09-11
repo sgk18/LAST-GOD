@@ -24,9 +24,32 @@ This document maintains a running inventory of all external and prototype assets
 | **Chronos Aura Temporal FX** | Nano Banana AI Generator | Project Asset | Temporal distortion glyph ring VFX reference | `Assets/Art/Sprites/Chronos_Aura_FX.png` |
 | **Laser Bullet Projectile FX** | Nano Banana AI Generator | Project Asset | Plasma beam projectile reference | `Assets/Art/Sprites/Laser_Bullet_FX.png` |
 
+## 2D Platformer Environment Assets (Act 1 Laboratory)
+
+| Asset Name | Source / Tool | License | Description / Dimensions | File Location |
+|---|---|---|---|---|
+| **Visual Bible** | Visual Bible Document | Project Asset | Complete art bible, palette hierarchy, and lighting rules | `Assets/Art/References/VISUAL_BIBLE.md` |
+| **Master Color Palette** | Palette Exporter | Project Asset | 10-color master palette (.hex, .gpl, .json) | `Assets/Art/References/palette.*` |
+| **Lab Reference Suite** | AI Image Generator (`generate_image`) | Project Asset | Concept references: wide lab, side-scroll, hero pod, machinery | `Assets/Art/References/ref_*.jpg` |
+| **Blender 2D Master Scene** | Blender 5.2.1 LTS | Project Asset | 2D planning scene with 8 Grease Pencil / depth collections | `Assets/Blender/Lab_2D/LAB_2D_MASTER.blend` |
+| **2D Composition Study** | Blender 5.2.1 LTS | Project Asset | Rendered 2D orthographic composition study image | `Assets/Blender/Lab_2D/Lab_2D_Composition_Study.png` |
+| **Modular Tile Library (12)** | Aseprite / PIL Generator | Project Asset | 32x32 tiles (Floor straight/grating/damaged/hazard, Platform surface/edges/support, Walls, Ceiling) | `Assets/Art/Tiles/LAB_Tile_*.png` |
+| **Structural Sprites (6)** | Aseprite / PIL Generator | Project Asset | Wall A/B (32x64), Pillar A-7/B-3 (32x128), Beam A (64x16), Door A (32x64) | `Assets/Art/Environment/Background/`, `Props/` |
+| **Hero Stasis Chamber** | Aseprite / PIL Generator | Project Asset | 64x96 hero stasis apparatus with transparent tube and cyan stasis glow | `Assets/Art/Environment/Containment/LAB_CONTAINMENT_Main.png` |
+| **Secondary Pods (2)** | Aseprite / PIL Generator | Project Asset | Inactive pod (32x64), Damaged cracked tank with fluid puddle (48x80) | `Assets/Art/Environment/Containment/LAB_Containment_*.png` |
+| **Machinery & Consoles (3)**| Aseprite / PIL Generator | Project Asset | Console A (64x32), PowerUnit A (48x48), ServerRack A (32x80) | `Assets/Art/Environment/Machinery/LAB_*.png` |
+| **Piping & Hardware (5)** | Aseprite / PIL Generator | Project Asset | Pipe A/B (32x32), Pipe Junction (32x32), Valve A (32x32), Railing A (32x16) | `Assets/Art/Environment/Props/LAB_*.png` |
+| **Decal Library (3)** | Aseprite / PIL Generator | Project Asset | Stencils: A-7 (32x16), B-3 (32x16), Restricted (32x16) | `Assets/Art/Environment/Decals/LAB_DECAL_*.png` |
+| **VFX Sprites (4)** | Aseprite / PIL Generator | Project Asset | Steam puff (32x32), Spark (16x16), Cyan energy mote (16x16), Dust mote (8x8) | `Assets/Art/Environment/VFX/FX_*.png` |
+| **Player Silhouette Proxy** | Aseprite / PIL Generator | Project Asset | 32x64 temporary 1.8m silhouette for platform scale and negative space testing | `Assets/Art/Environment/Gameplay/Player_Silhouette_Proxy.png` |
+| **Native Aseprite Source (140)** | Aseprite CLI | Project Asset | Raw editable .aseprite source files | `Assets/Aseprite/Lab/*.aseprite` |
+| **Parallax Component** | C# Engine Script | Project Asset | Multi-plane parallax controller with pixel snapping | `Assets/Scripts/2D/ParallaxLayer.cs` |
+| **Act 1 2D Lab Scene** | Unity 6.5 / URP 2D | Project Asset | Assembled production scene with 3 Tilemaps, 5 Parallax planes, 4 Lights, VFX | `Assets/Scenes/Act1_Lab_2D/Act1_Lab_2D.unity` |
+| **In-Engine Camera Capture** | Unity 6.5 In-Engine Camera | Project Asset | High-resolution 1920x1080 camera screenshot of the live 2D scene | `Assets/Scenes/Act1_Lab_2D/Act1_Lab_2D_Screenshot.png` |
+
 ---
 
-## 3D Environment Production Assets (Act 1 Laboratory)
+
 
 | Asset Name | Source / Tool | License | Description / Polycount | File Location |
 |---|---|---|---|---|

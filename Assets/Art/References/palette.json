@@ -1,0 +1,16 @@
+{
+  "name": "The Last God - Act 1 Laboratory Palette",
+  "version": "1.0",
+  "colors": [
+    { "name": "Dark Base", "hex": "#080B0F", "r": 8, "g": 11, "b": 15, "role": "Deep shadow, negative space (60%)" },
+    { "name": "Deep Charcoal", "hex": "#11161C", "r": 17, "g": 22, "b": 28, "role": "Primary silhouette, heavy plates (60%)" },
+    { "name": "Dark Blue-Grey", "hex": "#1B2430", "r": 27, "g": 36, "b": 48, "role": "Wall cladding, ambient tone (20%)" },
+    { "name": "Industrial Grey", "hex": "#303841", "r": 48, "g": 56, "b": 65, "role": "Platform surfaces, mechanical structures (10%)" },
+    { "name": "Light Metal", "hex": "#4A535C", "r": 74, "g": 83, "b": 92, "role": "Gratings, edge rims, metallic highlights (10%)" },
+    { "name": "Dark Cyan", "hex": "#245B70", "r": 36, "g": 91, "b": 112, "role": "Stasis fluid, low-power conduits (7%)" },
+    { "name": "Primary Cyan", "hex": "#6FE3FF", "r": 111, "g": 227, "b": 255, "role": "Active stasis field, diagnostics, tech (7%)" },
+    { "name": "Bright Cyan", "hex": "#CFF4FF", "r": 207, "g": 244, "b": 255, "role": "Specular emission, core energy, arcs (7%)" },
+    { "name": "Warning Orange", "hex": "#C4502E", "r": 196, "g": 80, "b": 46, "role": "Emergency seals, hazard beacons (3%)" },
+    { "name": "Industrial Yellow", "hex": "#B39A45", "r": 179, "g": 154, "b": 69, "role": "Hazard stripes, floor safety stencils (3%)" }
+  ]
+}

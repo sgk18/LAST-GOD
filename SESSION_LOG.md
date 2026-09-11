@@ -606,3 +606,46 @@ Changelog of progress made in each development session. Append new entries at th
   - Built solution via `dotnet build LAST-GOD.slnx`: Clean compilation with **0 Errors**.
   - Verified git status shows clean working tree with only genuine production assets staged or tracked.
 
+---
+
+## 📅 [2026-09-11] — Session 23: Act 1 Laboratory — Hand-Crafted 2D Sci-Fi Platformer Pipeline Pass
+- **Mandate & Scope Transition**:
+  - Pivoted Act 1 (*Origin: The Laboratory*) from 3D first-person pass to a **hand-crafted 2D sci-fi platformer pipeline**.
+  - Paused 3D character pipeline for Aeron. Implemented strict negative constraints (no character creation, no enemies, no combat/weapons, no story scripting).
+  - Used existing 3D laboratory (`Lab_Production.blend`, 55 objects) as architectural and spatial reference for 2D translation.
+- **Tool Audit & Capability Matrix**:
+  - Audited all 20 specific categories (Blender MCP, Grease Pencil, Blender 2D animation/rendering/compositing, image generation, Aseprite CLI, Unity MCP, Tilemap/2D tools, URP 2D lighting, Git).
+  - Mapped concept reference generation to native `generate_image` tool (Google Imagen engine).
+- **Deliverables Completed**:
+  1. **Visual Bible & Master Color System**:
+     - Created `Assets/Art/References/VISUAL_BIBLE.md` defining the 10-color system (`#080B0F`, `#11161C`, `#1B2430`, `#303841`, `#4A535C`, `#245B70`, `#6FE3FF`, `#CFF4FF`, `#C4502E`, `#B39A45`) with 60/20/10/7/3 distribution rules.
+     - Exported `palette.hex`, `palette.gpl`, and `palette.json`.
+  2. **AI Concept Reference Suite**:
+     - Generated 4 high-fidelity reference studies (`ref_lab_wide`, `ref_side_scroll`, `ref_containment_hero`, `ref_machinery_props`) stored in `Assets/Art/References/`.
+  3. **Blender 2D / Grease Pencil Environment Study**:
+     - Created `Assets/Blender/Lab_2D/LAB_2D_MASTER.blend` containing 8 dedicated collections (`GP_Background_Far`, `GP_Background`, `GP_Midground`, `GP_Gameplay`, `GP_Foreground`, `GP_Architecture_Guide`, `GP_Lighting_Guide`, `GP_Annotation`).
+     - Rendered orthographic 2D composition study `Lab_2D_Composition_Study.png`.
+  4. **Modular 2D Asset Production (37 Sprites + 140 Native Aseprite Files)**:
+     - 12 modular 32×32 tiles (Floor straight, grating, hazard, damaged; Platform surface, edges L/R, support; Walls straight/panel; Ceiling straight/pipes).
+     - 6 structural sprites (Wall A/B 32×64, Pillars A-7/B-3 32×128, Beam A 64×16, Security Door A 32×64).
+     - 3 containment pods (Hero Stasis Chamber `LAB_CONTAINMENT_Main` 64×96, Small 32×64, Damaged 48×80).
+     - 3 machinery chassis (Console A 64×32, PowerUnit A 48×48, ServerRack A 32×80).
+     - 5 industrial piping & hardware props (Pipes A/B, Junction, Valve A, Railing A).
+     - 3 decals (A-7, B-3, Restricted).
+     - 4 atmospheric VFX sprites (Steam, Spark, Cyan Energy, Dust).
+     - 1 temporary player silhouette proxy (32×64, 1.8m scale).
+     - Converted all 140 sprites to `.aseprite` source files in `Assets/Aseprite/Lab/`.
+  5. **Unity 2D Production Scene (`Act1_Lab_2D.unity`)**:
+     - Configured 8 Sorting Layers: `Background_Far`, `Background`, `Midground`, `Gameplay`, `Player`, `Foreground`, `Foreground_FX`, `Lighting_FX`.
+     - Built multi-plane depth hierarchy with `ParallaxLayer.cs` (pixel snapping at 32 PPU, factors 0.15, 0.40, 0.75, 1.00, 1.25, 1.10).
+     - Grid with 3 Tilemaps (`Tilemap_Floor`, `Tilemap_Platforms`, `Tilemap_Background_Walls`), `TilemapCollider2D`, `CompositeCollider2D`, and `PlatformEffector2D`.
+     - 4 URP 2D lights (Global cold ambient, Hero cyan stasis point, Warning amber point, Terminal diagnostic point).
+     - 3 Particle Systems for steam vents, cyan stasis motes, and ambient dust.
+     - Orthographic camera at size 3.375 (384×216 base resolution, clear color `#080B0F`).
+  6. **Automated QA & In-Engine Camera Capture**:
+     - Executed `ValidateAndCaptureLab2D.ValidateAndCapture` in Unity batchmode:
+       - 0 Errors, 0 Warnings across camera, tilemaps, colliders, parallax, lights, and proxies.
+       - Captured 1920×1080 in-engine camera screenshot `Act1_Lab_2D_Screenshot.png`.
+- **Status**: **ACT 1 LABORATORY 2D: APPROVED**.
+
+

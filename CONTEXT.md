@@ -1,30 +1,52 @@
-# CONTEXT — The Last God (Unity 6.5 Full 3D First-Person)
+# CONTEXT — The Last God
 
-## 1. Project Summary & Identity
-**The Last God** is a dark, atmospheric **Full 3D First-Person** action game built in Unity 6.5 (6000.5.8f1) using Universal Render Pipeline (URP).
-- **Core Architectural Paradigm**: **Full 3D First-Person Experience**.
-  - All 2D/2.5D sprites, billboard cards, and flat representations for Aeron are strictly deprecated and replaced by a fully modeled, rigged, and textured 3D humanoid character.
-- **First-Person Camera Architecture**:
-  - Attached to `CameraHolder` under player root at human eye height: **1.70m** (`Y = 1.70`).
-  - Field of View: **80°** (Section 28 standard; 75–85° range).
-  - Near Clip Plane: **0.05m** to prevent near-geometry camera clipping.
-  - Dark atmosphere background: `#05060A` / `(0.02, 0.024, 0.039)`.
-- **Anti-Clipping & Body Grounding**:
-  - **Head Mesh Isolation**: Aeron's head geometry (`Aeron_Head_Mesh`) is separated from the body and assigned `ShadowCastingMode.ShadowsOnly`. This completely eliminates camera clipping inside Aeron's cranium, jaw, or teeth while still casting realistic head and hair shadows into the environment.
-  - **Full Body Grounding**: Looking down renders the full torso, legs, and combat boots (`Aeron_Body_Mesh`), providing true physical embodiment rather than floating hands.
-  - **First-Person Arms**: Dedicated camera-local first-person arms and hands (`Aeron_FirstPerson_Arms.fbx`) with articulated 5-finger skeletal phalanxes, left forearm medical bandage wraps, and URP Lit shading.
-- **Active Working Scene**: `Assets/Scenes/2.5D_Lab_Scene.unity` (adapted for full 3D first-person navigation).
-- **Standing 3D Technical Standards**:
-  - **Characters Budget**: 3,000 – 6,000 triangles per character model. Fully rigged 50+ bone humanoid skeleton with idle, walk, and run motion cycles.
-  - **Environment Budget**: Modular 3D laboratory environment (`Lab_Production.blend`, `Lab_Environment_Production.fbx`, ~14k tris across 21 modular prefabs).
-  - **Texture Standards**: 2048×2048 PBR maps (Albedo, Linear Roughness/Metallic masks, Normal map, Cyan Emission map).
-  - **Material Pipeline**: URP Lit shaders (`Universal Render Pipeline/Lit`), Smoothness 0.15–0.30, cyan emission `#6FE3FF` (eye glow and spine ports).
-  - **Lighting Rig**: Multi-zone laboratory lighting with key light `#6FE3FF`, fill `#0E1420`, stasis pod amber/cyan highlights, and point light accents.
-  - **Physics & Layers**: Layer 8 (`Ground`), Layer 11 (`Character`), `CharacterController` (height 1.80m, radius 0.35m, center Y=0.90m, step offset 0.30m, slope limit 45°).
-- **Narrative Premise**: You are Aeron (Subject A-07), an ancient divine entity awakening in a subterranean bio-mechanical laboratory. Facing heavily armored corporate sentries, Aeron must navigate the facility and break free.
-- **Legacy Deprecations**: All legacy 2D pixel-art assets and 2.5D billboard sprite cards are deprecated and archived under `Assets/_Recovery/`.
+## 1. Project Summary & Active Development Target
+
+### CURRENT ACTIVE TARGET: ACT 1 — ORIGIN: THE LABORATORY (2D PLATFORMER PIPELINE)
+- **Primary Visual Direction**: **Hand-Crafted 2D Sci-Fi Platformer** (Atmospheric 2D, pixel/painterly industrial horror, strong silhouettes, layered parallax, cinematic 2D lighting).
+- **Core Scope Constraints**:
+  - The previous full 3D character pipeline for Aeron is **STRICTLY PAUSED**. No 3D character modeling or texturing is performed during this environment pass.
+  - Do **NOT** create Aeron, Guard, Elia, Voss, the Seven Entities, combat mechanics, weapons, enemy AI, boss encounters, dialogue, or story scripting.
+  - Only a **temporary player silhouette proxy** (`Player_Silhouette_Proxy`) is used to validate scale, platform readability, and traversal negative space.
+  - The existing 3D laboratory (`Assets/Environment/Lab/Lab_Production.blend`) serves as the spatial, dimensional, and architectural reference.
+- **Active Working Scene**: `Assets/Scenes/Act1_Lab_2D/Act1_Lab_2D.unity`.
+- **Standing 2D Technical Standards**:
+  - **Base Native Resolution**: `384 × 216` (16:9 widescreen, clean 5× integer scale to 1080p, 10× to 4K).
+  - **Pixels Per Unit (PPU)**: `32` (1 Unit = 1 meter = 32 pixels; 1 tile = 32×32 pixels).
+  - **Camera**: Orthographic, size `3.375` (`(216 / 32) / 2 = 3.375`), clear color `#080B0F`.
+  - **Master Color Palette**:
+    - `#080B0F` (Dark Base, 60%)
+    - `#11161C` (Deep Charcoal, 60%)
+    - `#1B2430` (Dark Blue-Grey, 20%)
+    - `#303841` (Industrial Grey, 10%)
+    - `#4A535C` (Light Metal, 10%)
+    - `#245B70` (Dark Cyan, 7% accent)
+    - `#6FE3FF` (Primary Cyan, 7% accent)
+    - `#CFF4FF` (Bright Cyan, 7% accent)
+    - `#C4502E` (Warning Orange, 3% accent)
+    - `#B39A45` (Industrial Yellow, 3% accent)
+  - **Depth & Sorting Layers**:
+    - `Background_Far` (Z = +10m, Parallax 0.15)
+    - `Background` (Z = +5m, Parallax 0.40)
+    - `Midground` (Z = +2m, Parallax 0.75)
+    - `Gameplay` (Z = 0m, Parallax 1.00 / Static)
+    - `Player` (Z = 0m, Sorting Order 10)
+    - `Foreground` (Z = -2m, Parallax 1.25)
+    - `Foreground_FX` (Z = -1m, Parallax 1.10)
+    - `Lighting_FX` (Z = 0m)
+  - **Lighting Rig**: Universal 2D Renderer (`Light2D` Global cold fill, Point cyan stasis key, Warning amber, Terminal blue).
+  - **Toolchain Alignment**:
+    - Concept / References: Native `generate_image` (8 tailored reference studies).
+    - Spatial Reference: `Lab_Production.blend` (55 objects, 16m × 8m room).
+    - Composition Study: `Assets/Blender/Lab_2D/LAB_2D_MASTER.blend` (8 GP collections).
+    - Hand-Crafted 2D Assets: Aseprite CLI / Python PIL (`Assets/Art/Tiles/`, `Assets/Art/Environment/`, `Assets/Aseprite/Lab/`).
+    - Scene Assembly & Validation: `BuildLabEnvironment2D.cs` & `ValidateAndCaptureLab2D.cs`.
 
 ---
+
+### Previous / Paused Paradigms (Reference Archive)
+- **3D First-Person Navigation Reference**: `Assets/Scenes/2.5D_Lab_Scene.unity` and `Assets/Characters/Aeron/` (preserved, on hold).
+
 
 ## 2. Agent Skills Policy & Universal Availability
 > [!IMPORTANT]

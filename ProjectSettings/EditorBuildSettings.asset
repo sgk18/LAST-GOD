@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Act1_Lab_2D/Act1_Lab_2D.unity
+    guid: 7af87e08e1b5e414dbdb56907efdded0
+  - enabled: 1
     path: Assets/Scenes/Aeron_Idle_Test.unity
     guid: 7a9471c87da95254fb854506def9a2af
   - enabled: 1

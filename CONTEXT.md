@@ -490,4 +490,31 @@ Implemented in Session 19 to establish Aeron (Subject A-07) as the primary playa
 - `clay_aeron_face.png`: 85mm portrait closeup.
 - `clay_aeron_fp_hands.png`: 45mm first-person view of left forearm bandage and articulated 5-finger hand.
 
+---
+
+## 15. 2D Undercover Spy Guard & Toolchain Connectors (Session 22)
+
+### A. Core Architectural Paradigm & Character Identity
+- **Undercover Spy Guard**: An operative disguised as an elite Cryo-Stasis Bay security guard (dark blue tactical uniform, plate carrier vest with pouches, tactical belt with radio & holster, combat boots, earpiece). Investigating Subject 7 / Aeron.
+- **Strict 2D Dimension Standards**:
+  - Resolution: `160 × 256 px` per frame.
+  - Scale & Grounding: Character height `208 px`, grounded at `Y = 238` with `18 px` ground shadow buffer.
+  - Unity Sprite Import: `Pixels Per Unit = 128`, Filter Mode = Point / Bilinear, Pivot = Bottom-Center `{x: 0.5, y: 0.0}`.
+- **Anatomical Coherence Guarantee (Zero Diffusion Inconsistency)**:
+  - Walk cycles are generated via an **Articulated 2D Puppet Decomposition Pipeline** using the approved canonical master sprite.
+  - Zero prompt re-generation for intermediate frames to prevent morphing uniforms, shifting faces, or jumping accessories.
+  - Every frame shares the identical pixel assets, articulated with biological joint rotation (hips, knees, ankles, shoulders, elbows) and vertical weight transfer (pelvic recoil drop and passing rise).
+
+### B. Animations & Spritesheets
+- **Idle**: 8-frame seamless loop (`Assets/Art/Characters/SpyGuard/SPY_GUARD_IDLE_Sheet.png`).
+- **Forward Walk**: 8-frame seamless patrol stride (`Assets/Art/Characters/SpyGuard/SPY_GUARD_WALK_Sheet.png` & `.aseprite`).
+- **Back Walk**: 8-frame seamless rear corridor walk (`Assets/Art/Characters/SpyGuard/SPY_GUARD_WALK_BACK_Sheet.png` & `.aseprite`).
+- **Animator Controller**: `Spy_Guard_AnimatorController.controller` managing `Idle`, `Walk`, `Walk_Back` states driven by `Speed` and `Direction` parameters.
+
+### C. Toolchain Connectors (Aseprite, Unity, Blender)
+- **Unified Toolchain Adapter** (`Assets/Tools/ToolchainConnector/`):
+  - `AsepriteConnector`: Direct CLI integration with `aseprite.exe` for sprite sheet generation, layer slicing, frame timing, and native `.aseprite` exports.
+  - `UnityConnector`: Direct headless batchmode execution and asset/YAML serialization, guaranteeing bulletproof build and test runs regardless of Editor GUI state.
+  - `BlenderConnector`: Headless `bpy` runner and camera turntable manager for orthographic 2D reference projection.
+
 

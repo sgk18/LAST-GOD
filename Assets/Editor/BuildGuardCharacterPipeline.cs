@@ -427,8 +427,8 @@ public static class BuildGuardCharacterPipeline
         // Instantiate new Prefab
         GameObject instance = PrefabUtility.InstantiatePrefab(prefabAsset) as GameObject;
         instance.name = "PF_Guard";
-        // Floor level at x = -3.20, y = -2.35m
-        instance.transform.position = new Vector3(-3.20f, -2.35f, 0f);
+        // Floor level on catwalk at x = -2.60, y = 0.40m
+        instance.transform.position = new Vector3(-2.60f, 0.40f, 0f);
 
         EditorUtility.SetDirty(instance);
         EditorSceneManager.SaveScene(scene);
@@ -463,13 +463,13 @@ public static class BuildGuardCharacterPipeline
         File.WriteAllBytes(DOC_SCREENSHOT_PATH, bytesFull);
         Debug.Log($"PASS: In-Engine Lab Screenshot saved to {SCREENSHOT_FULL_PATH} and {DOC_SCREENSHOT_PATH}");
 
-        // 2. Focused Zoom View on Guard
+        // 2. Focused Zoom View on Guard standing on catwalk
         Vector3 origCamPos = cam.transform.position;
         float origOrthoSize = cam.orthographicSize;
 
-        // Position camera centered on Guard (-3.20, -1.5, -10) with close ortho size (1.5)
-        cam.transform.position = new Vector3(-3.20f, -1.50f, -10f);
-        cam.orthographicSize = 1.6f;
+        // Position camera centered on Guard (-2.60, 1.25, -10) with close ortho size (1.2)
+        cam.transform.position = new Vector3(-2.60f, 1.25f, -10f);
+        cam.orthographicSize = 1.2f;
 
         RenderTexture rtZoom = new RenderTexture(800, 1000, 24, RenderTextureFormat.ARGB32);
         cam.targetTexture = rtZoom;

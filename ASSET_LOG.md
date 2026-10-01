@@ -49,6 +49,32 @@ This document maintains a running inventory of all external and prototype assets
 
 ---
 
+## Playable Guard 2D Character Assets (Act 1 Prologue)
+
+| Asset Name | Source / Tool | License | Description / Dimensions | File Location |
+|---|---|---|---|---|
+| **Guard Master Reference** | PIL / Python Matrix Suite | Project Asset | 8 canonical views (Front, Side, 3/4 Front, Back, Sentry, Weapon, Equipment, Combat) | `Assets/Art/Characters/Guard/References/GUARD_MASTER_REFERENCE.png` |
+| **Guard Color Reference** | Palette Tool | Project Asset | 12 swatches with exact hex codes, roles, and percentage allocations | `Assets/Art/Characters/Guard/References/GUARD_COLOR_REFERENCE.png` |
+| **Guard Silhouette Reference** | Silhouette Matrix Generator | Project Asset | Pure black silhouette verified against Light, Dark, Cyan, and Lab backgrounds | `Assets/Art/Characters/Guard/References/GUARD_SILHOUETTE_REFERENCE.png` |
+| **Guard Pistol Master** | Isolated Prop Tool | Project Asset | Canonical semi-automatic pistol design (4.0" barrel, tritium sights, squared guard) | `Assets/Art/Characters/Guard/References/GUARD_PISTOL_MASTER.png` |
+| **Guard Flashlight Master** | Isolated Prop Tool | Project Asset | Canonical knurled tactical LED flashlight with bezel | `Assets/Art/Characters/Guard/References/GUARD_FLASHLIGHT_MASTER.png` |
+| **Guard Combat Reactions Study** | Exploration & Direction Tool | Project Asset | Takedowns (Lunge, Impact, Lock), Hurt (Stumble, Agony), Death (Prone, Supine) | `Assets/Art/Characters/Guard/References/GUARD_COMBAT_REACTIONS_REFERENCE.png` |
+| **Guard 2D Production Blend** | Blender 5.2.1 LTS | Project Asset | Orthographic 2D camera, 16-bone rig, dual-lighting setup, Z=0 ground plane | `Assets/Art/Characters/Guard/Blender/Guard_2D_Production.blend` |
+| **Guard Idle Aseprite Source** | Aseprite v1.3.0.0 CLI | Project Asset | Native 8-frame 12 FPS cyclic idle source animation | `Assets/Art/Characters/Guard/Aseprite/Guard_Idle.aseprite` |
+| **Guard Idle Source Frames (8)** | Pixel Cleanup Tool | Project Asset | 8 standalone 128×192 PNG frames with locked soles and zero sliding | `Assets/Art/Characters/Guard/Source/GUARD_IDLE_01.png`..`08.png` |
+| **Guard Idle Master Sprite Sheet** | Sprite Sheet Assembler | Project Asset | 1024×192 transparent sheet, 8 frames of 128×192, 96 PPU, bottom-center pivot | `Assets/Art/Characters/Guard/Sprites/Guard_Idle_8F.png` |
+| **Guard Idle Comparison Board** | Technical QA Generator | Project Asset | Frame-by-frame visual alignment board with red floor contact datum | `Assets/Art/Characters/Guard/Documentation/GUARD_IDLE_COMPARISON_BOARD.png` |
+| **Guard Silhouette Continuity Board**| Technical QA Generator | Project Asset | 8-frame pure black silhouette test board | `Assets/Art/Characters/Guard/Documentation/GUARD_SILHOUETTE_BOARD.png` |
+| **Guard Palette Verification Board** | Technical QA Generator | Project Asset | Pixel frequency and color compliance verification board | `Assets/Art/Characters/Guard/Documentation/GUARD_PALETTE_BOARD.png` |
+| **In-Game Screenshot** | Unity Scene Composite Tool | Project Asset | 1920×1080 in-engine shot of Guard on catwalk in Act1_Lab_2D | `Assets/Art/Characters/Guard/Documentation/IN_GAME_SCREENSHOT.png` |
+| **In-Game Guard Zoom** | Unity Scene Composite Tool | Project Asset | 800×1000 close-up inspection shot of Guard on catwalk platform | `Assets/Scenes/Act1_Lab_2D/Act1_Lab_2D_Guard_Zoom.png` |
+| **Guard Idle Animation Clip** | Unity Animation Pipeline | Project Asset | 12 FPS looping animation clip bound to 8 multiple sprites | `Assets/Art/Characters/Guard/Animations/Guard_Idle.anim` |
+| **Guard Animator Controller** | Unity Mecanim Pipeline | Project Asset | 10 production states (Idle, Walk, Run, Aim, Fire, Reload, Flashlight, Hurt, Death, Takedown) | `Assets/Art/Characters/Guard/Animations/Guard.controller` |
+| **Guard Playable Prefab** | Unity Prefab Pipeline | Project Asset | Prefab with SpriteRenderer, Animator, RB2D, Capsule2D, GuardController, WeaponAnchor, FlashlightAnchor | `Assets/Art/Characters/Guard/Prefabs/PF_Guard.prefab` |
+| **Guard Character QA Report** | Technical Validation Suite | Project Asset | Complete 18-point automated compliance verification report (18/18 PASS) | `Assets/Art/Characters/Guard/Documentation/GUARD_QA_REPORT.md` |
+
+---
+
 
 
 | Asset Name | Source / Tool | License | Description / Polycount | File Location |

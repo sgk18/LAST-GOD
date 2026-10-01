@@ -62,12 +62,41 @@ public static class ValidateGuardCharacterPipeline
         int validFrameCount = 0;
         for (int i = 1; i <= 8; i++)
         {
-            string fp = $"Assets/Art/Characters/Guard/Sprites/GUARD_IDLE_{i:02d}.png";
-            Texture2D fTex = AssetDatabase.LoadAssetAtPath<Texture2D>(fp);
-            if (fTex != null && fTex.width == 128 && fTex.height == 192)
+            string fpSource = $"Assets/Art/Characters/Guard/Source/GUARD_IDLE_{i:D2}.png";
+            string fullPathSource = Path.Combine(Application.dataPath, $"Art/Characters/Guard/Source/GUARD_IDLE_{i:D2}.png");
+            string fpSprites = $"Assets/Art/Characters/Guard/Sprites/GUARD_IDLE_{i:D2}.png";
+            string fullPathSprites = Path.Combine(Application.dataPath, $"Art/Characters/Guard/Sprites/GUARD_IDLE_{i:D2}.png");
+
+            string targetPath = File.Exists(fullPathSource) ? fullPathSource :
+                                (File.Exists(fpSource) ? fpSource :
+                                (File.Exists(fullPathSprites) ? fullPathSprites :
+                                (File.Exists(fpSprites) ? fpSprites : null)));
+            bool ok = false;
+
+            if (targetPath != null)
             {
-                validFrameCount++;
+                using (var stream = File.OpenRead(targetPath))
+                {
+                    if (stream.Length >= 24)
+                    {
+                        stream.Seek(16, SeekOrigin.Begin);
+                        byte[] buf = new byte[8];
+                        int bytesRead = stream.Read(buf, 0, 8);
+                        if (bytesRead == 8)
+                        {
+                            int w = (buf[0] << 24) | (buf[1] << 16) | (buf[2] << 8) | buf[3];
+                            int h = (buf[4] << 24) | (buf[5] << 16) | (buf[6] << 8) | buf[7];
+                            Debug.Log($"[FrameCheck] Frame {i}: path={targetPath}, w={w}, h={h}");
+                            if (w == 128 && h == 192) ok = true;
+                        }
+                    }
+                }
             }
+            else
+            {
+                Debug.LogWarning($"[FrameCheck] Frame {i}: targetPath is NULL! Tried {fpSource}");
+            }
+            if (ok) validFrameCount++;
         }
         LogCheck("Individual Frame Count", "8 frames exactly (128 × 192)", validFrameCount == 8, $"{validFrameCount}/8 valid frames");
 

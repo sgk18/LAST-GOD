@@ -648,4 +648,43 @@ Changelog of progress made in each development session. Append new entries at th
        - Captured 1920×1080 in-engine camera screenshot `Act1_Lab_2D_Screenshot.png`.
 - **Status**: **ACT 1 LABORATORY 2D: APPROVED**.
 
+---
+
+## 📅 [2026-10-01] — Session 24: Playable Security Guard 2D Character & Animation Production Pipeline
+- **Mandate & Mission**:
+  - Created the **canonical, production-ready 2D playable security guard operative** for Act 1 (*Origin: Prologue*).
+  - Enforced strict art direction: Dark Ink / Graphic Novel + Industrial Sci-Fi + Heavy Shadows + Limited Palette (10 colors) + Cold Cyan Rim Lighting.
+  - Strict Negative Constraints honored: Strictly 2D character sprite pipeline in Unity (zero 3D playable character models), zero generic pixel art drift, zero anime stylization, zero cartoon bouncing, identical character identity across all frames.
+- **Deliverables Completed**:
+  1. **Phase 0 — Tool & Skill Audit**:
+     - Audited all 10 core toolchains (Blender 5.2.1 LTS, Aseprite v1.3.0.0 CLI, Unity 6000.5.8f1, Python 3.14.2 / PIL 12.3.0, Git, Roslyn / C# compiler).
+  2. **Phase 1, 2 & 3 — Master Reference Suite**:
+     - `Assets/Art/Characters/Guard/References/GUARD_MASTER_REFERENCE.png`: 8 canonical views (Front, Side Profile, 3/4 Front, Back, Sentry Profile, Weapon Master, Equipment Master, Combat Stance).
+     - `Assets/Art/Characters/Guard/References/GUARD_COLOR_REFERENCE.png`: 12 swatches with exact hex codes, roles, and percentage allocations.
+     - `Assets/Art/Characters/Guard/References/GUARD_SILHOUETTE_REFERENCE.png`: Pure black silhouette verified against Light (`#D8E2EC`), Dark (`#080B0F`), Cyan (`#1D4556`), and live In-Engine Lab backgrounds.
+     - `Assets/Art/Characters/Guard/References/GUARD_PISTOL_MASTER.png`: Canonical semi-automatic pistol design (4.0" barrel, tritium sights, squared guard).
+     - `Assets/Art/Characters/Guard/References/GUARD_FLASHLIGHT_MASTER.png`: Canonical knurled tactical LED flashlight with front bezel.
+     - `Assets/Art/Characters/Guard/References/GUARD_COMBAT_REACTIONS_REFERENCE.png`: Grounded combat choreography (Lunge, Impact, Lock takedowns, Stumble/Agony hurt reactions, Prone/Supine death poses).
+  3. **Phase 4 & 5 — Blender 2D Production Scene & 16-Bone Rig**:
+     - `Assets/Art/Characters/Guard/Blender/Guard_2D_Production.blend`: Orthographic 2D camera (`Camera_Ortho_2D`), 16-bone canonical rig (`Root`, `Pelvis`, `Torso`, `Chest`, `Neck`, `Head`, `UpperArm_L/R`, `LowerArm_L/R`, `Hand_L/R`, `UpperLeg_L/R`, `LowerLeg_L/R`, `Foot_L/R`, `WeaponAnchor`, `FlashlightAnchor`), dual-light setup (Key + Cyan Rim), and Z=0 ground plane.
+  4. **Phase 6 & 7 — 8-Frame Idle & Native Aseprite Source**:
+     - 8 standalone source frames: `Assets/Art/Characters/Guard/Source/GUARD_IDLE_01.png`..`08.png` (128 × 192).
+     - Master sprite sheet: `Assets/Art/Characters/Guard/Sprites/Guard_Idle_8F.png` (1024 × 192).
+     - Native Aseprite file: `Assets/Art/Characters/Guard/Aseprite/Guard_Idle.aseprite` compiled via `aseprite.exe -b`.
+     - 12 FPS, 0.67s cycle, subtle breathing and weight shift, locked soles with zero vertical sliding or foot jitter, seamless cyclic loop (`Frame 1 == Frame 8`).
+  5. **Phase 8 — Unity Integration & Prefabs**:
+     - Sliced sprite sheet with 8 multiple sprites, 96 PPU, bottom-center pivot `(0.5, 0.052)`.
+     - `Guard_Idle.anim`: 12 FPS looping animation clip bound to 8 multiple sprites.
+     - `Guard.controller`: 10 production states (Idle, Walk, Run, Aim, Fire, Reload, Flashlight, Hurt, Death, Takedown).
+     - `PF_Guard.prefab`: Assembled with `SpriteRenderer` (Player layer, Order 10), `Animator`, `Rigidbody2D`, `CapsuleCollider2D`, `GuardController.cs`, `WeaponController.cs`, and child anchors (`WeaponAnchor`, `FlashlightAnchor`, `GroundCheckPoint`, `InteractionAnchor`).
+     - Placed `PF_Guard` into `Act1_Lab_2D.unity` on the catwalk at position `(-2.60, 0.40, 0.00)`.
+  6. **Phase 9 — Automated Technical QA**:
+     - Created `ValidateGuardCharacterPipeline.cs` and executed QA in Unity batchmode.
+     - Result: **18 / 18 checks PASSED** (0 Errors, 0 Warnings). Documented in `Assets/Art/Characters/Guard/Documentation/GUARD_QA_REPORT.md`.
+  7. **Phase 10 — In-Engine Visual QA & Image Boards**:
+     - `GUARD_IDLE_COMPARISON_BOARD.png`: Master reference vs Frames 1–8 with floor alignment line.
+     - `GUARD_SILHOUETTE_BOARD.png`: 8-frame pure black silhouette test board.
+     - `GUARD_PALETTE_BOARD.png`: 10-color master palette distribution and compliance table.
+     - `IN_GAME_SCREENSHOT.png` (1920 × 1080) and `Act1_Lab_2D_Guard_Zoom.png` (800 × 1000): In-engine visual verification of Guard grounded on catwalk in `Act1_Lab_2D`.
+- **Status**: **CANONICAL GUARD 2D CHARACTER & IDLE ANIMATION PIPELINE: 100% PRODUCTION APPROVED**.
 

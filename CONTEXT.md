@@ -2,45 +2,46 @@
 
 ## 1. Project Summary & Active Development Target
 
-### CURRENT ACTIVE TARGET: ACT 1 — ORIGIN: THE LABORATORY (2D PLATFORMER PIPELINE)
-- **Primary Visual Direction**: **Hand-Crafted 2D Sci-Fi Platformer** (Atmospheric 2D, pixel/painterly industrial horror, strong silhouettes, layered parallax, cinematic 2D lighting).
-- **Core Scope Constraints**:
-  - The previous full 3D character pipeline for Aeron is **STRICTLY PAUSED**. No 3D character modeling or texturing is performed during this environment pass.
-  - Do **NOT** create Aeron, Guard, Elia, Voss, the Seven Entities, combat mechanics, weapons, enemy AI, boss encounters, dialogue, or story scripting.
-  - Only a **temporary player silhouette proxy** (`Player_Silhouette_Proxy`) is used to validate scale, platform readability, and traversal negative space.
-  - The existing 3D laboratory (`Assets/Environment/Lab/Lab_Production.blend`) serves as the spatial, dimensional, and architectural reference.
-- **Active Working Scene**: `Assets/Scenes/Act1_Lab_2D/Act1_Lab_2D.unity`.
-- **Standing 2D Technical Standards**:
-  - **Base Native Resolution**: `384 × 216` (16:9 widescreen, clean 5× integer scale to 1080p, 10× to 4K).
-  - **Pixels Per Unit (PPU)**: `32` (1 Unit = 1 meter = 32 pixels; 1 tile = 32×32 pixels).
-  - **Camera**: Orthographic, size `3.375` (`(216 / 32) / 2 = 3.375`), clear color `#080B0F`.
-  - **Master Color Palette**:
-    - `#080B0F` (Dark Base, 60%)
-    - `#11161C` (Deep Charcoal, 60%)
-    - `#1B2430` (Dark Blue-Grey, 20%)
-    - `#303841` (Industrial Grey, 10%)
-    - `#4A535C` (Light Metal, 10%)
-    - `#245B70` (Dark Cyan, 7% accent)
-    - `#6FE3FF` (Primary Cyan, 7% accent)
-    - `#CFF4FF` (Bright Cyan, 7% accent)
-    - `#C4502E` (Warning Orange, 3% accent)
-    - `#B39A45` (Industrial Yellow, 3% accent)
-  - **Depth & Sorting Layers**:
-    - `Background_Far` (Z = +10m, Parallax 0.15)
-    - `Background` (Z = +5m, Parallax 0.40)
-    - `Midground` (Z = +2m, Parallax 0.75)
-    - `Gameplay` (Z = 0m, Parallax 1.00 / Static)
-    - `Player` (Z = 0m, Sorting Order 10)
-    - `Foreground` (Z = -2m, Parallax 1.25)
-    - `Foreground_FX` (Z = -1m, Parallax 1.10)
-    - `Lighting_FX` (Z = 0m)
-  - **Lighting Rig**: Universal 2D Renderer (`Light2D` Global cold fill, Point cyan stasis key, Warning amber, Terminal blue).
-  - **Toolchain Alignment**:
-    - Concept / References: Native `generate_image` (8 tailored reference studies).
-    - Spatial Reference: `Lab_Production.blend` (55 objects, 16m × 8m room).
-    - Composition Study: `Assets/Blender/Lab_2D/LAB_2D_MASTER.blend` (8 GP collections).
-    - Hand-Crafted 2D Assets: Aseprite CLI / Python PIL (`Assets/Art/Tiles/`, `Assets/Art/Environment/`, `Assets/Aseprite/Lab/`).
-    - Scene Assembly & Validation: `BuildLabEnvironment2D.cs` & `ValidateAndCaptureLab2D.cs`.
+### CURRENT ACTIVE TARGET: ACT 1 — ORIGIN: PLAYABLE GUARD 2D CHARACTER & LABORATORY PIPELINE
+- **Primary Visual Direction**: **Heavy Dark Ink / Graphic Novel + Industrial Sci-Fi + Limited Palette** (Dark silhouettes, heavy shadows, controlled pixel/sprite detail, cold cyan rim lighting, warning orange accents).
+- **Core Scope & Character Role**:
+  - The **Guard** is the first playable character in the Act 1 prologue before discovering Aeron's stasis chamber.
+  - The Guard is an undercover security operative: lean, athletic, cautious, adult human (1.75–1.80m tall), equipped with dark tactical laboratory uniform, compact utilitarian pistol, flashlight, utility belt, and practical boots.
+  - **STRICTLY 2D**: The final character is entirely a 2D sprite system in Unity. Blender is used strictly for 2D orthographic proportion and rig blocking.
+- **Active Working Scene**: `Assets/Scenes/Act1_Lab_2D/Act1_Lab_2D.unity` with `PF_Guard` placed on the catwalk at `(-2.60, 0.40, 0.00)`.
+- **Standing 2D Character Technical Standards**:
+  - **Frame Dimensions**: `128 × 192` pixels (occupying 80–90% vertical frame, character visible height ~168px).
+  - **Sprite Sheet**: `1024 × 192` pixels (`Guard_Idle_8F.png`), 8 horizontal frames, transparent background.
+  - **Pixels Per Unit (PPU)**: `96 PPU` (consistent global scale, yielding ~1.75m in-engine world height).
+  - **Pivot**: Bottom-Center `(0.5, 0.052)` aligned precisely to the soles of the boots. Zero vertical sliding or jitter across frames.
+  - **Idle Animation**: `Guard_Idle.anim`, exactly 8 frames, 12 FPS, 0.67s cycle, seamless loop (`Frame 1 == Frame 8`), subtle respiratory expansion without cartoony bouncing.
+  - **Master Color Palette (Character)**:
+    - `#080B0F` (Pitch Shadow / Contours)
+    - `#11161C` (Dark Charcoal Tactical Suit)
+    - `#1B2430` (Secondary Blue-Grey)
+    - `#303841` (Industrial Grey Gear)
+    - `#4A535C` (Light Metal Hardware)
+    - `#245B70` (Dark Cyan Midtone)
+    - `#6FE3FF` (Cyan Rim Light / Specular)
+    - `#CFF4FF` (Bright Cyan Edge Highlight)
+    - `#C4502E` (Warning Orange Utility Accents)
+    - Muted Graphic Novel Skin Tones
+  - **Prefab Hierarchy (`PF_Guard`)**:
+    - `SpriteRenderer` (Sorting Layer: `Player`, Order: 10)
+    - `Animator` (`Guard.controller` with 10 states: `Idle`, `Walk`, `Run`, `Aim`, `Fire`, `Reload`, `Flashlight`, `Hurt`, `Death`, `Takedown`)
+    - `Rigidbody2D` (Dynamic, Interpolate, FreezeRotation Z)
+    - `CapsuleCollider2D` (Size: 0.60 × 1.70, Offset: 0, 0.85)
+    - `GuardController.cs` & `WeaponController.cs`
+    - Child Anchors: `WeaponAnchor` (with `SecurityPistol.cs`), `FlashlightAnchor` (with `FlashlightController2D.cs` & Light2D), `GroundCheckPoint`, `InteractionAnchor`.
+  - **Authoritative Master Assets**:
+    - `Assets/Art/Characters/Guard/References/GUARD_MASTER_REFERENCE.png` (8 canonical views)
+    - `Assets/Art/Characters/Guard/References/GUARD_COLOR_REFERENCE.png` (12 swatches)
+    - `Assets/Art/Characters/Guard/References/GUARD_SILHOUETTE_REFERENCE.png` (Tested against 4 backgrounds)
+    - `Assets/Art/Characters/Guard/References/GUARD_PISTOL_MASTER.png`
+    - `Assets/Art/Characters/Guard/References/GUARD_FLASHLIGHT_MASTER.png`
+    - `Assets/Art/Characters/Guard/Blender/Guard_2D_Production.blend` (16-bone rig, orthographic 2D camera)
+    - `Assets/Art/Characters/Guard/Aseprite/Guard_Idle.aseprite` (Native Aseprite source)
+    - `Assets/Art/Characters/Guard/Documentation/GUARD_QA_REPORT.md` (18/18 Automated Checks PASS)
 
 ---
 

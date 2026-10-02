@@ -688,3 +688,37 @@ Changelog of progress made in each development session. Append new entries at th
      - `IN_GAME_SCREENSHOT.png` (1920 × 1080) and `Act1_Lab_2D_Guard_Zoom.png` (800 × 1000): In-engine visual verification of Guard grounded on catwalk in `Act1_Lab_2D`.
 - **Status**: **CANONICAL GUARD 2D CHARACTER & IDLE ANIMATION PIPELINE: 100% PRODUCTION APPROVED**.
 
+---
+
+## 📅 [2026-10-02] — Session 25: Hand-Drawn Stylistic Transition, Aseprite Native Asset Generation & Blender Architectural Plan Mode
+- **User Mandate**:
+  - Transition asset aesthetics to authentic **hand-drawn** style (expressive organic ink line art, cross-hatching, stippled shadows, and gouache washes).
+  - Produce hand-drawn assets compiled directly into native `.aseprite` project files via Aseprite CLI.
+  - Switch Blender into **Plan Mode** (Top-Down Orthographic Floor Plan and 3D Axonometric Cutaway Plan) to properly present the subterranean laboratory architecture, room zones, dais, catwalks, and security thresholds.
+- **Deliverables Completed**:
+  1. **Blender Architectural Plan Mode**:
+     - Configured `Camera_TopDown_Plan` (true orthographic top-down plan view along -Z, `ortho_scale = 19.5`) in `Lab_Architectural_Plan.blend` and `Lab_Production.blend`.
+     - Configured `Camera_Axonometric_Plan` (45° axonometric high-angle cutaway showing elevation differences: floor at Z=0m, catwalk decks at Z=+2.5m, ceiling conduits at Z=+7.2m).
+     - Configured `Plan_Overhead_Sun` for clean architectural blueprint studio illumination.
+     - Rendered and annotated high-resolution architectural layout plans:
+       - `Assets/Environment/Lab/Lab_Architectural_FloorPlan_Annotated.png`: Technical architectural blueprint with 7 zoned callouts (`[ZONE 01]` Hero Stasis Pod, `[ZONE 02]` West Observation Catwalk, `[ZONE 03]` East Security Blast Bay, `[ZONE 04]` Stairway Access Ramp, `[ZONE 05]` Primary Diagnostic Console, `[ZONE 06]` Cryo-Specimen Array, `[ZONE 07]` Suction Trench & Power Grating).
+       - `Assets/Environment/Lab/Lab_Architectural_AxonometricPlan.png`: High-angle 3D cutaway showing vertical structural relationships.
+     - Launched Blender 5.2.1 LTS GUI with `Lab_Architectural_Plan.blend` active on desktop for real-time spatial inspection.
+  2. **Hand-Drawn Stylistic Benchmark**:
+     - Established visual benchmark with expressive hand-inked line work, crosshatching, and luminous cyan fluid contrast (Hollow Knight / Darkest Dungeon / Ender Lilies dark fantasy sci-fi aesthetic).
+  3. **Aseprite Hand-Drawn Asset Pipeline (10 Native Project Files)**:
+     - Developed procedural pen-and-ink synthesis engine (`generate_handdrawn_aseprite_assets.py`) simulating organic line-weight jitter, cross-hatching, and multi-layer construction (`01_Shadow`, `02_BaseColor`, `03_Hatching`, `04_Ink_LineArt`, `05_Highlights_FX`).
+     - Compiled 10 native `.aseprite` files into `Assets/Aseprite/Lab_HandDrawn/` via Aseprite CLI:
+       - `HERO_STASIS_CHAMBER_HANDDRAWN.aseprite` (64×96)
+       - `AERON_HERO_HANDDRAWN.aseprite` (48×64)
+       - `CONSOLE_TERMINAL_HANDDRAWN.aseprite` (64×48)
+       - `PLATFORM_DECK_HANDDRAWN.aseprite` (32×32)
+       - `FLOOR_GRATE_HANDDRAWN.aseprite` (32×32)
+       - `WALL_BULKHEAD_HANDDRAWN.aseprite` (32×64)
+       - `STASIS_CHAMBER_HD_HANDDRAWN.aseprite`
+       - `AERON_HERO_HD_HANDDRAWN.aseprite`
+       - `CONSOLE_TERMINAL_HD_HANDDRAWN.aseprite`
+       - `CATWALK_PLATFORM_HD_HANDDRAWN.aseprite`
+     - Exported corresponding sprites and Unity `.meta` files into `Assets/Art/Sprites/Lab_HandDrawn/`.
+     - Generated composite in-engine assembly preview `HandDrawn_Showcase_Composite.png`.
+- **Status**: **HAND-DRAWN ASEPRITE ASSETS & BLENDER PLAN MODE COMPLETE**.

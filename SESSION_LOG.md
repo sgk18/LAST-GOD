@@ -722,3 +722,52 @@ Changelog of progress made in each development session. Append new entries at th
      - Exported corresponding sprites and Unity `.meta` files into `Assets/Art/Sprites/Lab_HandDrawn/`.
      - Generated composite in-engine assembly preview `HandDrawn_Showcase_Composite.png`.
 - **Status**: **HAND-DRAWN ASEPRITE ASSETS & BLENDER PLAN MODE COMPLETE**.
+
+---
+
+## 📅 [2026-10-12] — Session 26: Global Skills Installation, Canonical Guard Rebuild & Idle Loop 100% QA
+- **Mandate & Mission**:
+  - Globally installed `Agent Sprite Forge` and `sprite-gen` skills across user-level agent directories.
+  - Safely archived and purged obsolete Guard visual assets (162 files) outside active paths to eliminate Unity duplicate GUID conflicts.
+  - Designed and established the new canonical Security Guard design from scratch (Dark Ink × Graphic Novel × Industrial Brutalism).
+  - Produced polished 8-frame cyclic idle animation from scratch, compiled native Aseprite source, and synchronized 2D orthographic Blender production rig.
+  - Integrated into Unity 6000.5.8f1 (`Act1_Lab_2D.unity`, `PF_Guard.prefab`, `Guard_Idle.anim`, `Guard.controller`).
+  - Executed automated Unity batchmode validation: 18/18 checks PASSED with 0 errors.
+- **Deliverables Completed**:
+  1. **Phase 1 & 2 — Global Skills Installation**:
+     - `Agent Sprite Forge` (`https://github.com/0x0funky/agent-sprite-forge`): Installed to `C:\Users\Surya VM\.codex\skills` and `C:\Users\Surya VM\.gemini\config\skills`. Verified with `tools/install_skills.py --check` (164 files, PASS).
+     - `sprite-gen` (`https://github.com/aldegad/sprite-gen`): Installed to `C:\Users\Surya VM\.codex\skills\sprite-gen` and `C:\Users\Surya VM\.gemini\config\skills\sprite-gen`. Installed Python package CLI `sprite-gen` in local venv. Verified with `sprite-gen --help`.
+     - Environment dependencies: Python 3.14.2, `scipy==1.18.1`, `numpy==2.5.0`, `Pillow==12.3.0`, `ffmpeg 8.1.2`, Aseprite CLI v1.3.0.0, Blender 5.2.1 LTS. Ran `forge_doctor.py` (0 FAIL, 1 WARN for optional `resvg-py`).
+  2. **Phase 3 — Safe Art Archival & Purge**:
+     - Identified and moved 162 obsolete Guard artwork files into root archive `Archive_PreRebuild_20261012/` (outside `Assets/` to avoid Unity duplicate GUID warnings).
+     - Preserved all functional scripts (`GuardController.cs`, `WeaponController.cs`, `Health.cs`), Animator state machine architecture, scene setup, laboratory environment, and UI.
+  3. **Phase 4, 5 & 6 — Canonical Guard Design & Master References**:
+     - Sourced from user's canonical reference sheet (`media_1791784173857.jpg`), capturing the grounded adult security operative in dark tactical lab uniform.
+     - Extracted 7 authoritative master reference assets into `Assets/Art/Characters/Guard/References/`:
+       - `GUARD_MASTER_REFERENCE.png` (Full canonical reference sheet)
+       - `GUARD_MASTER.png` (Isolated front-view hero master)
+       - `GUARD_COLOR_REFERENCE.png` (10-swatch master palette)
+       - `GUARD_SILHOUETTE_REFERENCE.png` (Pure black silhouette study)
+       - `GUARD_PISTOL_MASTER.png` (Canonical semi-automatic security pistol)
+       - `GUARD_FLASHLIGHT_MASTER.png` (Tactical LED flashlight)
+       - `GUARD_EQUIPMENT_REFERENCE.png` (Radio, belt, utility pouches)
+  4. **Phase 7, 8, 9 & 10 — 8-Frame Idle Production & Sprite Atlas**:
+     - Frame metrics: `128 × 192` px canvas, character visible height ~170 px (occupying ~88.5% vertical height), 96 PPU, bottom-center pivot `(0.5, 0.052)` aligned to floor contact line Y=182 (10 px margin).
+     - Individual frames: `Assets/Art/Characters/Guard/Source/GUARD_IDLE_01.png`..`08.png` and `Assets/Art/Characters/Guard/Sprites/Idle/`.
+     - Master sprite sheet: `Assets/Art/Characters/Guard/Sprites/Guard_Idle_8F.png` (1024 × 192 RGBA).
+     - Sprite sheet meta: Preserved canonical GUID `b8a8a9023bca8124db4c381f44e0596b` with 8 sliced multiple sprites (`Guard_Idle_12d` .. `Guard_Idle_82d`).
+     - Compiled native Aseprite project: `Assets/Art/Characters/Guard/Aseprite/Guard_Idle.aseprite` (8 frames, 0.083s / 12 FPS) via Aseprite CLI.
+     - Synchronized Blender 2D orthographic production rig: `Assets/Art/Characters/Guard/Blender/Guard_2D_Production.blend`.
+  5. **Phase 11 — Visual & Motion QA Documentation**:
+     - `GUARD_IDLE_COMPARISON_BOARD.png`: Frames 1–8 aligned to Y=182 datum line.
+     - `GUARD_SILHOUETTE_BOARD.png`: 8 pure black silhouettes with floor guide.
+     - `GUARD_PALETTE_BOARD.png`: 10-color master palette swatches & roles.
+     - `GUARD_IDLE_PREVIEW.gif`: 12 FPS looping animated GIF preview.
+  6. **Phase 12 & 13 — Unity Integration & Automated Batchmode QA**:
+     - Synchronized `Guard_Idle.anim` (12 FPS, loop enabled, 8 keyframes bound to sliced sprites).
+     - Verified `Guard.controller` (10 states) and `PF_Guard.prefab` (all components and child anchors attached).
+     - Placed in `Act1_Lab_2D.unity` on catwalk at `(-2.60, 0.40, 0.00)`.
+     - Executed automated Unity batchmode QA runner `ValidateGuardCharacterPipeline.RunQA`:
+       - **18 / 18 checks PASSED (0 Errors, 0 Warnings)**.
+       - Full report logged in `Assets/Art/Characters/Guard/Documentation/GUARD_QA_REPORT.md`.
+- **Status**: **CANONICAL GUARD REBUILD & 8-FRAME IDLE ANIMATION 100% PRODUCTION READY**.

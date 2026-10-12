@@ -53,7 +53,9 @@ This document maintains a running inventory of all external and prototype assets
 
 | Asset Name | Source / Tool | License | Description / Dimensions | File Location |
 |---|---|---|---|---|
-| **Guard Master Reference** | PIL / Python Matrix Suite | Project Asset | 8 canonical views (Front, Side, 3/4 Front, Back, Sentry, Weapon, Equipment, Combat) | `Assets/Art/Characters/Guard/References/GUARD_MASTER_REFERENCE.png` |
+| **Guard Hero Master Front** | Canonical Sheet Cropping & Isolation | Project Asset | Canonical front-view hero master isolation | Assets/Art/Characters/Guard/References/GUARD_MASTER.png |
+| **Guard Master Reference** | Canonical Sheet Reference | Project Asset | Authoritative canonical sheet (Front, Side, Back, 3/4, Head, Expressions, Weapons, Silhouette, Palette, Idle) | Assets/Art/Characters/Guard/References/GUARD_MASTER_REFERENCE.png |
+| **Guard Equipment Reference** | Canonical Equipment Crop | Project Asset | Radio, flashlight, holster, utility pouches canonical reference | Assets/Art/Characters/Guard/References/GUARD_EQUIPMENT_REFERENCE.png |
 | **Guard Color Reference** | Palette Tool | Project Asset | 12 swatches with exact hex codes, roles, and percentage allocations | `Assets/Art/Characters/Guard/References/GUARD_COLOR_REFERENCE.png` |
 | **Guard Silhouette Reference** | Silhouette Matrix Generator | Project Asset | Pure black silhouette verified against Light, Dark, Cyan, and Lab backgrounds | `Assets/Art/Characters/Guard/References/GUARD_SILHOUETTE_REFERENCE.png` |
 | **Guard Pistol Master** | Isolated Prop Tool | Project Asset | Canonical semi-automatic pistol design (4.0" barrel, tritium sights, squared guard) | `Assets/Art/Characters/Guard/References/GUARD_PISTOL_MASTER.png` |

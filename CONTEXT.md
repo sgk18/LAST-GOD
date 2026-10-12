@@ -134,6 +134,8 @@ The project environment is equipped with a wide array of specialized agent skill
 ---
 
 ### B. Global Assistant & Engineering Skills
+- [gent-sprite-forge](file:///C:/Users/Surya%20VM/.codex/skills/generate2dsprite/SKILL.md): Comprehensive 2D sprite generation suite (master-still generation, video2dsprite motion extraction, background cleanup, palette locking, and sprite sheet packing).
+- [sprite-gen](file:///C:/Users/Surya%20VM/.codex/skills/sprite-gen/SKILL.md): CLI and toolchain for multi-angle sprite generation, 8-directional sprite sheets, and automated atlas slicing.
 - [`code-review`](file:///C:/Users/Surya%20VM/.gemini/config/skills/code-review/SKILL.md): Parallel multi-axis review checking code standards and spec compliance.
 - [`codebase-design`](file:///C:/Users/Surya%20VM/.gemini/config/skills/codebase-design/SKILL.md): Deep-module interface architecture, abstraction layers, and testable seams.
 - [`diagnosing-bugs`](file:///C:/Users/Surya%20VM/.gemini/config/skills/diagnosing-bugs/SKILL.md): Systematic scientific loop for tracking down regressions, exceptions, and edge cases.

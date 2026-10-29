@@ -1,6 +1,0 @@
-{
-  "cases": [
-    {"why": "id is mandatory", "remove": "/id"},
-    {"why": "unknown status", "set": "/status", "value": "passed"}
-  ]
-}

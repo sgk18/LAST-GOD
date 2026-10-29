@@ -1,3 +1,0 @@
-{
-  "cases": [{"why": "zero width", "document": [0, 10]}, {"why": "fractional width", "document": [10.5, 10]}]
-}

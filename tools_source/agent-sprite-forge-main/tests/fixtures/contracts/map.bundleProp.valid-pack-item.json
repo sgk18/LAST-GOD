@@ -1,5 +1,0 @@
-{
-  "pack": "props/prop-pack.json",
-  "label": "tree",
-  "footprint": {"shape": "ellipse", "width": 18, "depth": 8, "basis": "prop_px"}
-}

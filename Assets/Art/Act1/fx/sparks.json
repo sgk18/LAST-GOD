@@ -1,0 +1,13 @@
+{
+  "image": "sparks.png",
+  "frame_w": 16,
+  "frame_h": 16,
+  "frame_count": 5,
+  "tags": {
+    "burst": {
+      "from": 0,
+      "to": 4,
+      "fps": 14
+    }
+  }
+}

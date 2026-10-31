@@ -1,0 +1,13 @@
+{
+  "image": "bg_mid.png",
+  "frame_w": 320,
+  "frame_h": 180,
+  "frame_count": 2,
+  "tags": {
+    "blink": {
+      "from": 0,
+      "to": 1,
+      "fps": 2
+    }
+  }
+}

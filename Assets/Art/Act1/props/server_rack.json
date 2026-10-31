@@ -1,0 +1,13 @@
+{
+  "image": "server_rack.png",
+  "frame_w": 20,
+  "frame_h": 44,
+  "frame_count": 2,
+  "tags": {
+    "blink": {
+      "from": 0,
+      "to": 1,
+      "fps": 3
+    }
+  }
+}

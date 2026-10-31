@@ -1,0 +1,13 @@
+{
+  "image": "steam_vent.png",
+  "frame_w": 16,
+  "frame_h": 24,
+  "frame_count": 6,
+  "tags": {
+    "steam": {
+      "from": 0,
+      "to": 5,
+      "fps": 8
+    }
+  }
+}

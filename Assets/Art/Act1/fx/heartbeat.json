@@ -1,0 +1,13 @@
+{
+  "image": "heartbeat.png",
+  "frame_w": 32,
+  "frame_h": 16,
+  "frame_count": 6,
+  "tags": {
+    "beat": {
+      "from": 0,
+      "to": 5,
+      "fps": 6
+    }
+  }
+}

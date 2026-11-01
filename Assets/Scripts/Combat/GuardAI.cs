@@ -34,6 +34,14 @@ namespace LastGod.Act1
         public GameObject brokenMarkerPrefab;
         public GameObject absorbParticlesPrefab;
 
+        [Header("Tactical Blue Sprites")]
+        public Sprite tacticalIdleSprite;
+        public Sprite tacticalAimSprite;
+        public Sprite tacticalShootSprite;
+        public Sprite tacticalRecoilSprite;
+        public Sprite tacticalHurtSprite;
+        public Sprite tacticalBrokenSprite;
+
         private Rigidbody2D rb;
         private Collider2D col;
         private float facingDir = -1f;
@@ -152,9 +160,10 @@ namespace LastGod.Act1
             if (laserAimLine != null)
             {
                 laserAimLine.enabled = true;
-                laserAimLine.startColor = Color.red;
-                laserAimLine.endColor = new Color(1f, 0f, 0f, 0.4f);
+                laserAimLine.startColor = new Color(0.15f, 0.85f, 1f, 0.9f);
+                laserAimLine.endColor = new Color(0.1f, 0.65f, 1f, 0.2f);
             }
+            if (spriteRenderer != null && tacticalAimSprite != null) spriteRenderer.sprite = tacticalAimSprite;
         }
 
         private void UpdateLaserAim(Vector3 targetPos)
@@ -176,6 +185,7 @@ namespace LastGod.Act1
 
         private IEnumerator ShootBurstRoutine()
         {
+            if (spriteRenderer != null && tacticalShootSprite != null) spriteRenderer.sprite = tacticalShootSprite;
             while (burstShotsRemaining > 0)
             {
                 FireSingleBullet();
@@ -184,10 +194,12 @@ namespace LastGod.Act1
                     yield return new WaitForSeconds(0.12f);
             }
 
+            if (spriteRenderer != null && tacticalRecoilSprite != null) spriteRenderer.sprite = tacticalRecoilSprite;
             cooldownTimer = attackCooldown;
             yield return new WaitForSeconds(0.2f);
             if (CurrentState == AIState.Shooting)
             {
+                if (spriteRenderer != null && tacticalIdleSprite != null) spriteRenderer.sprite = tacticalIdleSprite;
                 CurrentState = AIState.Patrol;
             }
         }
@@ -237,12 +249,22 @@ namespace LastGod.Act1
             }
         }
 
+        public void ForceBrokenState()
+        {
+            EnterBrokenState();
+        }
+
         private void EnterBrokenState()
         {
             CurrentState = AIState.Broken;
             stateTimer = 0f;
             if (laserAimLine != null) laserAimLine.enabled = false;
             rb.linearVelocity = Vector2.zero;
+
+            if (spriteRenderer != null && tacticalBrokenSprite != null)
+            {
+                spriteRenderer.sprite = tacticalBrokenSprite;
+            }
 
             // Spawn teal broken indicator
             if (brokenMarkerPrefab != null && spawnedBrokenMarker == null)

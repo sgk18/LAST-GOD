@@ -144,6 +144,21 @@ namespace LastGod.Editor
             CreateProp("Vent_01", ventSprite, new Vector3(6.5f, -2.0f, 0f), envRoot.transform, 1, unlitMat);
             CreateProp("Sign_01", signSprite, new Vector3(5.0f, 0.8f, 0f), envRoot.transform, 1, unlitMat);
 
+            // Elevated catwalks & platforms for Jumping & Pogo combat
+            var platformLow = new GameObject("Platform_Catwalk_Mid");
+            platformLow.transform.parent = envRoot.transform;
+            platformLow.transform.position = new Vector3(-0.5f, -0.6f, 0f);
+            var colPlat1 = platformLow.AddComponent<BoxCollider2D>();
+            colPlat1.size = new Vector2(3.6f, 0.25f);
+            CreateProp("Platform_Grating_Mid", consoleSprite, new Vector3(-0.5f, -0.6f, 0f), platformLow.transform, 2, unlitMat);
+
+            var platformHigh = new GameObject("Platform_Catwalk_High");
+            platformHigh.transform.parent = envRoot.transform;
+            platformHigh.transform.position = new Vector3(3.5f, 0.9f, 0f);
+            var colPlat2 = platformHigh.AddComponent<BoxCollider2D>();
+            colPlat2.size = new Vector2(3.8f, 0.25f);
+            CreateProp("Platform_Grating_High", consoleSprite, new Vector3(3.5f, 0.9f, 0f), platformHigh.transform, 2, unlitMat);
+
             // Stasis Chamber (Centerpiece)
             var chamberRoot = new GameObject("Stasis_Chamber_System");
             chamberRoot.transform.parent = envRoot.transform;
@@ -194,6 +209,13 @@ namespace LastGod.Editor
             aeronCtrl.slashEffectPrefab = slashPrefab;
             aeronCtrl.bulletLayer = 1 << LayerMask.NameToLayer("Default");
             aeronCtrl.enemyLayer = 1 << LayerMask.NameToLayer("Default");
+            aeronCtrl.groundLayer = 1 << LayerMask.NameToLayer("Default");
+
+            // GroundCheck point for jump & pogo
+            var groundCheckObj = new GameObject("GroundCheck");
+            groundCheckObj.transform.parent = aeronObj.transform;
+            groundCheckObj.transform.localPosition = Vector3.zero;
+            aeronCtrl.groundCheck = groundCheckObj.transform;
 
             // Attack point
             var atkPointObj = new GameObject("AttackPoint");
@@ -347,18 +369,27 @@ namespace LastGod.Editor
             var ai = obj.AddComponent<GuardAI>();
             ai.guardType = type;
             ai.bulletPrefab = bulletPrefab;
+            ai.tacticalIdleSprite = LoadSprite("Assets/Art/Act1/characters/guard_tactical_idle.png");
+            ai.tacticalAimSprite = LoadSprite("Assets/Art/Act1/characters/guard_tactical_aim.png");
+            ai.tacticalShootSprite = LoadSprite("Assets/Art/Act1/characters/guard_tactical_shoot.png");
+            ai.tacticalRecoilSprite = LoadSprite("Assets/Art/Act1/characters/guard_tactical_recoil.png");
+            ai.tacticalHurtSprite = LoadSprite("Assets/Art/Act1/characters/guard_tactical_hurt.png");
+            ai.tacticalBrokenSprite = LoadSprite("Assets/Art/Act1/characters/guard_tactical_broken.png");
+            if (ai.tacticalIdleSprite != null) sr.sprite = ai.tacticalIdleSprite;
 
-            // Gun Muzzle
+            // Gun Muzzle with Blue Tip
             var muzzle = new GameObject("Muzzle");
             muzzle.transform.parent = obj.transform;
             muzzle.transform.localPosition = new Vector3(-0.6f, 0.65f, 0f);
             ai.gunMuzzle = muzzle.transform;
 
-            // LineRenderer for laser aim
+            // LineRenderer for Blue Capacitor Aim Laser
             var lr = obj.AddComponent<LineRenderer>();
             lr.startWidth = 0.04f;
             lr.endWidth = 0.02f;
             lr.material = new Material(Shader.Find("Sprites/Default"));
+            lr.startColor = new Color(0.15f, 0.85f, 1f, 0.9f);
+            lr.endColor = new Color(0.1f, 0.65f, 1f, 0.2f);
             lr.enabled = false;
             ai.laserAimLine = lr;
 
@@ -396,7 +427,7 @@ namespace LastGod.Editor
             ui.waveText = waveText.GetComponent<Text>();
 
             // Controls Hint
-            var hint = CreateUIText(hud, "ControlsHint", "A/D: MOVE   |   J: STRIKE (REFLECTS)   |   K: DASH   |   SPACE: DILATE TIME   |   L: TAKE", new Vector2(Screen.width * 0.5f - 240, -Screen.height + 40), 12, Color.yellow);
+            var hint = CreateUIText(hud, "ControlsHint", "A/D: MOVE  |  W/SPACE: JUMP  |  S+J (AIR): POGO  |  U/RMB: DIVINE LASER  |  J: SLASH  |  K: DASH  |  L: TAKE", new Vector2(Screen.width * 0.5f - 340, -Screen.height + 40), 11, Color.yellow);
             ui.controlsHintText = hint.GetComponent<Text>();
 
             // Broken prompt

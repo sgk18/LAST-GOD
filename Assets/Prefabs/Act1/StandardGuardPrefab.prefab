@@ -86,7 +86,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 4
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: a5f086a53e25be444b403706973d113f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6745f9ca803324743ba5fc1cc59cd261, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -161,8 +161,8 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0.7}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2, y: 2}
+    pivot: {x: 0.5, y: 0.057692308}
+    oldSize: {x: 13.75, y: 16.25}
     newSize: {x: 2, y: 2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -196,6 +196,12 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   brokenMarkerPrefab: {fileID: 0}
   absorbParticlesPrefab: {fileID: 0}
+  tacticalIdleSprite: {fileID: 21300000, guid: 6745f9ca803324743ba5fc1cc59cd261, type: 3}
+  tacticalAimSprite: {fileID: 21300000, guid: d906a9bbc93e5044ca75d687644f9ea0, type: 3}
+  tacticalShootSprite: {fileID: 21300000, guid: 05e4c308827c3f742a248cfbd114ff07, type: 3}
+  tacticalRecoilSprite: {fileID: 21300000, guid: 98716dff0d9148f4ab98c9cd5ddab422, type: 3}
+  tacticalHurtSprite: {fileID: 21300000, guid: 6621d8aa54e3de54da47dcdaa6338563, type: 3}
+  tacticalBrokenSprite: {fileID: 21300000, guid: b55aff26da39dbe4791e2d25ed52e549, type: 3}
 --- !u!120 &4652509453139168543
 LineRenderer:
   serializedVersion: 3
@@ -277,8 +283,8 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 1, b: 1, a: 1}
-      key1: {r: 1, g: 1, b: 1, a: 1}
+      key0: {r: 0.14901961, g: 0.8509804, b: 1, a: 0.9019608}
+      key1: {r: 0.101960786, g: 0.6509804, b: 1, a: 0.2}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}

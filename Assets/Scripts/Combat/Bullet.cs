@@ -35,7 +35,17 @@ namespace LastGod.Act1
             Direction = Mathf.Sign(dir);
             baseSpeed = spd;
             damage = dmg;
-            if (sr != null) sr.flipX = (Direction < 0);
+            if (sr != null)
+            {
+                sr.flipX = (Direction < 0);
+                sr.color = new Color(0.25f, 0.85f, 1f, 1f); // Electric Blue Plasma Bolt
+            }
+        }
+
+        public void DisintegrateByLaser()
+        {
+            SpawnSparks();
+            Destroy(gameObject);
         }
 
         private void Update()

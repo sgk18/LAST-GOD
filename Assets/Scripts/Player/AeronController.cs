@@ -10,11 +10,17 @@ namespace LastGod.Act1
     {
         public static AeronController Instance { get; private set; }
 
-        [Header("Movement")]
+        [Header("Movement & Agility")]
         public float moveSpeed = 5.0f;
         public float dashSpeed = 16.0f;
         public float dashDuration = 0.22f;
         public float dashCooldown = 0.45f;
+        public float jumpForce = 13.5f;
+        public float fallGravityMultiplier = 1.35f;
+        public float pogoBounceForce = 12.0f;
+        public LayerMask groundLayer;
+        public Transform groundCheck;
+        public float groundCheckRadius = 0.35f;
 
         [Header("Combat Stats")]
         public float maxLife = 100f;
@@ -23,6 +29,13 @@ namespace LastGod.Act1
         public float currentFocus = 100f;
         public float humanity = 100f; // 0 - 100%
         public float baseAttackDamage = 18f;
+
+        [Header("Divine Right-Arm Laser Beam")]
+        public GameObject armLaserBeamPrefab;
+        public float laserFocusCost = 25f;
+        public float laserChargeDuration = 0.2f;
+        public float laserFireDuration = 0.45f;
+        public bool isFiringLaser = false;
 
         [Header("Time Manipulation")]
         public float bulletSlowRadius = 3.2f;
@@ -42,12 +55,18 @@ namespace LastGod.Act1
         public GameObject absorbVfxPrefab;
 
         // Runtime states
-        public enum AeronState { Suspended, Awakening, Collapsed, Idle, Walking, Attacking, Dashing, Absorbing, Hurt, Dead }
+        public enum AeronState { Suspended, Awakening, Collapsed, Idle, Walking, Jumping, Falling, Attacking, Dashing, Absorbing, Hurt, LaserBeam, Dead }
         public AeronState CurrentState { get; private set; } = AeronState.Suspended;
 
         public bool IsInvulnerable => isInvulnerable;
         public bool IsDilatingTime => isDilatingTime;
         public float FacingDirection { get; private set; } = 1f;
+
+        public bool IsGrounded => isGrounded;
+        private bool isGrounded = false;
+        private bool canAirDash = true;
+        private float coyoteTimer = 0f;
+        private float jumpBufferTimer = 0f;
 
         private Rigidbody2D rb;
         private Collider2D col;
@@ -63,6 +82,7 @@ namespace LastGod.Act1
             Instance = this;
             rb = GetComponent<Rigidbody2D>();
             col = GetComponent<Collider2D>();
+            if (rb != null) rb.gravityScale = 3.0f;
             if (spriteRenderer == null) spriteRenderer = GetComponent<SpriteRenderer>();
             if (animator == null) animator = GetComponent<Animator>();
         }
@@ -82,14 +102,45 @@ namespace LastGod.Act1
             if (CurrentState == AeronState.Suspended || CurrentState == AeronState.Awakening || CurrentState == AeronState.Dead)
                 return;
 
+            CheckGroundStatus();
             HandleInput();
             HandleTimeDilation();
             UpdateVisuals();
         }
 
+        private void CheckGroundStatus()
+        {
+            Vector2 gPos = groundCheck != null ? (Vector2)groundCheck.position : (Vector2)transform.position + Vector2.down * 0.1f;
+            int gMask = groundLayer.value != 0 ? groundLayer.value : LayerMask.GetMask("Default", "Environment", "Ground");
+            isGrounded = Physics2D.OverlapCircle(gPos, groundCheckRadius, gMask);
+
+            if (isGrounded)
+            {
+                canAirDash = true;
+                coyoteTimer = 0.12f;
+            }
+            else
+            {
+                coyoteTimer -= Time.deltaTime;
+            }
+
+            // Snappy falling gravity multiplier (Hollow Knight feel)
+            if (rb != null)
+            {
+                if (rb.linearVelocity.y < -0.1f)
+                {
+                    rb.gravityScale = 3.0f * fallGravityMultiplier;
+                }
+                else
+                {
+                    rb.gravityScale = 3.0f;
+                }
+            }
+        }
+
         private void HandleInput()
         {
-            if (CurrentState == AeronState.Dashing || CurrentState == AeronState.Absorbing || CurrentState == AeronState.Hurt)
+            if (CurrentState == AeronState.Dashing || CurrentState == AeronState.Absorbing || CurrentState == AeronState.Hurt || CurrentState == AeronState.LaserBeam)
                 return;
 
             // Movement Inputs (A/D or Arrows)
@@ -112,13 +163,42 @@ namespace LastGod.Act1
                 if (Mathf.Abs(h) > 0.1f)
                 {
                     rb.linearVelocity = new Vector2(h * moveSpeed, rb.linearVelocity.y);
-                    CurrentState = AeronState.Walking;
+                    if (isGrounded) CurrentState = AeronState.Walking;
                 }
                 else
                 {
                     rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
-                    CurrentState = AeronState.Idle;
+                    if (isGrounded) CurrentState = AeronState.Idle;
                 }
+
+                if (!isGrounded)
+                {
+                    CurrentState = (rb.linearVelocity.y > 0.1f) ? AeronState.Jumping : AeronState.Falling;
+                }
+            }
+
+            // Jump Inputs (W, Space, Up Arrow)
+            jumpBufferTimer -= Time.deltaTime;
+            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                jumpBufferTimer = 0.14f;
+            }
+
+            if (jumpBufferTimer > 0f && coyoteTimer > 0f && CurrentState != AeronState.Attacking)
+            {
+                ExecuteJump();
+            }
+
+            // Variable jump height cut
+            if ((Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.UpArrow)) && rb.linearVelocity.y > 0.5f)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
+            }
+
+            // Divine Right-Arm Laser Beam (U / I / Right Click)
+            if ((Input.GetKeyDown(KeyCode.U) || Input.GetKeyDown(KeyCode.I) || Input.GetMouseButtonDown(1)) && currentFocus >= laserFocusCost && !isFiringLaser)
+            {
+                StartCoroutine(FireLaserBeamRoutine());
             }
 
             // Attack (J / Left Click / Z)
@@ -127,7 +207,7 @@ namespace LastGod.Act1
                 PerformAttack();
             }
 
-            // Dash (K / Right Shift / X / Space while moving)
+            // Dash (K / Right Shift / X / Left Shift)
             if ((Input.GetKeyDown(KeyCode.K) || Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.LeftShift)) && dashCooldownTimer <= 0f)
             {
                 StartCoroutine(DashRoutine());
@@ -164,8 +244,25 @@ namespace LastGod.Act1
             }
         }
 
+        private void ExecuteJump()
+        {
+            jumpBufferTimer = 0f;
+            coyoteTimer = 0f;
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            CurrentState = AeronState.Jumping;
+            if (animator != null) animator.SetTrigger("JumpTrigger");
+        }
+
         private void PerformAttack()
         {
+            float v = Input.GetAxisRaw("Vertical");
+            // If airborne and pressing downward: Perform Downward Pogo Slash!
+            if (!isGrounded && (v < -0.2f || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)))
+            {
+                PerformPogoSlash();
+                return;
+            }
+
             CurrentState = AeronState.Attacking;
             rb.linearVelocity = new Vector2(FacingDirection * 2.5f, rb.linearVelocity.y); // slight lunge
 
@@ -215,15 +312,100 @@ namespace LastGod.Act1
             StartCoroutine(AttackCooldownRoutine());
         }
 
+        private void PerformPogoSlash()
+        {
+            CurrentState = AeronState.Attacking;
+
+            // Angled downward slash
+            Vector2 pogoCheckPos = (Vector2)transform.position + Vector2.down * 0.6f;
+            if (slashEffectPrefab != null)
+            {
+                GameObject slash = Instantiate(slashEffectPrefab, pogoCheckPos, Quaternion.Euler(0f, 0f, -90f));
+                Destroy(slash, 0.25f);
+            }
+
+            float damageMultiplier = 1.0f + ((100f - humanity) / 100f) * 0.65f;
+            float totalDamage = baseAttackDamage * 1.35f * damageMultiplier;
+
+            bool hitTarget = false;
+
+            // Hit detection: Guards below
+            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(pogoCheckPos, attackRadius, enemyLayer);
+            foreach (var hit in hitEnemies)
+            {
+                var guard = hit.GetComponent<GuardAI>();
+                if (guard != null)
+                {
+                    guard.TakeDamage(totalDamage, FacingDirection);
+                    currentFocus = Mathf.Min(maxFocus, currentFocus + 14f);
+                    hitTarget = true;
+                }
+            }
+
+            // Hit detection: Bullets below
+            Collider2D[] hitBullets = Physics2D.OverlapCircleAll(pogoCheckPos, attackRadius * 1.3f, bulletLayer);
+            foreach (var bCol in hitBullets)
+            {
+                var bullet = bCol.GetComponent<Bullet>();
+                if (bullet != null && !bullet.IsReflected)
+                {
+                    bullet.Reflect(FacingDirection);
+                    currentFocus = Mathf.Min(maxFocus, currentFocus + 20f);
+                    GameManager.Instance?.RecordReflect();
+                    hitTarget = true;
+                }
+            }
+
+            // If struck enemy or bullet: POGO BOUNCE!
+            if (hitTarget)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, pogoBounceForce);
+                canAirDash = true;
+                CameraFollow2D.Instance?.Shake(0.12f, 0.22f);
+            }
+
+            StartCoroutine(AttackCooldownRoutine());
+        }
+
+        private IEnumerator FireLaserBeamRoutine()
+        {
+            CurrentState = AeronState.LaserBeam;
+            isFiringLaser = true;
+            currentFocus -= laserFocusCost;
+
+            // Halt momentum during firing
+            rb.linearVelocity = new Vector2(0f, isGrounded ? 0f : rb.linearVelocity.y * 0.1f);
+
+            // Charging windup
+            yield return new WaitForSeconds(laserChargeDuration);
+
+            // Spawn laser beam
+            Vector2 spawnPos = attackPoint != null ? (Vector2)attackPoint.position : (Vector2)transform.position + Vector2.right * (FacingDirection * 0.8f);
+            LastGod.Combat.ArmLaserBeam.Spawn(armLaserBeamPrefab, this, spawnPos, FacingDirection, laserFireDuration);
+
+            // Recoil
+            rb.linearVelocity = new Vector2(-FacingDirection * 3.5f, rb.linearVelocity.y);
+
+            yield return new WaitForSeconds(laserFireDuration);
+            isFiringLaser = false;
+            CurrentState = isGrounded ? AeronState.Idle : AeronState.Falling;
+        }
+
         private IEnumerator AttackCooldownRoutine()
         {
             yield return new WaitForSeconds(0.28f);
             if (CurrentState == AeronState.Attacking)
-                CurrentState = AeronState.Idle;
+                CurrentState = isGrounded ? AeronState.Idle : AeronState.Falling;
         }
 
         private IEnumerator DashRoutine()
         {
+            if (!isGrounded)
+            {
+                if (!canAirDash) yield break;
+                canAirDash = false;
+            }
+
             CurrentState = AeronState.Dashing;
             isInvulnerable = true;
             dashCooldownTimer = dashCooldown;
@@ -240,7 +422,7 @@ namespace LastGod.Act1
 
             rb.linearVelocity = Vector2.zero;
             isInvulnerable = false;
-            CurrentState = AeronState.Idle;
+            CurrentState = isGrounded ? AeronState.Idle : AeronState.Falling;
         }
 
         private void TryTakeBrokenEnemy()
@@ -338,11 +520,14 @@ namespace LastGod.Act1
                 eyeGlowRenderer.color = new Color(0.5f, 0.95f, 0.85f, alpha);
             }
 
-            // Drive animator movement parameters
+            // Drive animator movement & aerial parameters
             if (animator != null && rb != null)
             {
                 float speed = Mathf.Abs(rb.linearVelocity.x);
                 animator.SetFloat("Speed", speed);
+                animator.SetBool("IsGrounded", isGrounded);
+                animator.SetFloat("VerticalVelocity", rb.linearVelocity.y);
+                animator.SetBool("IsFiringBeam", isFiringLaser);
             }
         }
 

@@ -1,0 +1,48 @@
+{
+  "image": "aeron.png",
+  "frame_w": 32,
+  "frame_h": 32,
+  "frame_count": 41,
+  "tags": {
+    "idle": {
+      "from": 0,
+      "to": 3,
+      "fps": 4
+    },
+    "walk": {
+      "from": 4,
+      "to": 9,
+      "fps": 8
+    },
+    "suspended": {
+      "from": 10,
+      "to": 13,
+      "fps": 3
+    },
+    "wake": {
+      "from": 14,
+      "to": 17,
+      "fps": 4
+    },
+    "collapse": {
+      "from": 18,
+      "to": 25,
+      "fps": 6
+    },
+    "look_hands": {
+      "from": 26,
+      "to": 31,
+      "fps": 4
+    },
+    "attack": {
+      "from": 32,
+      "to": 37,
+      "fps": 12
+    },
+    "hurt": {
+      "from": 38,
+      "to": 40,
+      "fps": 8
+    }
+  }
+}

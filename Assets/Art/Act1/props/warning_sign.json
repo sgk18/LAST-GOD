@@ -1,0 +1,13 @@
+{
+  "image": "warning_sign.png",
+  "frame_w": 18,
+  "frame_h": 12,
+  "frame_count": 2,
+  "tags": {
+    "blink": {
+      "from": 0,
+      "to": 1,
+      "fps": 2
+    }
+  }
+}

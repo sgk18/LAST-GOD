@@ -1,0 +1,13 @@
+{
+  "image": "console_desk.png",
+  "frame_w": 40,
+  "frame_h": 22,
+  "frame_count": 2,
+  "tags": {
+    "blink": {
+      "from": 0,
+      "to": 1,
+      "fps": 2
+    }
+  }
+}

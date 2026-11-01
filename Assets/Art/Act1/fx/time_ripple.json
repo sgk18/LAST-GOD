@@ -1,0 +1,13 @@
+{
+  "image": "time_ripple.png",
+  "frame_w": 32,
+  "frame_h": 32,
+  "frame_count": 6,
+  "tags": {
+    "pulse": {
+      "from": 0,
+      "to": 5,
+      "fps": 10
+    }
+  }
+}

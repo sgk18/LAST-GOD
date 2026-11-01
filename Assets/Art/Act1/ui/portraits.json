@@ -1,0 +1,33 @@
+{
+  "image": "portraits.png",
+  "frame_w": 32,
+  "frame_h": 32,
+  "frame_count": 5,
+  "tags": {
+    "aeron": {
+      "from": 0,
+      "to": 0,
+      "fps": 1
+    },
+    "aeron_awake": {
+      "from": 1,
+      "to": 1,
+      "fps": 1
+    },
+    "voss": {
+      "from": 2,
+      "to": 2,
+      "fps": 1
+    },
+    "voice": {
+      "from": 3,
+      "to": 3,
+      "fps": 1
+    },
+    "guard": {
+      "from": 4,
+      "to": 4,
+      "fps": 1
+    }
+  }
+}

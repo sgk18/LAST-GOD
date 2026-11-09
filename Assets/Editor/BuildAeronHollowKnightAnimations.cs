@@ -59,8 +59,8 @@ namespace LastGod.Editor
                 ConfigureSprite($"Assets/Characters/Aeron/Sprites/Walk/aeron_walk_{i}.png");
             }
 
-            // Idle sprites
-            for (int i = 0; i < 6; i++)
+            // Idle sprites (8 dynamic human frames)
+            for (int i = 0; i < 8; i++)
             {
                 ConfigureSprite($"Assets/Characters/Aeron/Sprites/Idle/aeron_idle_{i}.png");
             }
@@ -149,8 +149,8 @@ namespace LastGod.Editor
             settings.loopTime = true;
             AnimationUtility.SetAnimationClipSettings(clip, settings);
 
-            Sprite[] sprites = new Sprite[6];
-            for (int i = 0; i < 6; i++)
+            Sprite[] sprites = new Sprite[8];
+            for (int i = 0; i < 8; i++)
             {
                 sprites[i] = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Characters/Aeron/Sprites/Idle/aeron_idle_{i}.png");
             }

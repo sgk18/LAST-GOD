@@ -1,0 +1,38 @@
+{
+  "schema": "generate2dsprite.palette.v1",
+  "name": "last-god-act1-hibit-28",
+  "locked": true,
+  "transparent_index": 255,
+  "source": "curated-master-act1-human-specimen",
+  "colors": [
+    { "hex": "#0b0d14", "name": "abyss_ink", "reserved": true },
+    { "hex": "#131824", "name": "deep_lab_shadow", "reserved": true },
+    { "hex": "#1c2233", "name": "charcoal_navy", "reserved": true },
+    { "hex": "#293245", "name": "damp_slate_harness", "reserved": true },
+    { "hex": "#3b4b63", "name": "cool_slate_midtone", "reserved": true },
+    { "hex": "#5a6f8a", "name": "misty_steel_rim", "reserved": true },
+    { "hex": "#8fb3c4", "name": "powdery_vapor_mid", "reserved": true },
+    { "hex": "#d7eef0", "name": "specular_mist_white", "reserved": true },
+    { "hex": "#593b31", "name": "skin_deep_umber", "reserved": true },
+    { "hex": "#8c6450", "name": "skin_mid_shadow", "reserved": true },
+    { "hex": "#c89b7b", "name": "skin_midtone", "reserved": true },
+    { "hex": "#e8c5a8", "name": "skin_pale_highlight", "reserved": true },
+    { "hex": "#5c574d", "name": "bandage_soiled_shadow", "reserved": true },
+    { "hex": "#8f8878", "name": "bandage_damp_mid", "reserved": true },
+    { "hex": "#c7beab", "name": "bandage_linen_high", "reserved": true },
+    { "hex": "#1e242b", "name": "pant_dark_shadow", "reserved": true },
+    { "hex": "#353e4a", "name": "pant_charcoal_mid", "reserved": true },
+    { "hex": "#16383b", "name": "graft_cavity_shadow", "reserved": true },
+    { "hex": "#1f6361", "name": "graft_bioceramic_base", "reserved": true },
+    { "hex": "#2f8f83", "name": "stasis_teal_conduit", "reserved": true },
+    { "hex": "#7fe3d0", "name": "divine_cyan_glow", "reserved": true },
+    { "hex": "#dcfff9", "name": "divine_rune_core", "reserved": true },
+    { "hex": "#b8c7d4", "name": "porcelain_armor_mid", "reserved": true },
+    { "hex": "#e8f2f5", "name": "porcelain_armor_rim", "reserved": true },
+    { "hex": "#5a1f2b", "name": "alarm_crimson_deep", "reserved": true },
+    { "hex": "#b3263e", "name": "alarm_crimson_mid", "reserved": true },
+    { "hex": "#ff5a5f", "name": "alarm_crimson_bright", "reserved": true },
+    { "hex": "#e8c34a", "name": "hazard_amber", "reserved": true }
+  ]
+}
+

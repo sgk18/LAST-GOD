@@ -1,0 +1,32 @@
+GIMP Palette
+Name: last-god-act1-hibit-28
+Columns: 4
+#
+ 11  13  20	abyss_ink
+ 19  24  36	deep_lab_shadow
+ 28  34  51	charcoal_navy
+ 41  50  69	damp_slate_harness
+ 59  75  99	cool_slate_midtone
+ 90 111 138	misty_steel_rim
+143 179 196	powdery_vapor_mid
+215 238 240	specular_mist_white
+ 89  59  49	skin_deep_umber
+140 100  80	skin_mid_shadow
+200 155 123	skin_midtone
+232 197 168	skin_pale_highlight
+ 92  87  77	bandage_soiled_shadow
+143 136 120	bandage_damp_mid
+199 190 171	bandage_linen_high
+ 30  36  43	pant_dark_shadow
+ 53  62  74	pant_charcoal_mid
+ 22  56  59	graft_cavity_shadow
+ 31  99  97	graft_bioceramic_base
+ 47 143 131	stasis_teal_conduit
+127 227 208	divine_cyan_glow
+220 255 249	divine_rune_core
+184 199 212	porcelain_armor_mid
+232 242 245	porcelain_armor_rim
+ 90  31  43	alarm_crimson_deep
+179  38  62	alarm_crimson_mid
+255  90  95	alarm_crimson_bright
+232 195  74	hazard_amber

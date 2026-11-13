@@ -1,0 +1,28 @@
+{
+  "image": "stasis_chamber.png",
+  "frame_w": 48,
+  "frame_h": 80,
+  "frame_count": 9,
+  "tags": {
+    "intact": {
+      "from": 0,
+      "to": 0,
+      "fps": 1
+    },
+    "crack": {
+      "from": 1,
+      "to": 3,
+      "fps": 6
+    },
+    "drain": {
+      "from": 4,
+      "to": 7,
+      "fps": 8
+    },
+    "shattered": {
+      "from": 8,
+      "to": 8,
+      "fps": 1
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "image": "lamp.png",
+  "frame_w": 12,
+  "frame_h": 30,
+  "frame_count": 3,
+  "tags": {
+    "flicker": {
+      "from": 0,
+      "to": 2,
+      "fps": 6
+    }
+  }
+}

@@ -1,6 +1,0 @@
-<Solution>
-  <Project Path="LastGod.Core.csproj" />
-  <Project Path="LastGod.Player.csproj" />
-  <Project Path="LastGod.Combat.csproj" />
-  <Project Path="LastGod.Enemies.csproj" />
-</Solution>

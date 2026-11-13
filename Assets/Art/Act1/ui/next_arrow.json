@@ -1,0 +1,13 @@
+{
+  "image": "next_arrow.png",
+  "frame_w": 8,
+  "frame_h": 8,
+  "frame_count": 2,
+  "tags": {
+    "blink": {
+      "from": 0,
+      "to": 1,
+      "fps": 3
+    }
+  }
+}

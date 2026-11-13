@@ -1,0 +1,16 @@
+{
+  "floor_a": 0,
+  "floor_grate": 1,
+  "floor_hazard": 2,
+  "wall_panel": 3,
+  "wall_pipes": 4,
+  "wall_screen_0": 5,
+  "wall_screen_1": 6,
+  "ceiling": 7,
+  "ceiling_light": 8,
+  "door": 9,
+  "console_0": 10,
+  "console_1": 11,
+  "vent": 12,
+  "floor_cable": 13
+}

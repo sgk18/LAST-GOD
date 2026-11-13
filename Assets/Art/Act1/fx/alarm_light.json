@@ -1,0 +1,13 @@
+{
+  "image": "alarm_light.png",
+  "frame_w": 16,
+  "frame_h": 16,
+  "frame_count": 4,
+  "tags": {
+    "spin": {
+      "from": 0,
+      "to": 3,
+      "fps": 8
+    }
+  }
+}

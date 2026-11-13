@@ -1,0 +1,13 @@
+{
+  "image": "broken_monitor.png",
+  "frame_w": 16,
+  "frame_h": 16,
+  "frame_count": 2,
+  "tags": {
+    "spark": {
+      "from": 0,
+      "to": 1,
+      "fps": 3
+    }
+  }
+}

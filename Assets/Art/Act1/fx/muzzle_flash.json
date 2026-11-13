@@ -1,0 +1,13 @@
+{
+  "image": "muzzle_flash.png",
+  "frame_w": 16,
+  "frame_h": 16,
+  "frame_count": 3,
+  "tags": {
+    "flash": {
+      "from": 0,
+      "to": 2,
+      "fps": 24
+    }
+  }
+}

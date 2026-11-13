@@ -1,0 +1,18 @@
+{
+  "image": "bullet.png",
+  "frame_w": 8,
+  "frame_h": 3,
+  "frame_count": 2,
+  "tags": {
+    "normal": {
+      "from": 0,
+      "to": 0,
+      "fps": 1
+    },
+    "slowed": {
+      "from": 1,
+      "to": 1,
+      "fps": 1
+    }
+  }
+}

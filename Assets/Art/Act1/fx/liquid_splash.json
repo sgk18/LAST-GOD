@@ -1,0 +1,13 @@
+{
+  "image": "liquid_splash.png",
+  "frame_w": 32,
+  "frame_h": 16,
+  "frame_count": 6,
+  "tags": {
+    "splash": {
+      "from": 0,
+      "to": 5,
+      "fps": 12
+    }
+  }
+}

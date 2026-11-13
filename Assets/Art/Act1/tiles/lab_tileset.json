@@ -1,0 +1,78 @@
+{
+  "image": "lab_tileset.png",
+  "frame_w": 16,
+  "frame_h": 16,
+  "frame_count": 14,
+  "tags": {
+    "floor_a": {
+      "from": 0,
+      "to": 0,
+      "fps": 1
+    },
+    "floor_grate": {
+      "from": 1,
+      "to": 1,
+      "fps": 1
+    },
+    "floor_hazard": {
+      "from": 2,
+      "to": 2,
+      "fps": 1
+    },
+    "wall_panel": {
+      "from": 3,
+      "to": 3,
+      "fps": 1
+    },
+    "wall_pipes": {
+      "from": 4,
+      "to": 4,
+      "fps": 1
+    },
+    "wall_screen_0": {
+      "from": 5,
+      "to": 5,
+      "fps": 1
+    },
+    "wall_screen_1": {
+      "from": 6,
+      "to": 6,
+      "fps": 1
+    },
+    "ceiling": {
+      "from": 7,
+      "to": 7,
+      "fps": 1
+    },
+    "ceiling_light": {
+      "from": 8,
+      "to": 8,
+      "fps": 1
+    },
+    "door": {
+      "from": 9,
+      "to": 9,
+      "fps": 1
+    },
+    "console_0": {
+      "from": 10,
+      "to": 10,
+      "fps": 1
+    },
+    "console_1": {
+      "from": 11,
+      "to": 11,
+      "fps": 1
+    },
+    "vent": {
+      "from": 12,
+      "to": 12,
+      "fps": 1
+    },
+    "floor_cable": {
+      "from": 13,
+      "to": 13,
+      "fps": 1
+    }
+  }
+}

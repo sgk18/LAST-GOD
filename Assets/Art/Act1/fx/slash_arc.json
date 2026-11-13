@@ -1,0 +1,13 @@
+{
+  "image": "slash_arc.png",
+  "frame_w": 32,
+  "frame_h": 32,
+  "frame_count": 4,
+  "tags": {
+    "arc": {
+      "from": 0,
+      "to": 3,
+      "fps": 18
+    }
+  }
+}

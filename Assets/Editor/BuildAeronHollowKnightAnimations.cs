@@ -59,10 +59,10 @@ namespace LastGod.Editor
                 ConfigureSprite($"Assets/Characters/Aeron/Sprites/Walk/aeron_walk_{i}.png");
             }
 
-            // Idle sprites (8 dynamic human frames)
+            // Idle sprites (8 dynamic Hi-Bit pixel art frames, 144x160, ground y=151 -> pivotY=9/160)
             for (int i = 0; i < 8; i++)
             {
-                ConfigureSprite($"Assets/Characters/Aeron/Sprites/Idle/aeron_idle_{i}.png");
+                ConfigureSprite($"Assets/Characters/Aeron/Sprites/Idle/aeron_idle_{i}.png", FilterMode.Point, 54f, 9f / 160f);
             }
 
             // Jump & Fall sprites
@@ -94,7 +94,7 @@ namespace LastGod.Editor
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
         }
 
-        private static void ConfigureSprite(string path)
+        private static void ConfigureSprite(string path, FilterMode filterMode = FilterMode.Bilinear, float pixelsPerUnit = 100f, float pivotY = 15f / 260f)
         {
             if (!File.Exists(path))
             {
@@ -107,15 +107,15 @@ namespace LastGod.Editor
             {
                 importer.textureType = TextureImporterType.Sprite;
                 importer.spriteImportMode = SpriteImportMode.Single;
-                importer.spritePixelsPerUnit = 100f;
-                importer.filterMode = FilterMode.Bilinear;
+                importer.spritePixelsPerUnit = pixelsPerUnit;
+                importer.filterMode = filterMode;
                 importer.textureCompression = TextureImporterCompression.Uncompressed;
                 importer.alphaIsTransparency = true;
                 
                 var settings = new TextureImporterSettings();
                 importer.ReadTextureSettings(settings);
                 settings.spriteAlignment = (int)SpriteAlignment.Custom;
-                settings.spritePivot = new Vector2(0.5f, 15f / 260f);
+                settings.spritePivot = new Vector2(0.5f, pivotY);
                 importer.SetTextureSettings(settings);
 
                 importer.SaveAndReimport();
